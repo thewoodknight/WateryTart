@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:WateryTart.ViewModels"
+             xmlns:app="clr-namespace:WateryTart"
+             xmlns:converters="clr-namespace:WateryTart.Converters"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:loaders="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             Background="{x:Null}" 
+             x:Class="WateryTart.Views.AlbumsListView"
+             x:DataType="vm:AlbumsListViewModel">
+    <UserControl.Resources>
+        <converters:ImagePathConverter x:Key="ImagePathConverter" />
+
+    </UserControl.Resources>
+    <ListBox x:Name="albumsListBox" ItemsSource="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" >
+        <ListBox.Styles>
+            <Style Selector="ListBoxItem">
+                <Setter Property="Background" Value="Transparent"/>	
+            </Style>
+        </ListBox.Styles>
+        <Interaction.Behaviors>
+            <EventTriggerBehavior SourceObject="albumsListBox" 
+                                  EventName="SelectionChanged">
+                <InvokeCommandAction Command="{Binding GoNext}" />
+            </EventTriggerBehavior>
+        </Interaction.Behaviors>
+        <ListBox.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel />
+            </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <StackPanel>
+                    <TextBlock Text="{Binding name}"></TextBlock>
+                    <asyncImageLoader:AdvancedImage 
+                        Loader="{x:Static app:WhyAmIDumbLoader.Instance}" 
+                        Height="100" Width="100" Source="{Binding metadata.images[0].path, Converter={StaticResource ImagePathConverter}}" />
+                </StackPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</UserControl>

@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:WateryTart.ViewModels"
+			 xmlns:app="clr-namespace:WateryTart"
+			 xmlns:converters="clr-namespace:WateryTart.Converters"
+			 xmlns:asyncImageLoader1="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+			 xmlns:wateryTart="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="WateryTart.Views.AlbumView"
+			 x:DataType="vm:AlbumViewModel">
+	<UserControl.Resources>
+		<converters:ImagePathConverter x:Key="ImagePathConverter" />
+		<converters:SecondsToMinutesConverter x:Key="SecondsToMinutesConverter" />
+		
+	</UserControl.Resources>
+	<StackPanel>
+		<TextBlock Text="{Binding Album.name}" FontWeight="Black" FontSize="30"/>
+		<Grid Margin="0,0,10,20">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="200" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Border BoxShadow="0 0 10 0 Black" 
+                    Grid.Column="0"
+                    Width="200"
+                    Height="200">
+				<Border ClipToBounds ="True"
+                        CornerRadius="5">
+					<asyncImageLoader1:AdvancedImage 
+                        Loader="{x:Static app:WhyAmIDumbLoader.Instance}" 
+                        Source="{Binding Album.metadata.images[0].path, Converter={StaticResource ImagePathConverter}}"
+                        />
+				</Border>
+			</Border>
+			<StackPanel Grid.Column="1" Margin="10,0,0,0">
+				<TextBlock Text="{Binding Album.artists[0].name}"  />
+				<TextBlock Text="{Binding Album.year}" Opacity="0.7" />
+				<Button>Play</Button>
+			</StackPanel>
+		</Grid>
+
+		<!-- Tracks -->
+		<ListBox ItemsSource="{Binding Tracks}" Background="{x:Null}" >
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="20" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Text="{Binding track_number}"  Opacity="0.7" />
+
+						<StackPanel Grid.Column="1">
+							<TextBlock Text="{Binding name}"></TextBlock>
+							<TextBlock Text="{Binding duration, Converter={StaticResource SecondsToMinutesConverter}}"  Opacity="0.7"></TextBlock>
+						</StackPanel>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</StackPanel>
+</UserControl>

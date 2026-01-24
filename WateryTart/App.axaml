@@ -1,0 +1,18 @@
+<Application xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:loaders="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
+			 x:Class="WateryTart.App"
+			 RequestedThemeVariant="Default">
+	
+	
+	<Application.Resources>
+		<ResourceDictionary>
+
+            <!--<loaders:DiskCachedWebImageLoader x:Key="appDiskCachedWebImageLoader"  />-->
+		</ResourceDictionary>
+	</Application.Resources>
+	<Application.Styles>
+		<FluentTheme />
+        <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
+	</Application.Styles>
+</Application>
