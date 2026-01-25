@@ -16,7 +16,7 @@
 		
 	</UserControl.Resources>
 	<StackPanel>
-		<TextBlock Text="{Binding Album.name}" FontWeight="Black" FontSize="30"/>
+		<TextBlock Text="{Binding Album.Name}" FontWeight="Black" FontSize="30"/>
 		<Grid Margin="0,0,10,20">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="200" />
@@ -30,13 +30,13 @@
                         CornerRadius="5">
 					<asyncImageLoader1:AdvancedImage 
                         Loader="{x:Static app:WhyAmIDumbLoader.Instance}" 
-                        Source="{Binding Album.metadata.images[0].path, Converter={StaticResource ImagePathConverter}}"
+                        Source="{Binding Album.Metadata.images[0].path, Converter={StaticResource ImagePathConverter}}"
                         />
 				</Border>
 			</Border>
 			<StackPanel Grid.Column="1" Margin="10,0,0,0">
-				<TextBlock Text="{Binding Album.artists[0].name}"  />
-				<TextBlock Text="{Binding Album.year}" Opacity="0.7" />
+				<TextBlock Text="{Binding Album.Artists[0].Name}"  />
+				<TextBlock Text="{Binding Album.Year}" Opacity="0.7" />
 				<Button>Play</Button>
 			</StackPanel>
 		</Grid>
@@ -53,7 +53,7 @@
 						<TextBlock Text="{Binding track_number}"  Opacity="0.7" />
 
 						<StackPanel Grid.Column="1">
-							<TextBlock Text="{Binding name}"></TextBlock>
+							<TextBlock Text="{Binding Name}"></TextBlock>
 							<TextBlock Text="{Binding duration, Converter={StaticResource SecondsToMinutesConverter}}"  Opacity="0.7"></TextBlock>
 						</StackPanel>
 					</Grid>

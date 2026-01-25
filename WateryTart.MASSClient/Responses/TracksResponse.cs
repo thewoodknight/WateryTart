@@ -4,5 +4,5 @@ namespace WateryTart.MassClient.Responses;
 
 public class TracksResponse : ResponseBase
 {
-    public List<Track> result { get; set; }
+    public List<Item> result { get; set; }
 }

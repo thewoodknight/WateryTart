@@ -9,7 +9,7 @@ public class PlayerMessages : MessageFactoryBase
 
     public static MessageBase PlayerQueuesAll => JustCommand(Commands.PlayerQueuesAll);
 
-    public static MessageBase PlayerQueuePlayMedia(string queue_id, Track media)
+    public static MessageBase PlayerQueuePlayMedia(string queue_id, Item media)
     {
         var m = new Message(Commands.PlayerQueuePlayMedia)
         {

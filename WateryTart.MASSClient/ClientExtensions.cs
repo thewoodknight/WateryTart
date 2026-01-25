@@ -23,7 +23,7 @@ public static partial class ClientExtensions
         c.Send<AuthResponse>(AuthMessages.Login(username, password), Deserialise<AuthResponse>(responseHandler));
     }
 
-    public static void Play(this IMassWSClient c, string queueID, Track t, Action<PlayerQueueResponse> responseHandler)
+    public static void Play(this IMassWSClient c, string queueID, Item t, Action<PlayerQueueResponse> responseHandler)
     {
         c.Send<PlayerResponse>(PlayerMessages.PlayerQueuePlayMedia(queueID, t), Deserialise<PlayerQueueResponse>(responseHandler));
     }

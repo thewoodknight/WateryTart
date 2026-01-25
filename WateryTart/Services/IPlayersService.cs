@@ -9,5 +9,5 @@ public interface IPlayersService
 
     public void GetPlayers();
 
-    public void Play(Track t);
+    public void Play(Item t);
 }

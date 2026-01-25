@@ -1,14 +1,16 @@
-﻿namespace WateryTart.MassClient.Models;
+﻿using Newtonsoft.Json;
+
+namespace WateryTart.MassClient.Models;
 
 public class ProviderMapping
 {
-    public string item_id { get; set; }
-    public string provider_domain { get; set; }
-    public string provider_instance { get; set; }
-    public bool? available { get; set; }
-    public bool? in_library { get; set; }
-    public object is_unique { get; set; }
-    public AudioFormat audio_format { get; set; }
-    public string url { get; set; }
-    public object details { get; set; }
+    [JsonProperty("item_id")]  public string ItemId { get; set; }
+    [JsonProperty("provider_domain")] public string ProviderDomain { get; set; }
+    [JsonProperty("provider_instance")] public string ProviderInstance { get; set; }
+    public bool? Available { get; set; }
+    [JsonProperty("in_library")] public bool? InLibrary { get; set; }
+    [JsonProperty("is_unique")] public object IsUnique { get; set; }
+    [JsonProperty("audio_format")] public AudioFormat AudioFormat { get; set; }
+    public string Url { get; set; }
+    public object Details { get; set; }
 }

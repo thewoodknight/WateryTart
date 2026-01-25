@@ -16,7 +16,7 @@ public class AlbumViewModel : ReactiveObject, IRoutableViewModel
     public IScreen HostScreen { get; }
     public Album Album { get; set; }
 
-    public ObservableCollection<Track> Tracks { get; set; }
+    public ObservableCollection<Item> Tracks { get; set; }
 
     public AlbumViewModel(IMassWSClient massClient, IScreen screen, IPlayersService playersService)
     {
@@ -28,9 +28,9 @@ public class AlbumViewModel : ReactiveObject, IRoutableViewModel
     public void Load(Album album)
     {
         Album = album;
-        Tracks = new ObservableCollection<Track>();
+        Tracks = new ObservableCollection<Item>();
 
-        _massClient.MusicAlbumGet(album.item_id, TrackListHandler);
+        _massClient.MusicAlbumGet(album.ItemId, TrackListHandler);
     }
 
     public void TrackListHandler(TracksResponse response)

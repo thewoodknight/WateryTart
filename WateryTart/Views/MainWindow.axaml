@@ -17,9 +17,9 @@
 
     <Window.Background>
 
-        <RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -25%" RadiusX="100%" RadiusY="100%">
-            <GradientStop Color="#FF882C15" Offset="0"/>
-            <GradientStop Color="#FF4C4C4C" Offset="1"/>
+        <RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -15%" RadiusX="125%" RadiusY="125%"  >
+            <GradientStop Color="#FF5B4272" Offset="0.142"/>
+            <GradientStop Color="#FF6C191E" Offset="1"/>
         </RadialGradientBrush>
     </Window.Background>
     <Grid Background="{x:Null}">

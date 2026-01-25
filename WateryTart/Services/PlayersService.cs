@@ -44,7 +44,7 @@ public class PlayersService : IPlayersService
         });
     }
 
-    public void Play(Track t)
+    public void Play(Item t)
     {
         var q = Queues.FirstOrDefault(pq => pq.display_name == "Web (Firefox on Windows)");
 

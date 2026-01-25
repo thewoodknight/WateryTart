@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.2.11415.280
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WateryTart.MASSClient", "WateryTart.MASSClient\WateryTart.MASSClient.csproj", "{0D3627A8-02B2-490F-B0B4-EBA2F7DD577C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WateryTart.MassClient", "WateryTart.MASSClient\WateryTart.MassClient.csproj", "{0D3627A8-02B2-490F-B0B4-EBA2F7DD577C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WateryTart", "WateryTart\WateryTart.csproj", "{D5F9356F-31CD-489C-8A2A-38D115559F86}"
 EndProject
