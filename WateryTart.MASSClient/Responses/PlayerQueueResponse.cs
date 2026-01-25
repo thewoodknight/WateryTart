@@ -2,7 +2,7 @@
 
 namespace WateryTart.MassClient.Responses;
 
-public class PlayerQueueResponse : ResponseBase
+public class PlayerQueueResponse : ResponseBase<List<PlayerQueue>>
 {
-    public List<PlayerQueue> result { get; set; }
+  //  public List<PlayerQueue> result { get; set; }
 }

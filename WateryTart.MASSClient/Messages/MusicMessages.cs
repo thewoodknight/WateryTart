@@ -4,20 +4,14 @@ namespace WateryTart.MassClient.Messages;
 
 public class MusicMessages : MessageFactoryBase
 {
-    public static MessageBase MusicAlbumGet => JustCommand(Commands.MusicAlbumGet);
     public static MessageBase MusicAlbumLibraryItems => JustCommand(Commands.MusicAlbumLibraryItems);
+    public static MessageBase MusicRecommendations => JustCommand(Commands.MusicRecommendations);
 
-    public static MessageBase MusicAlbumTracks(string albumId, string provider_instance_id_or_domain = "library")
-    {
-        var m = new Message(Commands.MusicAlbumTracks)
-        {
-            args = new Hashtable
-            {
-                { "item_id", albumId },
-                { "provider_instance_id_or_domain", provider_instance_id_or_domain }
-            }
-        };
+    public static MessageBase MusicAlbumTracks(string albumId, string provider_instance_id_or_domain = "library") =>
+        IdAndProvider(Commands.MusicAlbumTracks, albumId, provider_instance_id_or_domain);
 
-        return m;
-    }
+
+    public static MessageBase MusicAlbumGet(string albumId, string provider_instance_id_or_domain = "library") =>
+        IdAndProvider(Commands.MusicAlbumGet, albumId, provider_instance_id_or_domain);
+
 }

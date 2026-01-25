@@ -1,12 +1,9 @@
-﻿using WateryTart.MassClient.Models;
+﻿using Newtonsoft.Json;
+using WateryTart.MassClient.Models;
 
 namespace WateryTart.MassClient.Responses;
 
-public class RecommendationResponse : MediaItemBase
+public class RecommendationResponse : ResponseBase<List<Recommendation>>
 {
-    public string path { get; set; }
-    public object image { get; set; }
-    public string icon { get; set; }
-    public List<Item> items { get; set; }
-    public string subtitle { get; set; }
+   // [JsonProperty("result")] public List<Recommendation> Recommendations { get; set; }
 }

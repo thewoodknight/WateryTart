@@ -2,7 +2,7 @@
 
 namespace WateryTart.MassClient.Responses;
 
-public class TracksResponse : ResponseBase<List<Item>>
+public class AlbumResponse : ResponseBase<Album>
 {
 
 }
