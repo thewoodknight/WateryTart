@@ -33,7 +33,7 @@ namespace WateryTart.ViewModels
 
         public async Task Login()
         {
-            var x = await _massClient.Login(Username, Password, string.Format("ws://{0}/ws", Server));
+            var x = await _massClient.Login(Username, Password, Server);
             _settings.Credentials.BaseUrl = x.BaseUrl;
             _settings.Credentials.Token = x.Token;
 

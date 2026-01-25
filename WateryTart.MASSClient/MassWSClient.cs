@@ -3,6 +3,7 @@ using RestSharp;
 using System.Collections;
 using System.Diagnostics;
 using System.Net.WebSockets;
+using System.Reactive;
 using WateryTart.MassClient.Events;
 using WateryTart.MassClient.Messages;
 using WateryTart.MassClient.Models.Auth;
@@ -38,7 +39,7 @@ namespace WateryTart.MassClient
                  });
 
                  var exitEvent = new ManualResetEvent(false);
-                 using (_client = new WebsocketClient(new Uri(baseurl), factory))
+                 using (_client = new WebsocketClient(new Uri($"ws://{baseurl}/ws"), factory))
                  {
                      _client.MessageReceived.Subscribe(OnNext);
                      _client.Start();
@@ -80,7 +81,7 @@ namespace WateryTart.MassClient
                 });
 
                 var exitEvent = new ManualResetEvent(false);
-                using (_client = new WebsocketClient(new Uri(credentials.BaseUrl), factory))
+                using (_client = new WebsocketClient(new Uri($"ws://{credentials.BaseUrl}/ws"), factory))
                 {
                     _client.ReconnectionHappened.Subscribe(info =>
                         Debug.WriteLine($"Reconnection happened, type: {info.Type}"));
@@ -112,6 +113,12 @@ namespace WateryTart.MassClient
         public void Send<T>(MessageBase message, Action<string> responseHandler)
         {
             _routing.Add(message.message_id, responseHandler);
+
+
+            if (!_client.IsRunning)
+            {
+                _client.Reconnect();
+            }
             _client.Send(message.ToJson());
         }
 
