@@ -50,7 +50,8 @@ public partial class App : Application
 
         collection.AddTransient<SearchViewModel>();
         collection.AddSingleton<SettingsViewModel>();
-        collection.AddSingleton<PlayersViewModel>(); 
+        collection.AddSingleton<PlayersViewModel>();
+        collection.AddTransient<ArtistsViewModel>();
         collection.AddTransient<LibraryViewModel>();
         collection.AddTransient<RecommendationViewModel>();
 

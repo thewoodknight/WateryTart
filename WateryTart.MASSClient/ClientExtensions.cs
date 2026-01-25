@@ -27,12 +27,33 @@ public static partial class ClientExtensions
     {
         c.Send<ArtistResponse>(ArtistMessages.ArtistGet(id, provider), Deserialise<ArtistResponse>(responseHandler));
     }
+    public static void ArtistsGet(this IMassWsClient c, Action<ArtistsResponse> responseHandler)
+    {
+        c.Send<ArtistsResponse>(ArtistMessages.ArtistsGet, Deserialise<ArtistsResponse>(responseHandler));
+    }
 
+
+    
     public static void ArtistAlbums(this IMassWsClient c, string id, string provider, Action<AlbumsResponse> responseHandler)
     {
         c.Send<AlbumsResponse>(ArtistMessages.ArtistAlbums(id, provider), Deserialise<AlbumsResponse>(responseHandler));
     }
 
+    public static void ArtistCount(this IMassWsClient c, Action<CountResponse> responseHandler)
+    {
+        c.Send<CountResponse>(ArtistMessages.ArtistCount(), Deserialise<CountResponse>(responseHandler));
+    }
+
+
+    public static void AlbumsCount(this IMassWsClient c, Action<CountResponse> responseHandler)
+    {
+        c.Send<CountResponse>(MusicMessages.AlbumsCount(), Deserialise<CountResponse>(responseHandler));
+    }
+
+    public static void TrackCount(this IMassWsClient c, Action<CountResponse> responseHandler)
+    {
+        c.Send<CountResponse>(MusicMessages.TrackCount(), Deserialise<CountResponse>(responseHandler));
+    }
 
     public static void Play(this IMassWsClient c, string queueID, Item t, Action<PlayerQueueResponse> responseHandler)
     {

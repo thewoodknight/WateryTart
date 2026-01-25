@@ -9,6 +9,7 @@ public static class Commands
     public static string ArtistTracks = "music/artists/artist_tracks";
     public static string ArtistGet = "music/artists/get";
     public static string ArtistsGet = "music/artists/library_items";
+    public static string ArtistsCount = "music/artists/count";
 
     public static string PlayersAll = "players/all";
     public static string PlayerQueuePlayMedia = "player_queues/play_media";

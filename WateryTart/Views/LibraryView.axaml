@@ -1,10 +1,29 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:WateryTart.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="WateryTart.Views.LibraryView"
-             x:DataType="vm:LibraryViewModel">
-  Welcome to Avalonia!
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:WateryTart.ViewModels"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="WateryTart.Views.LibraryView"
+			 x:DataType="vm:LibraryViewModel">
+	<ListBox Background="{x:Null}" ItemsSource="{Binding Items}">
+		<ListBox.ItemTemplate>
+			<DataTemplate>
+				<StackPanel>
+                    <Interaction.Behaviors>
+                        <EventTriggerBehavior EventName="Tapped">
+                            <InvokeCommandAction
+                                Command="{Binding ClickedCommand }" />
+                        </EventTriggerBehavior>
+                    </Interaction.Behaviors>
+
+                    <TextBlock Text="{Binding Title}" />
+					<TextBlock Opacity="0.5">
+                        <Run Text="{Binding Count}"/>
+                        <Run Text="{Binding LowerTitle}"/>
+					</TextBlock>
+				</StackPanel>
+			</DataTemplate>
+		</ListBox.ItemTemplate>
+	</ListBox>
 </UserControl>

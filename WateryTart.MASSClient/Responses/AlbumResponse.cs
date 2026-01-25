@@ -11,3 +11,8 @@ public class ArtistResponse : ResponseBase<Artist>
 {
 
 }
+
+public class ArtistsResponse : ResponseBase<List<Artist>>
+{
+
+}
