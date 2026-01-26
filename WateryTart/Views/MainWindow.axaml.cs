@@ -1,3 +1,7 @@
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -13,10 +17,9 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         {
             var vm = DataContext as MainWindowViewModel;
             vm.Connect();
+
+
         });
         AvaloniaXamlLoader.Load(this);
-
-
     }
-
 }

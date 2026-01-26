@@ -10,7 +10,7 @@ public interface IMassWsClient
 
     Task Connect(IMassCredentials credentials);
 
-    void Send<T>(MessageBase message, Action<string> ResponseHandler);
+    void Send<T>(MessageBase message, Action<string> ResponseHandler, bool ignoreConnection = false);
 
     bool IsConnected { get; }
 

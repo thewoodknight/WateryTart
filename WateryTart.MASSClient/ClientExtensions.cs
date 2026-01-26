@@ -24,7 +24,7 @@ public static class ClientExtensions
     {
         public void GetAuthToken(string username, string password, Action<AuthResponse> responseHandler)
         {
-            c.Send<AuthResponse>(AuthMessages.Login(username, password), Deserialise<AuthResponse>(responseHandler));
+            c.Send<AuthResponse>(AuthMessages.Login(username, password), Deserialise<AuthResponse>(responseHandler), true);
         }
 
         public void ArtistGet(string id, string provider, Action<ArtistResponse> responseHandler)
@@ -57,9 +57,9 @@ public static class ClientExtensions
             c.Send<CountResponse>(MusicMessages.TrackCount(), Deserialise<CountResponse>(responseHandler));
         }
 
-        public void Play(string queueID, MediaItemBase t, Action<PlayerQueueResponse> responseHandler)
+        public void Play(string queueID, MediaItemBase t, PlayMode mode, Action<PlayersQueuesResponse> responseHandler)
         {
-            c.Send<PlayerResponse>(PlayerMessages.PlayerQueuePlayMedia(queueID, t), Deserialise<PlayerQueueResponse>(responseHandler));
+            c.Send<PlayerResponse>(PlayerMessages.PlayerQueuePlayMedia(queueID, t, mode), Deserialise<PlayersQueuesResponse>(responseHandler));
         }
 
         public void PlayersAll(Action<PlayerResponse> responseHandler)
@@ -67,10 +67,17 @@ public static class ClientExtensions
             c.Send<PlayerResponse>(PlayerMessages.PlayersAll, Deserialise<PlayerResponse>(responseHandler));
         }
 
-        public void PlayerQueuesAll(Action<PlayerQueueResponse> responseHandler)
+        public void PlayerQueuesAll(Action<PlayersQueuesResponse> responseHandler)
         {
-            c.Send<PlayerResponse>(PlayerMessages.PlayerQueuesAll, Deserialise<PlayerQueueResponse>(responseHandler));
+            c.Send<PlayerResponse>(PlayerMessages.PlayerQueuesAll, Deserialise<PlayersQueuesResponse>(responseHandler));
         }
+
+        public void PlayerActiveQueue(string id, Action<PlayerQueueResponse> responseHandler)
+        {
+            c.Send<PlayerQueueResponse>(PlayerMessages.PlayerActiveQueue(id), Deserialise<PlayerQueueResponse>(responseHandler));
+        }
+
+        
 
         public void PlaylistGet(string id, string provider, Action<PlaylistResponse> responseHandler)
         {

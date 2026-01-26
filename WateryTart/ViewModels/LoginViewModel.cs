@@ -34,7 +34,7 @@ namespace WateryTart.ViewModels
             var x = await _massClient.Login(Username, Password, Server);
             _settings.Credentials.BaseUrl = x.BaseUrl;
             _settings.Credentials.Token = x.Token;
-
+            
             _screen.Router.NavigateBack.Execute();
         }
 

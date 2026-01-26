@@ -8,24 +8,44 @@ using System.Reactive.Linq;
 using WateryTart.Extensions;
 using WateryTart.MassClient;
 using WateryTart.MassClient.Events;
+using WateryTart.MassClient.Messages;
 using WateryTart.MassClient.Models;
-using WateryTart.MassClient.Responses;
+using WateryTart.Settings;
+using WateryTart.ViewModels;
 
 namespace WateryTart.Services;
 
 public partial class PlayersService : ReactiveObject, IPlayersService
 {
     private readonly IMassWsClient _massClient;
+    private readonly ISettings _settings;
 
+    [Reactive] public partial ObservableCollection<PlayerViewModel> Players2 { get; set; }
     [Reactive] public partial ObservableCollection<Player> Players { get; set; }
     [Reactive] public partial ObservableCollection<PlayerQueue> Queues { get; set; }
-    [Reactive] public partial Player SelectedPlayer { get; set; }
-    
-    public PlayersService(IMassWsClient massClient)
+
+    public Player SelectedPlayer
+    {
+        get => field;
+        set
+        {
+            if (value != null)
+            {
+                _settings.LastSelectedPlayerId = value.PlayerId;
+                Debug.WriteLine(value.PlaybackState.ToString());
+            }
+
+            this.RaiseAndSetIfChanged(ref field, value);
+        }
+    }
+
+    public PlayersService(IMassWsClient massClient, ISettings settings)
     {
         _massClient = massClient;
+        _settings = settings;
 
         Players = new ObservableCollection<Player>();
+        Players2 = new ObservableCollection<PlayerViewModel>();
         Queues = new ObservableCollection<PlayerQueue>();
 
         _massClient.Events
@@ -35,6 +55,8 @@ public partial class PlayersService : ReactiveObject, IPlayersService
         _massClient.Events
             .Where(e => e is PlayerQueueEventResponse)
             .Subscribe((e) => OnPlayerQueueEvents((PlayerQueueEventResponse)e));
+
+
     }
 
     public void OnPlayerQueueEvents(PlayerQueueEventResponse e)
@@ -55,7 +77,14 @@ public partial class PlayersService : ReactiveObject, IPlayersService
                 break;
             case EventType.PlayerUpdated:
                 if (e.data.Available == false)
-                    Players.RemoveAll(p=> p.PlayerId == e.data.PlayerId);
+                {
+                    Players.RemoveAll(p => p.PlayerId == e.data.PlayerId);
+                    break;
+                }
+
+                var player = Players.FirstOrDefault(p => p.PlayerId == e.data.PlayerId);
+                if (player != null)
+                player.PlaybackState = e.data.PlaybackState;
 
                 break;
             case EventType.PlayerRemoved:
@@ -74,7 +103,14 @@ public partial class PlayersService : ReactiveObject, IPlayersService
             {
                 foreach (var y in a.Result)
                 {
+                    Players2.Add(new PlayerViewModel(y));
                     Players.Add(y);
+                }
+
+                if (!string.IsNullOrEmpty(_settings.LastSelectedPlayerId))
+                {
+                    SelectedPlayer =
+                        Players.SingleOrDefault(player => player.PlayerId == _settings.LastSelectedPlayerId);
                 }
             });
 
@@ -100,34 +136,17 @@ public partial class PlayersService : ReactiveObject, IPlayersService
     {
 
     }
-    public void PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null)
+    public void PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null, PlayMode mode = PlayMode.Play)
     {
-        /*{
-             "command": "player_queues/get_active_queue",
-             "args": {
-               "player_id": "example_value"
-             }
-           }*/
+        p ??= SelectedPlayer;
 
-        /*
-        if (p == null)
-            p = Players.FirstOrDefault(x => x.DisplayName == "Web (Firefox on Windows)");
-
-        if (q == null)
+        _massClient.PlayerActiveQueue(p.PlayerId, (pq) =>
         {
-            q = Queues.FirstOrDefault(pq => pq.display_name == p.DisplayName);
-            _massClient.Play(q.queue_id, t, (a) =>
+            _massClient.Play(pq.Result.queue_id, t, mode, (a) =>
             {
-                Debug.WriteLine(a.Result);
+                Debug.WriteLine(a);
             });
-
-        }
-        */
-        var w = Queues.FirstOrDefault(pq => pq.display_name == "Web (Firefox on Windows)");
-        
-        _massClient.Play(w.queue_id, t, (a) =>
-        {
-            Debug.WriteLine(a);
         });
+
     }
 }

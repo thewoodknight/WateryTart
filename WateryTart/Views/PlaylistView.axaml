@@ -32,6 +32,11 @@
                     />
                 </Border>
             </Border>
+             <StackPanel Grid.Column="1" Margin="10,0,0,0">
+<!--                 <TextBlock Text="{Binding Album.Artists[0].Name}"  />
+                 <TextBlock Text="{Binding Album.Year}" Opacity="0.7" />-->
+                 <Button Command="{Binding PlayCommand}">Play</Button>
+             </StackPanel>
         </Grid>
 
         <!-- Tracks -->
@@ -40,14 +45,23 @@
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="60" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding position}"  Opacity="0.7" />
+                        <asyncImageLoader:AdvancedImage Grid.Column="0" 
+                            Loader="{x:Static app:App.ImageLoaderInstance}"
+                            Source="{Binding ., Converter={StaticResource MetadataImageConverter}}"
+                        />
 
-                        <StackPanel Grid.Column="1">
+                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
                             <TextBlock Text="{Binding Name}"></TextBlock>
-                            <TextBlock Text="{Binding duration, Converter={StaticResource SecondsToMinutesConverter}}"  Opacity="0.7"></TextBlock>
+                            <TextBlock >
+                                <Run Text="{Binding artists[0].Name}"></Run>
+                                <Run> . </Run>
+                                <Run Text="{Binding duration, Converter={StaticResource SecondsToMinutesConverter}}"></Run>
+                            </TextBlock>
+
+                          
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

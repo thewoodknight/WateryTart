@@ -1,6 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using ReactiveUI;
+﻿using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using System;
+using System.Collections.ObjectModel;
+using System.Reactive;
+using System.Reactive.Subjects;
 using WateryTart.MassClient;
 using WateryTart.MassClient.Models;
 using WateryTart.Services;
@@ -16,14 +19,25 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
 
     [Reactive] public partial ObservableCollection<Player> Players { get; set; }
 
+    public Player SelectedPlayer
+    {
+        get => field;
+        set
+        {
+            _playersService.SelectedPlayer = value;
+            this.RaiseAndSetIfChanged(ref field, value);
+        }
+    }
+
     public PlayersViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService)
     {
         _massClient = massClient;
         _playersService = playersService;
         HostScreen = screen;
         Players = playersService.Players;
-    }
+        SelectedPlayer = playersService.SelectedPlayer;
 
+    }
     public string Title
     {
         get => "Players";

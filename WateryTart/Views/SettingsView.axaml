@@ -6,5 +6,5 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="WateryTart.Views.SettingsView"
              x:DataType="vm:SettingsViewModel">
-  Welcome to Avalonia!
+Settings
 </UserControl>

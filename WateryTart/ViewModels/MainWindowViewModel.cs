@@ -7,18 +7,20 @@ using Sendspin.SDK.Synchronization;
 using System;
 using System.Diagnostics;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading;
 using ReactiveUI.SourceGenerators;
 using WateryTart.MassClient;
 using WateryTart.Services;
 using WateryTart.Settings;
+using WateryTart.Messages;
 
 namespace WateryTart.ViewModels;
 
 public partial class MainWindowViewModel : ReactiveObject, IScreen
 {
     private readonly IMassWsClient _massClient;
-    private readonly IPlayersService _playersService;
+    
     private readonly ISettings _settings;
 
     public RoutingState Router { get; } = new();
@@ -31,19 +33,27 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
     public ReactiveCommand<Unit, IRoutableViewModel> GoPlayers { get; }
 
     [Reactive] public partial string Title { get; set; }
+    [Reactive] public partial IPlayersService PlayersService { get; set; }
 
+    [Reactive] public partial ReactiveObject SlideupMenu { get; set; }
+    [Reactive] public ReactiveCommand<Unit, Unit>  CloseSlideupCommand { get; set; }
+    
+    [Reactive] public partial bool ShowSlideupMenu { get; set; }
 
     public MainWindowViewModel(IMassWsClient massClient, IPlayersService playersService, ISettings settings)
     {
         _massClient = massClient;
-        _playersService = playersService;
+        PlayersService = playersService;
         _settings = settings;
+        ShowSlideupMenu = false;
 
         GoHome = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<HomeViewModel>()));
         GoMusic = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<LibraryViewModel>()));
         GoSearch = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SearchViewModel>()));
         GoSettings = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SettingsViewModel>()));
         GoPlayers = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<PlayersViewModel>()));
+        CloseSlideupCommand = ReactiveCommand.Create<Unit>(_ => ShowSlideupMenu = false);
+
         Router.CurrentViewModel.Subscribe((vm) =>
         {
             if (vm is not IViewModelBase)
@@ -54,10 +64,29 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
             ivmb.WhenAnyValue(x => x.Title)
                 .BindTo(this, v => v.Title);
         });
+
+
+        MessageBus.Current.Listen<MenuViewModel>()
+            .Subscribe(x =>
+            {
+                SlideupMenu = x;
+                ShowSlideupMenu = true;
+            });
+
+        MessageBus.Current.Listen<CloseMenuMessage>()
+            .Subscribe(x =>
+            {
+                ShowSlideupMenu = false;
+            });
     }
 
     public async void Connect()
     {
+        /* This shouldn't be set too early otherwise the UI hangs
+            Needs to be tied to a message to open/close the menu
+         */
+        SlideupMenu = App.Container.GetRequiredService<SearchViewModel>();
+
         if (string.IsNullOrEmpty(_settings.Credentials.Token))
         {
             Router.Navigate.Execute(App.Container.GetRequiredService<LoginViewModel>());
@@ -69,7 +98,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
         while (_massClient.IsConnected == false)
             Thread.Sleep(1000);
 
-        _playersService.GetPlayers();
+        PlayersService.GetPlayers();
 
         GoHome.Execute();
         //ConnectSendSpinPlayer();

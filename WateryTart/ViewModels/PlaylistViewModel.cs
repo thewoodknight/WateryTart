@@ -1,7 +1,8 @@
 ﻿using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using System.Collections.ObjectModel;
 using System.Linq;
-using ReactiveUI.SourceGenerators;
+using System.Reactive;
 using WateryTart.MassClient;
 using WateryTart.MassClient.Models;
 using WateryTart.MassClient.Responses;
@@ -20,6 +21,8 @@ namespace WateryTart.ViewModels
         [Reactive] public partial string Title { get; set; }
 
         public ObservableCollection<Item> Tracks { get; set; }
+        public ReactiveCommand<Item, Unit> PlayCommand { get; }
+
 
         public PlaylistViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService)
         {
@@ -27,6 +30,12 @@ namespace WateryTart.ViewModels
             _playersService = playersService;
             HostScreen = screen;
             Title = "";
+
+
+            PlayCommand = ReactiveCommand.Create<Item>((i) =>
+            {
+                _playersService.PlayItem(Playlist);
+            });
         }
 
         public void LoadFromId(string id, string provider)
@@ -40,7 +49,7 @@ namespace WateryTart.ViewModels
 
         private void PlaylistHandler(PlaylistResponse response)
         {
-            this.Playlist= response.Result;
+            this.Playlist = response.Result;
             Title = Playlist.Name;
         }
 
@@ -53,6 +62,6 @@ namespace WateryTart.ViewModels
         }
 
 
-        
+
     }
 }

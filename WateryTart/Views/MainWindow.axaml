@@ -7,75 +7,135 @@
 		xmlns:vm="clr-namespace:WateryTart.ViewModels"
 		xmlns:converters="clr-namespace:WateryTart.Converters"
 		mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
-        ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaToDecorationsHint="True"
+		ExtendClientAreaChromeHints="NoChrome"
+		ExtendClientAreaToDecorationsHint="True"
 		x:Class="WateryTart.MainWindow"
-		
-		Width="500"
+		Padding="0"
+		Width="800"
+		Height="480"
 		x:DataType="vm:MainWindowViewModel"
-		Title="MainWindow">
-    <Window.Resources>
-        <x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
-        <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-    </Window.Resources>
+		Title="Watery Tart">
 
-    <Window.Background>
+	<Window.Resources>
+		<x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
+		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
+		<converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
+	</Window.Resources>
 
-        <RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -15%" RadiusX="125%" RadiusY="125%"  >
-            <GradientStop Color="#FF5B4272" Offset="0.142"/>
-            <GradientStop Color="#FF6C191E" Offset="1"/>
-        </RadialGradientBrush>
-    </Window.Background>
-    <Grid Background="{x:Null}">
+	<Window.Background>
+		<RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -15%" RadiusX="125%" RadiusY="125%"  >
+			<GradientStop Color="#FF5B4272" Offset="0.142"/>
+			<GradientStop Color="#FF6C191E" Offset="1"/>
+		</RadialGradientBrush>
+	</Window.Background>
+
+	<Grid x:Name="grd" Background="{x:Null}" Margin="0">
 		<Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
-			<RowDefinition Height="100" />
+			<RowDefinition Height="50" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
 		<!-- Top Navigation -->
-        <StackPanel Background="{x:Null}" Grid.Row="0" Orientation="Horizontal" Margin="15,0,0,0">
-            <StackPanel.Styles>
-                <Style Selector="StackPanel > :is(Control)">
-                    <Setter Property="Margin" Value="2"/>
-                </Style>
-                <Style Selector="StackPanel > TextBlock">
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                </Style>
-            </StackPanel.Styles>
-            <Button Content="⬅️" Command="{Binding GoBack}" />
-
-            <TextBlock Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" FontWeight="Bold" FontSize="18"/>
-        </StackPanel>
+		<Grid Background="{x:Null}" Grid.Row="0" Margin="15,10,10,0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="50" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Button Grid.Column="0" Content="⬅️" Command="{Binding GoBack}" />
+			<TextBlock Grid.Column="1" Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" TextTrimming="CharacterEllipsis" FontWeight="Bold" FontSize="18"/>
+		</Grid>
 
 		<!-- Content -->
 		<ScrollViewer  Background="{x:Null}" Grid.Row="1" Margin="10">
-			<avalonia:RoutedViewHost  Router="{Binding Router}"  Background="{x:Null}">
-				<avalonia:RoutedViewHost.DefaultContent  >
-					<TextBlock Text="Default content"
-							   HorizontalAlignment="Center"
-							   VerticalAlignment="Center" />
-				</avalonia:RoutedViewHost.DefaultContent>
+			<avalonia:RoutedViewHost  Router="{Binding Router}"  Background="{x:Null}" > <!-- Effect="blur(10)"-->
+			<avalonia:RoutedViewHost.DefaultContent  >
+				<TextBlock Text="Default content"
+						   HorizontalAlignment="Center"
+						   VerticalAlignment="Center" />
+			</avalonia:RoutedViewHost.DefaultContent>
 				<avalonia:RoutedViewHost.ViewLocator>
 					<wateryTart:AppViewLocator />
 				</avalonia:RoutedViewHost.ViewLocator>
 			</avalonia:RoutedViewHost>
 		</ScrollViewer>
 
-		<!-- Bottom Nav -->
-		<Grid Grid.Row="2" Margin="25,10,0,0" >
+		<StackPanel Grid.Row="2">
+			<!-- Player Nav -->
+			<Grid Margin="25,0,0,0" x:Name="grdPlayer" > <!-- IsVisible="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToVisibilityConverter}}"-->
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Command="{Binding GoHome}">🛖</Button>
-            <Button Grid.Column="1" Command="{Binding GoMusic}">🎵</Button>
-            <Button Grid.Column="2" Command="{Binding GoSearch}">🔍</Button>
-            <Button Grid.Column="3" Command="{Binding GoPlayers}">🔊</Button>
-            <Button Grid.Column="4" Command="{Binding GoSettings}">⚙️</Button>
-        </Grid>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+				<StackPanel Grid.Column="0">
+					<TextBlock Text="Artist" />
+					<TextBlock Text="Track" />
+				</StackPanel>
+				<Button Grid.Column="1" Command="{Binding GoMusic}">⏮️</Button>
+				<Button Grid.Column="2" Command="{Binding GoSearch}">⏸️</Button>
+				<Button Grid.Column="3" Command="{Binding GoPlayers}">⏭️</Button>
+			</Grid>
+
+			<!-- Bottom Nav -->
+			<Grid  Margin="0,0,0,0" Background="#66000000">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Button Grid.Column="0" Margin="50,0,0,0" Command="{Binding GoHome}">🛖</Button>
+				<Button Grid.Column="1" Command="{Binding GoMusic}">🎵</Button>
+				<Button Grid.Column="2" Command="{Binding GoSearch}">🔍</Button>
+				<Button Grid.Column="3" Command="{Binding GoPlayers}">🔊</Button>
+				<Button Grid.Column="4" Command="{Binding GoSettings}">⚙️</Button>
+			</Grid>
+		</StackPanel>
+		<Grid IsVisible="{Binding ShowSlideupMenu}" Grid.Row="0" RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#72000000">
+			<Interaction.Behaviors>
+				<EventTriggerBehavior EventName="Tapped">
+					<InvokeCommandAction
+					Command="{Binding CloseSlideupCommand}"/>
+				</EventTriggerBehavior>
+			</Interaction.Behaviors>
+
+		</Grid>
+		<Grid
+		    x:Name="gridSlideup"
+		    Grid.Row="0"
+		    Background="#CC000000"
+		    Grid.RowSpan="3"
+		    VerticalAlignment="Bottom"
+		    MaxHeight="500" 
+		    Classes.show="{Binding ShowSlideupMenu}"
+		    Classes.hide="{Binding !ShowSlideupMenu}">
+
+			<Grid.Transitions>
+				<Transitions>
+					<DoubleTransition Property="Opacity" Duration="0:0:.2" Easing="SineEaseInOut"/>
+					<TransformOperationsTransition Property="RenderTransform"
+                                                   Easing="SineEaseInOut"
+												   Duration="0:0:.2" />
+				</Transitions>
+			</Grid.Transitions>
+			<Grid.Styles>
+				<Style Selector="Grid.show">
+                    <Setter Property="IsVisible" Value="True" />
+                    <Setter Property="ZIndex" Value="1" />
+					<Setter Property="RenderTransform" Value="translateY(0px)" />
+				</Style>
+				<Style Selector="Grid.hide">
+                    <Setter Property="IsVisible" Value="False" />
+					<Setter Property="RenderTransform" Value="translateY(175px)" />
+				</Style>
+			</Grid.Styles>
+
+			<ScrollViewer>
+				<ContentControl Content="{Binding SlideupMenu}" Margin="20" />
+			</ScrollViewer>
+		</Grid>
 	</Grid>
 </Window>

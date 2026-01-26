@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Avalonia.Input;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Reactive;
 using WateryTart.MassClient;
+using WateryTart.MassClient.Messages;
 using WateryTart.MassClient.Models;
 using WateryTart.MassClient.Responses;
 using WateryTart.Services;
@@ -26,6 +29,10 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     public ObservableCollection<Item> Tracks { get; set; }
     public ReactiveCommand<Unit, Unit> PlayAlbumCommand { get; }
     public ReactiveCommand<Item, Unit> TrackTappedCommand { get; }
+    public ReactiveCommand<Item, Unit> TrackAltMenuCommand { get; }
+    
+
+    public MenuViewModel MenuViewModel { get; set; }
 
     public AlbumViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService)
     {
@@ -34,7 +41,51 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         HostScreen = screen;
 
         PlayAlbumCommand = ReactiveCommand.Create(() => _playersService.PlayItem(Album));
-        TrackTappedCommand = ReactiveCommand.Create<Item>((t) => _playersService.PlayItem(t));
+        TrackTappedCommand = ReactiveCommand.Create<Item>((t) => _playersService.PlayItem(t, mode: PlayMode.Replace));
+
+        TrackAltMenuCommand = ReactiveCommand.Create<Item>((t) =>
+        {
+            var menu = new MenuViewModel();
+            menu.AddMenuItem(new MenuItemViewModel("Show Info", string.Empty, ReactiveCommand.Create<Unit>(r =>
+            {
+                Debug.WriteLine("got here");
+            })));
+            menu.AddMenuItem(new MenuItemViewModel("Go To Artist", string.Empty, ReactiveCommand.Create<Unit>(r =>
+            {
+                Debug.WriteLine("got here");
+            })));
+            menu.AddMenuItem(new MenuItemViewModel("Go To Album", string.Empty, ReactiveCommand.Create<Unit>(r =>
+            {
+                Debug.WriteLine("got here");
+            })));
+            menu.AddMenuItem(new MenuItemViewModel("Remove from library", string.Empty, ReactiveCommand.Create<Unit>(r =>
+            {
+                Debug.WriteLine("got here");
+            })));
+            menu.AddMenuItem(new MenuItemViewModel("Add to favourites", string.Empty, ReactiveCommand.Create<Unit>(r =>
+            {
+                Debug.WriteLine("got here");
+            })));
+            menu.AddMenuItem(new MenuItemViewModel("Add to playlist", string.Empty, ReactiveCommand.Create<Unit>(r =>
+            {
+                Debug.WriteLine("got here");
+            })));
+            menu.AddMenuItem(new MenuItemViewModel("Play", string.Empty, ReactiveCommand.Create<Unit>(r =>
+            {
+                Debug.WriteLine("got here");
+            })));
+
+            foreach (var p in playersService.Players)
+            {
+                menu.AddMenuItem(new MenuItemViewModel($"\tPlay on {p.DisplayName}", string.Empty, ReactiveCommand.Create<Unit>(r =>
+                {
+                    _playersService.PlayItem(t, p);
+                })));
+            }
+
+            MessageBus.Current.SendMessage(menu);
+            //send message to display menu
+        });
     }
 
     public void LoadFromId(string id, string provider)

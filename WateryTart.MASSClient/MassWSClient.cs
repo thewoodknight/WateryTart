@@ -23,13 +23,16 @@ namespace WateryTart.MassClient
 
         public MassWsClient()
         {
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            JsonSerializerSettings s = new JsonSerializerSettings
             {
                 ContractResolver = new DefaultContractResolver
                 {
-                    NamingStrategy = new LowercaseNamingPolicy()
+                    NamingStrategy = new LowercaseNamingPolicy() //this is ignored by enums
                 }
             };
+            s.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            JsonConvert.DefaultSettings = () => s;
+
         }
         public async Task<MassCredentials> Login(string username, string password, string baseurl)
         {
@@ -121,15 +124,16 @@ namespace WateryTart.MassClient
             _client.Send(JsonConvert.SerializeObject(auth));
         }
 
-        public void Send<T>(MessageBase message, Action<string> responseHandler)
+        public void Send<T>(MessageBase message, Action<string> responseHandler, bool ignoreConnection = false)
         {
             _routing.Add(message.message_id, responseHandler);
 
+            if (!ignoreConnection)
 
-            if (!_client.IsRunning)
-            {
-                Connect(creds);
-            }
+                if (!_client.IsRunning)
+                {
+                    Connect(creds);
+                }
             _client.Send(message.ToJson());
         }
 
