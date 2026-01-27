@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Music\WateryTart.MASSClient\WateryTart.MassClient.csproj" />
+    <ProjectReference Include="..\WateryTart.MASSClient\WateryTart.MassClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>

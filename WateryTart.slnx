@@ -2,10 +2,10 @@
   <Folder Name="/Solution Items/">
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Project Path="../../Music/WateryTart.MASSClient/WateryTart.MassClient.csproj" />
   <Project Path="WateryTart.Android/WateryTart.Android.csproj">
     <Deploy Solution="Debug|*" />
   </Project>
   <Project Path="WateryTart.Desktop/WateryTart.Desktop.csproj" />
+  <Project Path="WateryTart.MASSClient/WateryTart.MassClient.csproj" />
   <Project Path="WateryTart/WateryTart.csproj" />
 </Solution>
