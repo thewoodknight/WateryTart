@@ -13,7 +13,7 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
     private readonly IPlayersService _playersService;
     public string? UrlPathSegment { get; }
     public IScreen HostScreen { get; }
-
+    public bool ShowMiniPlayer { get => true; }
     [Reactive] public partial ObservableCollection<Player> Players { get; set; }
 
     public Player SelectedPlayer

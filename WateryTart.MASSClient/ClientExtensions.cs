@@ -82,6 +82,8 @@ public static class ClientExtensions
         }
 
 
+       
+
         public void PlayersAll(Action<PlayerResponse> responseHandler)
         {
             c.Send<PlayerResponse>(PlayerMessages.PlayersAll, Deserialise<PlayerResponse>(responseHandler));
@@ -96,7 +98,10 @@ public static class ClientExtensions
         {
             c.Send<PlayerQueueResponse>(PlayerMessages.PlayerActiveQueue(id), Deserialise<PlayerQueueResponse>(responseHandler));
         }
-
+        public void PlayerQueueItems(string id, Action<PlayerQueueItemsResponse> responseHandler)
+        {
+            c.Send<PlayerQueueItemsResponse>(PlayerMessages.PlayerQueueItems(id), Deserialise<PlayerQueueItemsResponse>(responseHandler));
+        }
 
 
         public void PlaylistGet(string id, string provider, Action<PlaylistResponse> responseHandler)

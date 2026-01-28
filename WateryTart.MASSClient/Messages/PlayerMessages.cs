@@ -8,6 +8,7 @@ public class PlayerMessages : MessageFactoryBase
     public static MessageBase PlayersAll => JustCommand(Commands.PlayersAll);
 
     public static MessageBase PlayerQueuesAll => JustCommand(Commands.PlayerQueuesAll);
+    public static MessageBase PlayerQueueItems(string queueid) => JustId(Commands.PlayerQueueItems, queueid, "queue_id"); 
 
     public static MessageBase PlayerNext(string playerId) => JustId(Commands.PlayerNext, playerId, "player_id");
     public static MessageBase PlayerPlay(string playerId) => JustId(Commands.PlayerPlay, playerId, "player_id");

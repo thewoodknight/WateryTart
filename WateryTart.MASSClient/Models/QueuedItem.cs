@@ -13,3 +13,4 @@ public class QueuedItem
     public int index { get; set; }
     public bool available { get; set; }
 }
+

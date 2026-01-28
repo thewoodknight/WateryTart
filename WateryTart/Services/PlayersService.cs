@@ -1,4 +1,7 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using DynamicData.Binding;
+using Newtonsoft.Json.Linq;
+using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.ObjectModel;
@@ -15,17 +18,22 @@ using WateryTart.Settings;
 using WateryTart.ViewModels;
 using WateryTart.ViewModels.Menus;
 
-
 namespace WateryTart.Services;
 
 public partial class PlayersService : ReactiveObject, IPlayersService
 {
     private readonly IMassWsClient _massClient;
     private readonly ISettings _settings;
+    private ReadOnlyObservableCollection<QueuedItem> currentQueue;
+    private ReadOnlyObservableCollection<QueuedItem> playedQueue;
 
-    [Reactive] public partial ObservableCollection<PlayerViewModel> Players2 { get; set; }
-    [Reactive] public partial ObservableCollection<Player> Players { get; set; }
-    [Reactive] public partial ObservableCollection<PlayerQueue> Queues { get; set; }
+    [Reactive] public partial SourceList<QueuedItem> QueuedItems { get; set; } = new SourceList<QueuedItem>();
+    [Reactive] public partial ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
+    [Reactive] public partial ObservableCollection<PlayerQueue> Queues { get; set; } = new ObservableCollection<PlayerQueue>();
+    [Reactive] public partial string SelectedPlayerQueueId { get; set; }
+    [Reactive] public partial PlayerQueue SelectedQueue { get; set; }
+    public ReadOnlyObservableCollection<QueuedItem> CurrentQueue { get => currentQueue; }
+    public ReadOnlyObservableCollection<QueuedItem> PlayedQueue { get => playedQueue; }
 
     public Player SelectedPlayer
     {
@@ -35,11 +43,30 @@ public partial class PlayersService : ReactiveObject, IPlayersService
             if (value != null)
             {
                 _settings.LastSelectedPlayerId = value.PlayerId;
-                Debug.WriteLine(value.PlaybackState.ToString());
+                FetchPlayerQueue(value.PlayerId);
             }
 
             this.RaiseAndSetIfChanged(ref field, value);
         }
+    }
+
+    private void FetchPlayerQueue(string id)
+    {
+        _massClient.PlayerActiveQueue(id, (pq) =>
+        {
+            SelectedPlayerQueueId = pq.Result.queue_id;
+            SelectedQueue = pq.Result;
+            FetchQueueContents();
+        });
+    }
+
+    private void FetchQueueContents()
+    {
+        _massClient.PlayerQueueItems(SelectedPlayerQueueId, (items) =>
+        {
+            QueuedItems.Clear();
+            QueuedItems.AddRange(items.Result);
+        });
     }
 
     public PlayersService(IMassWsClient massClient, ISettings settings)
@@ -47,10 +74,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService
         _massClient = massClient;
         _settings = settings;
 
-        Players = new ObservableCollection<Player>();
-        Players2 = new ObservableCollection<PlayerViewModel>();
-        Queues = new ObservableCollection<PlayerQueue>();
-
+        /* Subscribe to the relevant websocket events from MASS */
         _massClient.Events
             .Where(e => e is PlayerEventResponse)
             .Subscribe((e) => OnPlayerEvents((PlayerEventResponse)e));
@@ -58,11 +82,45 @@ public partial class PlayersService : ReactiveObject, IPlayersService
         _massClient.Events
             .Where(e => e is PlayerQueueEventResponse)
             .Subscribe((e) => OnPlayerQueueEvents((PlayerQueueEventResponse)e));
+
+        /* This takes care of filtering the two lists, though unsure on INPC */
+        QueuedItems
+                .Connect()
+                .Filter(i => i.sort_index > SelectedQueue.current_index)
+                .Bind(out currentQueue)
+                .Subscribe();
+
+        QueuedItems
+                .Connect()
+                .Filter(i => i.sort_index <= SelectedQueue.current_index)
+                .Bind(out playedQueue)
+                .Subscribe();
     }
 
     public void OnPlayerQueueEvents(PlayerQueueEventResponse e)
     {
-        Debug.WriteLine(e.data);
+        Debug.WriteLine(e.EventName);
+        switch (e.EventName)
+        {
+            case EventType.QueueAdded:
+
+                break;
+
+            case EventType.QueueUpdated: //replacing a queue is just 'updated'
+                Debug.WriteLine($"{e.data.items} items now in the queue");
+                //It seems like when a queue is updated, the best thing is to clear/refetch
+                SelectedQueue.current_index = e.data.current_index;
+                FetchQueueContents();
+                break;
+
+            case EventType.QueueItemsUpdated:
+                Debug.WriteLine($"{e.data.items} items now in the queue");
+                break;
+
+            default:
+
+                break;
+        }
     }
 
     public void OnPlayerEvents(PlayerEventResponse e)
@@ -76,19 +134,23 @@ public partial class PlayersService : ReactiveObject, IPlayersService
                     Players.Add(e.data);
 
                 break;
+
             case EventType.PlayerUpdated:
                 var player = Players.FirstOrDefault(p => p.PlayerId == e.data.PlayerId);
 
                 if (player != null)
                 {
                     player.PlaybackState = e.data.PlaybackState;
-                    player.CurrentMedia = e.data.CurrentMedia; // this should probably be more of a clone 
+                    player.CurrentMedia = e.data.CurrentMedia; // this should probably be more of a clone
+                    player.VolumeLevel = e.data.VolumeLevel;
                 }
-                
+
                 break;
+
             case EventType.PlayerRemoved:
                 Players.RemoveAll(p => p.PlayerId == e.data.PlayerId);
                 break;
+
             default:
 
                 break;
@@ -102,7 +164,6 @@ public partial class PlayersService : ReactiveObject, IPlayersService
             {
                 foreach (var y in a.Result)
                 {
-                    Players2.Add(new PlayerViewModel(y));
                     Players.Add(y);
                 }
 
@@ -136,7 +197,8 @@ public partial class PlayersService : ReactiveObject, IPlayersService
         p ??= SelectedPlayer;
         _massClient.PlayerPlayPause(p.PlayerId, (a) => { });
     }
-    public void PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null, PlayMode mode = PlayMode.Play)
+
+    public void PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null, PlayMode mode = PlayMode.Replace)
     {
         p ??= SelectedPlayer;
 
@@ -166,7 +228,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService
             {
                 _massClient.Play(pq.Result.queue_id, t, mode, (a) =>
                 {
-                    Debug.WriteLine(a);
+                    //Should events be raised here?
                 });
             });
         }

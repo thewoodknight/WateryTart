@@ -15,7 +15,7 @@ namespace WateryTart.ViewModels
         public IScreen HostScreen { get; }
         private readonly IMassWsClient _massClient;
         private readonly IPlayersService _playersService;
-
+        public bool ShowMiniPlayer { get => true; }
         [Reactive] public partial string Title { get; set; }
         [Reactive] public partial Artist Artist { get; set; }
         [Reactive] public partial ObservableCollection<Album> Albums { get; set; } = new();

@@ -30,7 +30,14 @@
 
 			<asyncImageLoader:AdvancedImage Grid.Column="0"
 											Loader="{x:Static app:App.ImageLoaderInstance}"
-											Height="50" Width="50"  Source="{Binding Path=PlayersService.SelectedPlayer.CurrentMedia.image_url}" />
+											Height="50" Width="50"  Source="{Binding Path=PlayersService.SelectedPlayer.CurrentMedia.image_url}" >
+				 <Interaction.Behaviors>
+                        <EventTriggerBehavior EventName="Tapped">
+                            <InvokeCommandAction
+                                Command="{Binding ClickedCommand }"/>
+                        </EventTriggerBehavior>
+                    </Interaction.Behaviors>
+			</asyncImageLoader:AdvancedImage>
 
 			<StackPanel Grid.Column="1" Margin="15,5,5,5">
 				<TextBlock Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.artist}" FontSize="14"/>
@@ -45,10 +52,3 @@
 		</Grid>
 	</StackPanel>
 </UserControl>
-<!--
-{
-    "type": "client/time",
-    "payload": {
-        "client_transmitted": 66990299
-    }
-}-->

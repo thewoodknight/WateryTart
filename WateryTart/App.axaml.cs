@@ -41,6 +41,7 @@ public partial class App : Application
         collection.AddSingleton<SettingsViewModel>();
         collection.AddSingleton<PlayersViewModel>();
         collection.AddSingleton<MiniPlayerViewModel>();
+        collection.AddSingleton<BigPlayerViewModel>();
 
         collection.AddTransient<AlbumsListViewModel>();
         collection.AddTransient<AlbumViewModel>();

@@ -136,7 +136,7 @@ namespace WateryTart.MassClient
                 }
             _client.Send(message.ToJson());
         }
-
+        
         public bool IsConnected => (_client != null && _client.IsRunning);
 
         private void OnNext(ResponseMessage response)
@@ -182,6 +182,7 @@ namespace WateryTart.MassClient
                 case EventType.QueueItemsUpdated:
                 case EventType.QueueTimeUpdated:
                     subject.OnNext(JsonConvert.DeserializeObject<PlayerQueueEventResponse>(response.Text));
+                    Debug.WriteLine(response.Text);
                     break;
                 default:
                     subject.OnNext(e);

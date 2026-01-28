@@ -6,6 +6,7 @@ namespace WateryTart.MassClient.Models;
 public partial class Player : INotifyPropertyChanged, IResult
 {
     private CurrentMedia currentMedia;
+    private int? volumeLevel;
 
     [JsonProperty("player_id")] public string PlayerId { get; set; }
     public string Provider { get; set; }
@@ -18,7 +19,15 @@ public partial class Player : INotifyPropertyChanged, IResult
     [JsonProperty("elapsed_time")] public double? ElapsedTime { get; set; }
     [JsonProperty("elapsed_time_last_updated")] public double? ElapsedTimeLastUpdated { get; set; }
     public bool Powered { get; set; }
-    [JsonProperty("volume_level")] public int? VolumeLevel { get; set; }
+    [JsonProperty("volume_level")]
+    public int? VolumeLevel
+    {
+        get => volumeLevel; set
+        {
+            volumeLevel = value;
+            NotifyPropertyChanged();
+        }
+    }
     [JsonProperty("volume_muted")] public bool? VolumeMuted { get; set; }
     [JsonProperty("group_members")] public List<object> GroupMembers { get; set; }
     [JsonProperty("static_group_members")] public List<object> StaticGroupMembers { get; set; }

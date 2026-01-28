@@ -14,7 +14,7 @@ public partial class MenuItemViewModel : ReactiveObject, IViewModelBase
     public IScreen HostScreen { get; }
     public string Title { get; set; }
     public string Icon { get; }
-
+    public bool ShowMiniPlayer { get => false; }
     [Reactive] public partial ReactiveCommand<Unit, Unit> ClickedCommand { get; set; }
 
     public MenuItemViewModel(string title, string icon, ReactiveCommand<Unit, Unit> clickedCommand)

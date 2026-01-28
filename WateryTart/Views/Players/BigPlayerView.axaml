@@ -1,0 +1,82 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:vm="clr-namespace:WateryTart.ViewModels"
+			 xmlns:app="clr-namespace:WateryTart"
+			 xmlns:asyncImageLoader="using:AsyncImageLoader"
+			 xmlns:converters="using:WateryTart.Converters"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="WateryTart.Views.Players.BigPlayerView"
+			 x:DataType="vm:Players.BigPlayerViewModel">
+	<UserControl.Resources>
+		<converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter" />
+		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+		<x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
+		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
+		<converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
+	</UserControl.Resources>
+	<StackPanel HorizontalAlignment="Stretch" >
+		<asyncImageLoader:AdvancedImage Margin="20"
+										Loader="{x:Static app:App.ImageLoaderInstance}"
+										MaxHeight="300" MaxWidth="300" Source="{Binding Path=PlayersService.SelectedPlayer.CurrentMedia.image_url}" >
+		</asyncImageLoader:AdvancedImage>
+		<Grid  Margin="20" MaxWidth="400" >
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<TextBlock  Grid.Column="0" Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.elapsed_time, Converter={StaticResource FriendlyTimeConverter}}" />
+			<ProgressBar Grid.Column="1" Margin="10,0,10,0" Foreground="Red" Height="15" Value="{Binding PlayersService.SelectedPlayer.CurrentMedia.progress}" Minimum="0" Maximum="100" />
+			<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.duration, Converter={StaticResource FriendlyTimeConverter}}" />
+		</Grid>
+
+
+		<StackPanel Margin="15,5,5,5"  >
+			<TextBlock HorizontalAlignment="Center"  Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.artist}" FontSize="18"/>
+			<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.title}" FontSize="20" FontWeight="Bold" />
+			<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.album}" />
+		</StackPanel>
+
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+			<Button Command="{Binding PlayerPreviousCommand}" Margin="3,0,3,0">⏮️</Button>
+			<Button Command="{Binding PlayerPlayPauseCommand}" Margin="3,0,3,0">⏸️</Button>
+			<Button Command="{Binding PlayNextCommand}" Margin="3,0,20,0">⏭️</Button>
+		</StackPanel>
+
+		<Grid MaxWidth="400">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+			<TextBlock  Grid.Column="0" Text="0" />
+			<ProgressBar Grid.Column="1" Margin="10,0,10,0" Foreground="Red" Height="5" Value="{Binding PlayersService.SelectedPlayer.VolumeLevel}" Minimum="0" Maximum="100" />
+			<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedPlayer.VolumeLevel}" />
+		</Grid>
+		<TabControl>
+			<TabItem Header="Queue">
+				<ListBox ItemsSource="{Binding PlayersService.CurrentQueue}" Background="{x:Null}">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding  name}" />
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+
+			</TabItem>	
+			<TabItem Header="Played">
+				<ListBox ItemsSource="{Binding PlayersService.PlayedQueue}" Background="{x:Null}">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding name}" />
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+
+			</TabItem>
+	</TabControl>
+
+	</StackPanel>
+</UserControl>

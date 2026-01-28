@@ -9,7 +9,7 @@
 		xmlns:vm="clr-namespace:WateryTart.ViewModels"
 		xmlns:converters="clr-namespace:WateryTart.Converters"
 		xmlns:panels="clr-namespace:Avalonia.Labs.Panels;assembly=Avalonia.Labs.Panels"
-        xmlns:players="using:WateryTart.Views.Players"
+		xmlns:players="using:WateryTart.Views.Players"
 		mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
 		ExtendClientAreaChromeHints="NoChrome"
 		ExtendClientAreaToDecorationsHint="True"
@@ -17,6 +17,7 @@
 		Padding="0"
 		Width="800"
 		Height="480"
+		x:Name="window"
 		x:DataType="vm:MainWindowViewModel"
 		Title="Watery Tart">
 
@@ -65,18 +66,27 @@
 			</avalonia:RoutedViewHost>
 		</ScrollViewer>
 
-		<StackPanel Grid.Row="2">  
-			<!-- Player Nav -->
-			<players:MiniPlayerView DataContext="{Binding MiniPlayer}" /><!-- IsVisible="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToVisibilityConverter}}"-->
+		<StackPanel Grid.Row="2">
+		<!-- Player Nav -->
+		<players:MiniPlayerView DataContext="{Binding MiniPlayer}" IsVisible="{Binding  #window.((vm:MainWindowViewModel)DataContext).CurrentViewModel.ShowMiniPlayer}" />
 
 			<!-- Bottom Nav -->
-			<panels:FlexPanel AlignContent="SpaceEvenly" Background="#66000000" >
-				<Button Command="{Binding GoHome}" Margin="100,0,0,0">🛖</Button>
-				<Button Command="{Binding GoMusic}">🎵</Button>
-				<Button Command="{Binding GoSearch}">🔍</Button>
-				<Button Command="{Binding GoPlayers}">🔊</Button>
-				<Button Command="{Binding GoSettings}">⚙️</Button>
-			</panels:FlexPanel>
+			<Grid Background="#66000000">
+				<Grid Margin="100,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<Button Grid.Column="0" Command="{Binding GoHome}">🛖</Button>
+					<Button Grid.Column="1" Command="{Binding GoMusic}">🎵</Button>
+					<Button Grid.Column="2" Command="{Binding GoSearch}">🔍</Button>
+					<Button Grid.Column="3" Command="{Binding GoPlayers}">🔊</Button>
+					<Button Grid.Column="4" Command="{Binding GoSettings}">⚙️</Button>
+				</Grid>
+			</Grid>
 		</StackPanel>
 
 		<Grid IsVisible="{Binding ShowSlideupMenu}" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#72000000">

@@ -19,7 +19,7 @@ namespace WateryTart.ViewModels
         public string Password { get; set; }
 
         public ICommand LoginCommand { get; }
-
+        public bool ShowMiniPlayer { get => false; }
         public LoginViewModel(IScreen screen, IMassWsClient massClient, ISettings settings)
         {
             _massClient = massClient;

@@ -14,6 +14,7 @@ public static class Commands
     public static string PlayersAll = "players/all";
     public static string PlayerQueuePlayMedia = "player_queues/play_media";
     public static string PlayerQueuesAll = "player_queues/all";
+    public static string PlayerQueueItems = "player_queues/items";
     public static string PlayerActiveQueue = "player_queues/get_active_queue";
 
     public static string PlaylistGet = "music/playlists/get";

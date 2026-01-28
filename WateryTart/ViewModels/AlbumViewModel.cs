@@ -19,7 +19,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     private Album _album;
     public string? UrlPathSegment { get; } = "Album/ID";
     public IScreen HostScreen { get; }
-
+    public bool ShowMiniPlayer { get => true; }
     [Reactive] public partial string Title { get; set; }
     [Reactive] public partial Album Album { get; set; }
 
@@ -36,7 +36,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         _playersService = playersService;
         HostScreen = screen;
 
-        PlayAlbumCommand = ReactiveCommand.Create(() => _playersService.PlayItem(Album));
+        PlayAlbumCommand = ReactiveCommand.Create(() => _playersService.PlayItem(Album, mode: PlayMode.Replace));
         TrackTappedCommand = ReactiveCommand.Create<Item>((t) => _playersService.PlayItem(t, mode: PlayMode.Replace));
 
         TrackAltMenuCommand = ReactiveCommand.Create<Item>((t) =>

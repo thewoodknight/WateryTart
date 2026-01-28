@@ -13,7 +13,7 @@ public partial class MenuViewModel : ReactiveObject, IViewModelBase
     public string? UrlPathSegment { get; }
     public IScreen HostScreen { get; }
     public string Title { get; set; }
-
+    public bool ShowMiniPlayer { get => false; }
     public List<MenuItemViewModel> MenuItems { get; set; }
 
     public MenuViewModel()

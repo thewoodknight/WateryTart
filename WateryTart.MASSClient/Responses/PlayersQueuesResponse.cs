@@ -10,3 +10,9 @@ public class PlayersQueuesResponse : ResponseBase<List<PlayerQueue>>
 public class PlayerQueueResponse : ResponseBase<PlayerQueue>
 {
 }
+
+
+public class PlayerQueueItemsResponse : ResponseBase<List<QueuedItem>>
+{
+
+}

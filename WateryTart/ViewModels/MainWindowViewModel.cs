@@ -54,7 +54,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
         _settings = settings;
         ShowSlideupMenu = false;
 
-        MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
+       
         //PlayNextCommand = ReactiveCommand.Create<Unit>(_ => PlayersService.PlayerNext());
         //PlayerPlayPauseCommand = ReactiveCommand.Create<Unit>(_ => PlayersService.PlayerPlayPause());
         //PlayerPreviousCommand = ReactiveCommand.Create<Unit>(_ => PlayersService.PlayerPrevious());
@@ -77,6 +77,8 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
                 .BindTo(this, v => v.Title);
 
             CurrentViewModel = ivmb;
+
+            MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
         });
 
         MessageBus.Current.Listen<MenuViewModel>()

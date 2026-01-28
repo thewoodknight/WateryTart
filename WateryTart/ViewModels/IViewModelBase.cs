@@ -4,5 +4,7 @@ namespace WateryTart.ViewModels;
 
 public interface IViewModelBase : IRoutableViewModel
 {
-    public string Title { get; set; }
+    string Title { get; set; }
+
+    bool ShowMiniPlayer { get; } 
 }
