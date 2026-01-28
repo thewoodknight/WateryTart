@@ -141,6 +141,8 @@ namespace WateryTart.MassClient
 
         private void OnNext(ResponseMessage response)
         {
+            Console.WriteLine(response.Text);
+
             if (string.IsNullOrEmpty(response.Text))
                 return;
 
@@ -157,6 +159,7 @@ namespace WateryTart.MassClient
             if (y?.message_id != null && _routing.ContainsKey(y.message_id))
             {
                 _routing[y.message_id].Invoke(response.Text);
+                _routing.Remove(y.message_id);
                 return;
             }
 

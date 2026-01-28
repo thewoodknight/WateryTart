@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
-
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 namespace WateryTart.MassClient.Models;
 
-
-public partial class Player : ResultBase
+public partial class Player : INotifyPropertyChanged, IResult
 {
+    private CurrentMedia currentMedia;
+
     [JsonProperty("player_id")] public string PlayerId { get; set; }
     public string Provider { get; set; }
     public string Type { get; set; }
@@ -16,7 +18,7 @@ public partial class Player : ResultBase
     [JsonProperty("elapsed_time")] public double? ElapsedTime { get; set; }
     [JsonProperty("elapsed_time_last_updated")] public double? ElapsedTimeLastUpdated { get; set; }
     public bool Powered { get; set; }
-    [JsonProperty("volume_level")] public int VolumeLevel { get; set; }
+    [JsonProperty("volume_level")] public int? VolumeLevel { get; set; }
     [JsonProperty("volume_muted")] public bool? VolumeMuted { get; set; }
     [JsonProperty("group_members")] public List<object> GroupMembers { get; set; }
     [JsonProperty("static_group_members")] public List<object> StaticGroupMembers { get; set; }
@@ -25,12 +27,21 @@ public partial class Player : ResultBase
     [JsonProperty("active_source")] public string ActiveSource { get; set; }
     [JsonProperty("source_list")] public List<SourceList> SourceList { get; set; }
     [JsonProperty("active_group")] public object ActiveGroup { get; set; }
-    [JsonProperty("current_media")] public CurrentMedia CurrentMedia { get; set; }
+    [JsonProperty("current_media")]
+    public CurrentMedia CurrentMedia
+    {
+        get => currentMedia;
+        set
+        {
+            currentMedia = value;
+            NotifyPropertyChanged();
+        }
+    }
     public bool Enabled { get; set; }
     [JsonProperty("hide_player_in_ui")] public List<string> HidePlayerInUI { get; set; }
     [JsonProperty("expose_to_ha")] public bool ExposedToHA { get; set; }
     public string Icon { get; set; }
-    [JsonProperty("group_volume")] public int GroupVolume { get; set; }
+    [JsonProperty("group_volume")] public int? GroupVolume { get; set; }
     [JsonProperty("extra_attributes")] public ExtraAttributes ExtraAttributes { get; set; }
     [JsonProperty("power_control")] public string PowerControl { get; set; }
     [JsonProperty("volume_control")] public string VolumeControl { get; set; }
@@ -40,4 +51,12 @@ public partial class Player : ResultBase
     public string state { get; set; }
     [JsonProperty("group_childs")] public List<object> GroupChilds { get; set; }
     [JsonProperty("extra_data")] public ExtraData ExtraData { get; set; }
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+    {
+        if (PropertyChanged != null)
+        {
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
 }

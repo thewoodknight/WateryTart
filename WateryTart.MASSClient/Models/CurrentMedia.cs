@@ -1,7 +1,15 @@
-﻿namespace WateryTart.MassClient.Models;
+﻿using DynamicData.Binding;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
-public class CurrentMedia
+namespace WateryTart.MassClient.Models;
+
+public partial class CurrentMedia : INotifyPropertyChanged
 {
+    private double elapsed_time1;
+
     public string uri { get; set; }
     public string media_type { get; set; }
     public string title { get; set; }
@@ -12,6 +20,29 @@ public class CurrentMedia
     public string source_id { get; set; }
     public string queue_item_id { get; set; }
     public object custom_data { get; set; }
-    public double? elapsed_time { get; set; }
+    public double elapsed_time
+    {
+        get => elapsed_time1;
+        set
+        {
+
+            elapsed_time1 = value;
+            NotifyPropertyChanged();
+            NotifyPropertyChanged("progress");
+        }
+    }
+
+    public double progress => (elapsed_time / duration) * 100;
+
     public double? elapsed_time_last_updated { get; set; }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+    {
+        if (PropertyChanged != null)
+        {
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
 }

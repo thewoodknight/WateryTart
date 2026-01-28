@@ -10,8 +10,12 @@ public static class ClientExtensions
 
     private static Action<string> Deserialise<T>(Action<T> responseHandler)
     {
+ 
         Action<string> d = (r) =>
         {
+            if (r == null)
+                return;
+
             var y = JsonConvert.DeserializeObject<T>(r);
             responseHandler(y);
         };

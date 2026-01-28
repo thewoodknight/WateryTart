@@ -15,6 +15,7 @@ using WateryTart.Settings;
 using WateryTart.ViewModels;
 using WateryTart.ViewModels.Menus;
 
+
 namespace WateryTart.Services;
 
 public partial class PlayersService : ReactiveObject, IPlayersService
@@ -57,13 +58,11 @@ public partial class PlayersService : ReactiveObject, IPlayersService
         _massClient.Events
             .Where(e => e is PlayerQueueEventResponse)
             .Subscribe((e) => OnPlayerQueueEvents((PlayerQueueEventResponse)e));
-
-
     }
 
     public void OnPlayerQueueEvents(PlayerQueueEventResponse e)
     {
-
+        Debug.WriteLine(e.data);
     }
 
     public void OnPlayerEvents(PlayerEventResponse e)
@@ -78,16 +77,14 @@ public partial class PlayersService : ReactiveObject, IPlayersService
 
                 break;
             case EventType.PlayerUpdated:
-                if (e.data.Available == false)
-                {
-                    Players.RemoveAll(p => p.PlayerId == e.data.PlayerId);
-                    break;
-                }
-
                 var player = Players.FirstOrDefault(p => p.PlayerId == e.data.PlayerId);
-                if (player != null)
-                    player.PlaybackState = e.data.PlaybackState;
 
+                if (player != null)
+                {
+                    player.PlaybackState = e.data.PlaybackState;
+                    player.CurrentMedia = e.data.CurrentMedia; // this should probably be more of a clone 
+                }
+                
                 break;
             case EventType.PlayerRemoved:
                 Players.RemoveAll(p => p.PlayerId == e.data.PlayerId);
@@ -162,7 +159,8 @@ public partial class PlayersService : ReactiveObject, IPlayersService
                 })));
             }
             MessageBus.Current.SendMessage(menu);
-        } else
+        }
+        else
         {
             _massClient.PlayerActiveQueue(p.PlayerId, (pq) =>
             {

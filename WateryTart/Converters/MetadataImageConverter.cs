@@ -5,7 +5,6 @@ using System.Linq;
 using WateryTart.MassClient.Models;
 
 namespace WateryTart.Converters;
-
 public class MetadataImageConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
