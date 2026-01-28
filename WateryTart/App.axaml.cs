@@ -13,6 +13,7 @@ using WateryTart.MassClient;
 using WateryTart.Services;
 using WateryTart.Settings;
 using WateryTart.ViewModels;
+using WateryTart.ViewModels.Players;
 
 
 namespace WateryTart;
@@ -37,6 +38,9 @@ public partial class App : Application
         collection.AddSingleton<IMassWsClient, MassWsClient>();
         collection.AddSingleton<IScreen, MainWindowViewModel>();
         collection.AddSingleton<IPlayersService, PlayersService>();
+        collection.AddSingleton<SettingsViewModel>();
+        collection.AddSingleton<PlayersViewModel>();
+        collection.AddSingleton<MiniPlayerViewModel>();
 
         collection.AddTransient<AlbumsListViewModel>();
         collection.AddTransient<AlbumViewModel>();
@@ -44,10 +48,7 @@ public partial class App : Application
         collection.AddTransient<HomeViewModel>();
         collection.AddTransient<PlaylistViewModel>();
         collection.AddTransient<ArtistViewModel>();
-
         collection.AddTransient<SearchViewModel>();
-        collection.AddSingleton<SettingsViewModel>();
-        collection.AddSingleton<PlayersViewModel>();
         collection.AddTransient<ArtistsViewModel>();
         collection.AddTransient<LibraryViewModel>();
         collection.AddTransient<RecommendationViewModel>();

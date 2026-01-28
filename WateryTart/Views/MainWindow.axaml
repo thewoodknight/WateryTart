@@ -1,4 +1,6 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
+		xmlns:app="using:WateryTart"
+		xmlns:asyncImageLoader="using:AsyncImageLoader"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -7,6 +9,7 @@
 		xmlns:vm="clr-namespace:WateryTart.ViewModels"
 		xmlns:converters="clr-namespace:WateryTart.Converters"
 		xmlns:panels="clr-namespace:Avalonia.Labs.Panels;assembly=Avalonia.Labs.Panels"
+        xmlns:players="using:WateryTart.Views.Players"
 		mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
 		ExtendClientAreaChromeHints="NoChrome"
 		ExtendClientAreaToDecorationsHint="True"
@@ -18,6 +21,7 @@
 		Title="Watery Tart">
 
 	<Window.Resources>
+		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
 		<x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
 		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
 		<converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
@@ -61,23 +65,9 @@
 			</avalonia:RoutedViewHost>
 		</ScrollViewer>
 
-		<StackPanel Grid.Row="2">
+		<StackPanel Grid.Row="2">  
 			<!-- Player Nav -->
-			<Grid Margin="25,0,0,0" x:Name="grdPlayer" > <!-- IsVisible="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToVisibilityConverter}}"-->
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-				<StackPanel Grid.Column="0">
-					<TextBlock Text="Artist" />
-					<TextBlock Text="Track" />
-				</StackPanel>
-				<Button Grid.Column="1" Command="{Binding GoMusic}">⏮️</Button>
-				<Button Grid.Column="2" Command="{Binding GoSearch}">⏸️</Button>
-				<Button Grid.Column="3" Command="{Binding GoPlayers}">⏭️</Button>
-			</Grid>
+			<players:MiniPlayerView DataContext="{Binding MiniPlayer}" /><!-- IsVisible="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToVisibilityConverter}}"-->
 
 			<!-- Bottom Nav -->
 			<panels:FlexPanel AlignContent="SpaceEvenly" Background="#66000000" >
@@ -88,6 +78,7 @@
 				<Button Command="{Binding GoSettings}">⚙️</Button>
 			</panels:FlexPanel>
 		</StackPanel>
+
 		<Grid IsVisible="{Binding ShowSlideupMenu}" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#72000000">
 			<Interaction.Behaviors>
 				<EventTriggerBehavior EventName="Tapped">

@@ -4,8 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:WateryTart.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="WateryTart.Views.MenuView"
-        x:DataType="vm:MenuViewModel">
+        x:Class="WateryTart.Views.Menus.MenuView"
+        x:DataType="vm:Menus.MenuViewModel">
   <ListBox ItemsSource="{Binding MenuItems}" Background="{x:Null}">
       <ListBox.ItemTemplate>
           <DataTemplate>

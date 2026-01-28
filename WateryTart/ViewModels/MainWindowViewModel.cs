@@ -9,6 +9,8 @@ using WateryTart.MassClient;
 using WateryTart.Messages;
 using WateryTart.Services;
 using WateryTart.Settings;
+using WateryTart.ViewModels.Menus;
+using WateryTart.ViewModels.Players;
 
 namespace WateryTart.ViewModels;
 
@@ -27,6 +29,11 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
     public ReactiveCommand<Unit, IRoutableViewModel> GoSettings { get; }
     public ReactiveCommand<Unit, IRoutableViewModel> GoPlayers { get; }
 
+    
+    public ReactiveCommand<Unit, Unit> PlayNextCommand { get; }
+    public ReactiveCommand<Unit, Unit> PlayerPlayPauseCommand { get; }
+    public ReactiveCommand<Unit, Unit> PlayerPreviousCommand { get; }
+
     [Reactive] public partial string Title { get; set; }
     [Reactive] public partial IPlayersService PlayersService { get; set; }
 
@@ -34,6 +41,8 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
     [Reactive] public ReactiveCommand<Unit, Unit> CloseSlideupCommand { get; set; }
 
     [Reactive] public partial bool ShowSlideupMenu { get; set; }
+
+    [Reactive] public partial MiniPlayerViewModel MiniPlayer { get; set; }
 
     [Reactive]
     public partial IViewModelBase CurrentViewModel { get; set; }
@@ -44,6 +53,11 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
         PlayersService = playersService;
         _settings = settings;
         ShowSlideupMenu = false;
+
+        MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
+        //PlayNextCommand = ReactiveCommand.Create<Unit>(_ => PlayersService.PlayerNext());
+        //PlayerPlayPauseCommand = ReactiveCommand.Create<Unit>(_ => PlayersService.PlayerPlayPause());
+        //PlayerPreviousCommand = ReactiveCommand.Create<Unit>(_ => PlayersService.PlayerPrevious());
 
         GoHome = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<HomeViewModel>()));
         GoMusic = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<LibraryViewModel>()));

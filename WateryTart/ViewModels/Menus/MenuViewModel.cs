@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using WateryTart.MassClient;
 using WateryTart.Services;
 
-namespace WateryTart.ViewModels;
+namespace WateryTart.ViewModels.Menus;
 
 public partial class MenuViewModel : ReactiveObject, IViewModelBase
 {

@@ -2,7 +2,8 @@
 
 namespace WateryTart.MassClient.Models;
 
-public class Player : ResultBase
+
+public partial class Player : ResultBase
 {
     [JsonProperty("player_id")] public string PlayerId { get; set; }
     public string Provider { get; set; }

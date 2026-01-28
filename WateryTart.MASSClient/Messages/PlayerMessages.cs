@@ -9,18 +9,11 @@ public class PlayerMessages : MessageFactoryBase
 
     public static MessageBase PlayerQueuesAll => JustCommand(Commands.PlayerQueuesAll);
 
-    public static MessageBase PlayerActiveQueue(string playerId)
-    {
-        var m = new Message(Commands.PlayerActiveQueue)
-        {
-            args = new Hashtable
-            {
-                { "player_id", playerId },
-            }
-        };
-
-        return m;
-    }
+    public static MessageBase PlayerNext(string playerId) => JustId(Commands.PlayerNext, playerId, "player_id");
+    public static MessageBase PlayerPlay(string playerId) => JustId(Commands.PlayerPlay, playerId, "player_id");
+    public static MessageBase PlayerPlayPause(string playerId) => JustId(Commands.PlayerPlayPause, playerId, "player_id");
+    public static MessageBase PlayerPrevious(string playerId) => JustId(Commands.PlayerPrevious, playerId, "player_id");
+    public static MessageBase PlayerActiveQueue(string playerId) => JustId(Commands.PlayerActiveQueue, playerId, "player_id");
 
     public static MessageBase PlayerQueuePlayMedia(string queue_id, MediaItemBase media, PlayMode mode = PlayMode.Play)
     {

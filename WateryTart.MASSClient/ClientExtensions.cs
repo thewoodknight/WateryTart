@@ -60,6 +60,23 @@ public static class ClientExtensions
         {
             c.Send<PlayerResponse>(PlayerMessages.PlayerQueuePlayMedia(queueID, t, mode), Deserialise<PlayersQueuesResponse>(responseHandler));
         }
+        public void PlayerNext(string playerId, Action<PlayersQueuesResponse> responseHandler)
+        {
+            c.Send<PlayerResponse>(PlayerMessages.PlayerNext(playerId), Deserialise<PlayersQueuesResponse>(responseHandler));
+        }
+        public void PlayerPlay(string playerId, Action<PlayersQueuesResponse> responseHandler)
+        {
+            c.Send<PlayerResponse>(PlayerMessages.PlayerPlay(playerId), Deserialise<PlayersQueuesResponse>(responseHandler));
+        }
+        public void PlayerPlayPause(string playerId, Action<PlayersQueuesResponse> responseHandler)
+        {
+            c.Send<PlayerResponse>(PlayerMessages.PlayerPlayPause(playerId), Deserialise<PlayersQueuesResponse>(responseHandler));
+        }
+        public void PlayerPrevious(string playerId, Action<PlayersQueuesResponse> responseHandler)
+        {
+            c.Send<PlayerResponse>(PlayerMessages.PlayerPrevious(playerId), Deserialise<PlayersQueuesResponse>(responseHandler));
+        }
+
 
         public void PlayersAll(Action<PlayerResponse> responseHandler)
         {

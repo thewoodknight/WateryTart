@@ -10,7 +10,12 @@ public class MetadataImageConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var item = (MediaItemBase?)value;
+        MediaItemBase item;
+        if (value is MediaItemBase)
+
+            item = (MediaItemBase?)value;
+
+        else return null;
 
         //If it's not an item, return
         if (item == null)

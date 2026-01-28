@@ -9,7 +9,18 @@ public abstract class MessageFactoryBase
     {
         return new Message(command);
     }
+    public static MessageBase JustId(string command, string id, string id_label = "item_id")
+    {
+        var m = new Message(command)
+        {
+            args = new Hashtable
+            {
+                { id_label, id },
+            }
+        };
 
+        return m;
+    }
     public static MessageBase IdAndProvider(string command, string id, string provider)
     {
         var m = new Message(command)

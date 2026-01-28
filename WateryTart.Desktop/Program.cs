@@ -19,5 +19,6 @@ sealed class Program
             .UsePlatformDetect()
             .WithInterFont()
             .UseReactiveUI()
+            .WithDeveloperTools()
             .LogToTrace();
 }

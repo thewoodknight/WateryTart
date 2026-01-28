@@ -1,0 +1,45 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:vm="clr-namespace:WateryTart.ViewModels"
+			 xmlns:app="clr-namespace:WateryTart"
+			 xmlns:asyncImageLoader="using:AsyncImageLoader"
+			 xmlns:converters="using:WateryTart.Converters"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:players="using:WateryTart.ViewModels.Players"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="WateryTart.Views.Players.MiniPlayerView"
+			 x:DataType="vm:Players.MiniPlayerViewModel">
+
+	<UserControl.Resources>
+		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+		<x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
+		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
+		<converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
+	</UserControl.Resources>
+	<Grid
+	x:Name="grdPlayer"
+	Background="Black" >
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="50" />
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+
+		<asyncImageLoader:AdvancedImage Grid.Column="9"
+										Loader="{x:Static app:App.ImageLoaderInstance}"
+										Height="50" Width="50" Source="{Binding Path=., Converter={StaticResource MetadataImageConverter}}" />
+
+		<StackPanel Grid.Column="1">
+			<TextBlock Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.artist}" />
+			<TextBlock Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.title}" />
+		</StackPanel>
+
+		<StackPanel Grid.Column="2" Orientation="Horizontal">
+			<Button Command="{Binding PlayerPreviousCommand}" Margin="3,0,3,0">⏮️</Button>
+			<Button Command="{Binding PlayerPlayPauseCommand}" Margin="3,0,3,0">⏸️</Button>
+			<Button Command="{Binding PlayNextCommand}" Margin="3,0,20,0">⏭️</Button>
+		</StackPanel>
+	</Grid>
+</UserControl>

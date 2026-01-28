@@ -4,6 +4,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using WateryTart.Extensions;
 using WateryTart.MassClient;
@@ -12,6 +13,7 @@ using WateryTart.MassClient.Messages;
 using WateryTart.MassClient.Models;
 using WateryTart.Settings;
 using WateryTart.ViewModels;
+using WateryTart.ViewModels.Menus;
 
 namespace WateryTart.Services;
 
@@ -134,19 +136,53 @@ public partial class PlayersService : ReactiveObject, IPlayersService
 
     public void PlayerPlayPause(Player p)
     {
-
+        p ??= SelectedPlayer;
+        _massClient.PlayerPlayPause(p.PlayerId, (a) => { });
     }
     public void PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null, PlayMode mode = PlayMode.Play)
     {
         p ??= SelectedPlayer;
 
-        _massClient.PlayerActiveQueue(p.PlayerId, (pq) =>
+        if (p == null)
         {
-            _massClient.Play(pq.Result.queue_id, t, mode, (a) =>
+            //This really shouldn't be in the service, but shhhh
+            var menu = new MenuViewModel();
+            foreach (var player in Players)
             {
-                Debug.WriteLine(a);
+                menu.AddMenuItem(new MenuItemViewModel($"\tPlay on {player.DisplayName}", string.Empty, ReactiveCommand.Create<Unit>(r =>
+                {
+                    _massClient.PlayerActiveQueue(player.PlayerId, (pq) =>
+                    {
+                        SelectedPlayer = player;
+                        _massClient.Play(pq.Result.queue_id, t, mode, (a) =>
+                        {
+                            Debug.WriteLine(a);
+                        });
+                    });
+                })));
+            }
+            MessageBus.Current.SendMessage(menu);
+        } else
+        {
+            _massClient.PlayerActiveQueue(p.PlayerId, (pq) =>
+            {
+                _massClient.Play(pq.Result.queue_id, t, mode, (a) =>
+                {
+                    Debug.WriteLine(a);
+                });
             });
-        });
+        }
+    }
 
+    public void PlayerNext(Player p = null)
+    {
+        p ??= SelectedPlayer;
+        _massClient.PlayerNext(p.PlayerId, (a) => { });
+    }
+
+    public void PlayerPrevious(Player p)
+    {
+        p ??= SelectedPlayer;
+        _massClient.PlayerPrevious(p.PlayerId, (a) => { });
     }
 }

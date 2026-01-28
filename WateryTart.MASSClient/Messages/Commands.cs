@@ -19,6 +19,11 @@ public static class Commands
     public static string PlaylistGet = "music/playlists/get";
     public static string PlaylistTracksGet = "music/playlists/playlist_tracks";
 
+    public static string PlayerNext = "players/cmd/next";
+    public static string PlayerPlay = "players/cmd/play";
+    public static string PlayerPlayPause = "players/cmd/play_pause";
+    public static string PlayerPrevious = "players/cmd/previous";
+
     public static string MusicAlbumLibraryItems = "music/albums/library_items";
     public static string MusicAlbumGet = "music/albums/get";
     public static string MusicAlbumTracks = "music/albums/album_tracks";

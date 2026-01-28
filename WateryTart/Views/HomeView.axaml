@@ -14,11 +14,27 @@
 		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
 		<converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
 	</UserControl.Resources>
+	<UserControl.Styles>
+		<!-- This cascades to all children -->
+		<Style Selector="#lbRecommendations ContentPresenter#PART_ContentPresenter:pointerover">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+
+		<Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+
+		<!-- this 'undoes' the cascading -->
+		<Style Selector="ListBox.hoverable ContentPresenter#PART_ContentPresenter:pointerover">
+			<Setter Property="Background" Value="Red" />
+		</Style>
+	</UserControl.Styles>
 
 	<ListBox
 	x:Name="lbRecommendations"
 	ItemsSource="{Binding Recommendations}"
 	Background="{x:Null}">
+
 		<ListBox.ItemTemplate>
 			<DataTemplate>
 				<StackPanel>
@@ -37,6 +53,7 @@
 
 					<ListBox Background="{x:Null}"
 							 ItemsSource="{Binding items}"
+							 Classes="hoverable"
 							 Padding="0"
 							 >
 						<ListBox.ItemsPanel>

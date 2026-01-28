@@ -8,6 +8,7 @@ using WateryTart.MassClient.Messages;
 using WateryTart.MassClient.Models;
 using WateryTart.MassClient.Responses;
 using WateryTart.Services;
+using WateryTart.ViewModels.Menus;
 
 namespace WateryTart.ViewModels;
 

@@ -12,6 +12,7 @@ using WateryTart.MassClient.Models;
 using WateryTart.MassClient.Responses;
 using WateryTart.Services;
 using WateryTart.Settings;
+using WateryTart.ViewModels.Menus;
 
 namespace WateryTart.ViewModels
 {

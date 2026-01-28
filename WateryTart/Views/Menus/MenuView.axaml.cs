@@ -1,7 +1,7 @@
 using ReactiveUI.Avalonia;
-using WateryTart.ViewModels;
+using WateryTart.ViewModels.Menus;
 
-namespace WateryTart.Views;
+namespace WateryTart.Views.Menus;
 
 public partial class MenuView : ReactiveUserControl<MenuViewModel>
 {
