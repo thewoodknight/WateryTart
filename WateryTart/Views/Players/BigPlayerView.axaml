@@ -60,7 +60,12 @@
 				<ListBox ItemsSource="{Binding PlayersService.CurrentQueue}" Background="{x:Null}">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding  name}" />
+							<TextBlock>
+								<Run Text="{Binding sort_index}" />
+								<Run Text=". " />
+								<Run  Text="{Binding  name}" />
+							</TextBlock>
+							
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
@@ -70,7 +75,11 @@
 				<ListBox ItemsSource="{Binding PlayersService.PlayedQueue}" Background="{x:Null}">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding name}" />
+							<TextBlock>
+								<Run Text="{Binding sort_index}" />
+								<Run Text=". " />
+								<Run  Text="{Binding  name}" />
+							</TextBlock>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>

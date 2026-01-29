@@ -16,6 +16,7 @@ namespace WateryTart.ViewModels.Players
         public ReactiveCommand<Unit, Unit> PlayerPreviousCommand { get; }
         [Reactive] public partial IPlayersService PlayersService { get; set; }
         public bool ShowMiniPlayer { get => false; }
+        public bool ShowNavigation => true;
         public BigPlayerViewModel(IPlayersService playersService)
         {
             PlayersService = playersService;

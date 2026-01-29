@@ -14,7 +14,8 @@ public partial class LibraryViewModel : ReactiveObject, IViewModelBase
     public IScreen HostScreen { get; }
     public string Title { get; set; }
     [Reactive] public partial ObservableCollection<LibraryItem> Items { get; set; }
-    public bool ShowMiniPlayer { get => true; }
+    public bool ShowMiniPlayer => true;
+    public bool ShowNavigation => true;
     public LibraryViewModel(IMassWsClient massClient, IScreen screen)
     {
         _massClient = massClient;

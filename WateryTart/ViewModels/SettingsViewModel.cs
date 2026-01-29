@@ -12,4 +12,6 @@ public class SettingsViewModel : ReactiveObject, IViewModelBase
         get => "Settings";
         set;
     }
+
+    public bool ShowNavigation => true;
 }

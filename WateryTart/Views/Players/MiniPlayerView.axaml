@@ -42,6 +42,7 @@
 			<StackPanel Grid.Column="1" Margin="15,5,5,5">
 				<TextBlock Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.artist}" FontSize="14"/>
 				<TextBlock Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.title}" FontWeight="Bold" />
+				<TextBlock Text="{Binding PlayersService.SelectedPlayer.Name}" FontSize="12" />
 			</StackPanel>
 
 			<StackPanel Grid.Column="2" Orientation="Horizontal">

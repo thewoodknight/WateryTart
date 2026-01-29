@@ -1,6 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using WateryTart.MassClient.Messages;
 using WateryTart.MassClient.Models;
 using WateryTart.MassClient.Responses;

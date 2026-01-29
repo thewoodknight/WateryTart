@@ -71,7 +71,7 @@
 		<players:MiniPlayerView DataContext="{Binding MiniPlayer}" IsVisible="{Binding  #window.((vm:MainWindowViewModel)DataContext).CurrentViewModel.ShowMiniPlayer}" />
 
 			<!-- Bottom Nav -->
-			<Grid Background="#66000000">
+			<Grid Background="#66000000" IsVisible="{Binding  #window.((vm:MainWindowViewModel)DataContext).CurrentViewModel.ShowNavigation}">
 				<Grid Margin="100,0,0,0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*" />

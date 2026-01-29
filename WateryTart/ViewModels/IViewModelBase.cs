@@ -6,5 +6,7 @@ public interface IViewModelBase : IRoutableViewModel
 {
     string Title { get; set; }
 
-    bool ShowMiniPlayer { get; } 
+    bool ShowMiniPlayer { get; }
+
+    bool ShowNavigation { get; }
 }

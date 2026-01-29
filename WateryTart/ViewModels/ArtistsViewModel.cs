@@ -19,7 +19,8 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
     [Reactive] public partial string Title { get; set; }
     [Reactive] public partial ObservableCollection<Artist> Artists { get; set; } = new();
     public ReactiveCommand<Artist, Unit> ClickedCommand { get; }
-    public bool ShowMiniPlayer { get => true; }
+    public bool ShowMiniPlayer => true;
+    public bool ShowNavigation => true;
     public ArtistsViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService)
     {
         _massClient = massClient;

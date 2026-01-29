@@ -24,7 +24,8 @@ namespace WateryTart.ViewModels
         private readonly IScreen _screen;
         public ObservableCollection<Recommendation> Recommendations { get; set; }
         private List<Recommendation> SourceRecommendations { get; set; }
-        public bool ShowMiniPlayer { get => true; }
+        public bool ShowMiniPlayer => true;
+        public bool ShowNavigation => true;
         public ReactiveCommand<Item, Unit> ClickedCommand { get; }
         public ReactiveCommand<Item, Unit> AltMenuCommand { get; }
         public ReactiveCommand<Recommendation, Unit> RecommendationListCommand { get; }

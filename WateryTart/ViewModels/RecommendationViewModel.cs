@@ -19,6 +19,7 @@ public partial class RecommendationViewModel : ReactiveObject, IViewModelBase
     [Reactive] public partial Recommendation Recommendation { get; set; }
     public ReactiveCommand<Item, Unit> ClickedCommand { get; }
     public bool ShowMiniPlayer { get => true; }
+    public bool ShowNavigation => true;
     public RecommendationViewModel(IScreen screen, IMassWsClient massClient, ISettings settings)
     {
         _massClient = massClient;

@@ -10,6 +10,8 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
     public string? UrlPathSegment { get; }
     public IScreen HostScreen { get; }
     public bool ShowMiniPlayer { get => true; }
+    public bool ShowNavigation => true;
+
     public string Title
     {
         get => "Search";

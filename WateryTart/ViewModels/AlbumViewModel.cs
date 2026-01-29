@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reactive;
 using WateryTart.MassClient;
-using WateryTart.MassClient.Messages;
 using WateryTart.MassClient.Models;
 using WateryTart.MassClient.Responses;
 using WateryTart.Services;
@@ -19,7 +18,8 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     private Album _album;
     public string? UrlPathSegment { get; } = "Album/ID";
     public IScreen HostScreen { get; }
-    public bool ShowMiniPlayer { get => true; }
+    public bool ShowMiniPlayer => true;
+    public bool ShowNavigation => true;
     [Reactive] public partial string Title { get; set; }
     [Reactive] public partial Album Album { get; set; }
 

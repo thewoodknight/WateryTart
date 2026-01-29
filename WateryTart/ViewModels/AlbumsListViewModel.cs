@@ -20,7 +20,8 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
     public Album SelectedAlbum { get; set; }
     public ReactiveCommand<Unit, IRoutableViewModel> SelectedItemChangedCommand { get; }
     [Reactive] public partial string Title { get; set; }
-    public bool ShowMiniPlayer { get => true; }
+    public bool ShowMiniPlayer => true;
+    public bool ShowNavigation => true;
 
     public AlbumsListViewModel(IMassWsClient massClient, IScreen screen)
     {

@@ -16,6 +16,7 @@ namespace WateryTart.ViewModels
         private readonly IMassWsClient _massClient;
         private readonly IPlayersService _playersService;
         public bool ShowMiniPlayer { get => true; }
+        public bool ShowNavigation => true;
         [Reactive] public partial Playlist Playlist { get; set; }
         [Reactive] public partial string Title { get; set; }
 
