@@ -6,7 +6,7 @@ using WateryTart.Settings;
 
 namespace WateryTart.Services;
 
-public partial class GpioVolumeService : ReactiveObject, IVolumeService
+public partial class GpioVolumeService : ReactiveObject, IVolumeService, IReaper
 {
     const int PinA = 17;
     const int PinB = 27;
@@ -25,17 +25,10 @@ public partial class GpioVolumeService : ReactiveObject, IVolumeService
         Iot.Device.RotaryEncoder.QuadratureRotaryEncoder rotaryEncoder = new QuadratureRotaryEncoder(PinA, PinB, PulsesPerTurn);
         oldValue = rotaryEncoder.PulseCount;
         rotaryEncoder.PulseCountChanged += PulseCountChanged;
-
-        //This should be called in the shutdown part of the app
-        // rotaryEncoder.Dispose();
-        
     }
 
     private void PulseCountChanged(object? sender, RotaryEncoderEventArgs e)
     {
-        //if (oldValue == -1000)
-        //    oldValue = e.Value;
-
         if (e.Value < oldValue)
         {
             playersService.PlayerVolumeUp();
@@ -45,5 +38,10 @@ public partial class GpioVolumeService : ReactiveObject, IVolumeService
             playersService.PlayerVolumeDown();
         }
         oldValue = e.Value;
+    }
+
+    public void Reap()
+    {
+        rotaryEncoder.Dispose();
     }
 }

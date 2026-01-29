@@ -5,11 +5,11 @@ using SharpHook.Providers;
 
 namespace WateryTart.Services;
 
-public interface IHandleShutdown
+public interface IReaper
 {
-
+    void Reap();
 }
-public class WindowsVolumeService : IVolumeService, IHandleShutdown
+public class WindowsVolumeService : IVolumeService, IReaper
 {
     private readonly IPlayersService playerService;
 
@@ -49,5 +49,10 @@ public class WindowsVolumeService : IVolumeService, IHandleShutdown
                 playerService.PlayerVolumeDown();
                 break;
         }
+    }
+
+    public void Reap()
+    {
+        
     }
 }

@@ -1,15 +1,13 @@
 using AsyncImageLoader.Loaders;
+using Autofac;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Config.Net;
-using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
-using Splat;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using WateryTart.MassClient;
 using WateryTart.Services;
 using WateryTart.Settings;
@@ -19,9 +17,16 @@ using WateryTart.ViewModels.Players;
 
 namespace WateryTart;
 
+public static class AntipatternExtensionsYesIKnowItsBad
+{
+    public static T GetRequiredService<T>(this IContainer c)
+    {
+        return c.Resolve<T>();
+    }
+}
 public partial class App : Application
 {
-    public static ServiceProvider Container;
+    public static IContainer Container;
     public static string BaseUrl => Container.GetRequiredService<ISettings>().Credentials.BaseUrl;
 
     public static DiskCachedWebImageLoader ImageLoaderInstance { get; } = new DiskCachedWebImageLoader(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Library", "WateryTart"));
@@ -33,40 +38,42 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        // Register all the services needed for the application to run
-        var collection = new ServiceCollection();
+        var builder = new ContainerBuilder();
 
-        collection.AddSingleton<IMassWsClient, MassWsClient>();
-        collection.AddSingleton<IScreen, MainWindowViewModel>();
-        collection.AddSingleton<IPlayersService, PlayersService>();
-        collection.AddSingleton<SettingsViewModel>();
-        collection.AddSingleton<PlayersViewModel>();
-        collection.AddSingleton<MiniPlayerViewModel>();
-        collection.AddSingleton<BigPlayerViewModel>();
-        collection.AddSingleton<HomeViewModel>();
+        //Services
+        builder.RegisterType<MainWindowViewModel>().As<IScreen>().SingleInstance();
+        builder.RegisterType<MassWsClient>().As<IMassWsClient>().SingleInstance();
+        builder.RegisterType<PlayersService>().As<IPlayersService>().SingleInstance();
 
-        collection.AddSingleton<WindowsVolumeService>();
+        //Settings
+        var settings = new ConfigurationBuilder<ISettings>().UseJsonFile(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Library", "WateryTart")).Build();
+        builder.RegisterInstance<ISettings>(settings).SingleInstance();
 
-        collection.AddTransient<AlbumsListViewModel>();
-        collection.AddTransient<AlbumViewModel>();
-        collection.AddTransient<LoginViewModel>();
-        collection.AddTransient<PlaylistViewModel>();
-        collection.AddTransient<ArtistViewModel>();
-        collection.AddTransient<SearchViewModel>();
-        collection.AddTransient<ArtistsViewModel>();
-        collection.AddTransient<LibraryViewModel>();
-        collection.AddTransient<RecommendationViewModel>();
+        //View models that are singleton
+        builder.RegisterType<SettingsViewModel>().SingleInstance();
+        builder.RegisterType<PlayersViewModel>().SingleInstance();
+        builder.RegisterType<MiniPlayerViewModel>().SingleInstance();
+        builder.RegisterType<BigPlayerViewModel>().SingleInstance();
+        builder.RegisterType<HomeViewModel>().SingleInstance();
 
-        //AppLocator.CurrentMutable.RegisterViewsForViewModels(Assembly.GetExecutingAssembly());
-        //settings
-        var settings = new ConfigurationBuilder<ISettings>()
-               .UseJsonFile(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Library", "WateryTart"))
-            .Build();
+        //Volume controllers
+        builder.RegisterType<WindowsVolumeService>().AsImplementedInterfaces().SingleInstance();
+#if ARMRELEASE
+        builder.RegisterType<GpioVolumeService>().AsImplementedInterfaces().SingleInstance();
+#endif
 
-        collection.AddSingleton<ISettings>(settings);
+        //Transient viewmodels
+        builder.RegisterType<AlbumsListViewModel>();
+        builder.RegisterType<AlbumViewModel>();
+        builder.RegisterType<LoginViewModel>();
+        builder.RegisterType<PlaylistViewModel>();
+        builder.RegisterType<ArtistViewModel>();
+        builder.RegisterType<SearchViewModel>();
+        builder.RegisterType<ArtistsViewModel>();
+        builder.RegisterType<LibraryViewModel>();
+        builder.RegisterType<RecommendationViewModel>().AsImplementedInterfaces(); ;
 
-        // Creates a ServiceProvider containing services from the provided IServiceCollection
-        Container = collection.BuildServiceProvider();
+        Container = builder.Build();
 
         var vm = Container.GetRequiredService<IScreen>();
 
@@ -80,8 +87,11 @@ public partial class App : Application
             //Shutdown
             ((IClassicDesktopStyleApplicationLifetime)ApplicationLifetime).ShutdownRequested += (s, e) =>
             {
-                var x = App.Container.GetServices<IHandleShutdown>();
-                // This is where each thing would do their IDispose or whatever.
+                var reapers = Container.Resolve<IEnumerable<IReaper>>();
+                foreach (var reaper in reapers)
+                {
+                    reaper.Reap();
+                }
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)

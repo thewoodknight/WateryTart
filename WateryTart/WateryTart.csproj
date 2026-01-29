@@ -14,8 +14,8 @@
 
   <ItemGroup>
     <PackageReference Include="AsyncImageLoader.Avalonia" />
+    <PackageReference Include="Autofac" />
     <PackageReference Include="Avalonia" />
-    <PackageReference Include="Avalonia.Labs.Panels" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
     <PackageReference Include="Avalonia.Fonts.Inter" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -27,7 +27,6 @@
     <PackageReference Include="Config.Net" />
     <PackageReference Include="Iot.Device.Bindings" />
     <PackageReference Include="Material.Icons.Avalonia" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="ReactiveUI.Avalonia" />
     <PackageReference Include="ReactiveUI.SourceGenerators">
       <PrivateAssets>all</PrivateAssets>

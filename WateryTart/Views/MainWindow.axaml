@@ -9,7 +9,6 @@
 		xmlns:wateryTart="clr-namespace:WateryTart"
 		xmlns:vm="clr-namespace:WateryTart.ViewModels"
 		xmlns:converters="clr-namespace:WateryTart.Converters"
-		xmlns:panels="clr-namespace:Avalonia.Labs.Panels;assembly=Avalonia.Labs.Panels"
 		xmlns:players="using:WateryTart.Views.Players"
 		mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
 		ExtendClientAreaChromeHints="NoChrome"
