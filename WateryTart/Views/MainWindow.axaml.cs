@@ -23,7 +23,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
                 if (sv != null)
                     sv.ScrollToHome();
             });
-
             _settings = App.Container.GetRequiredService<ISettings>();
             if (_settings.WindowWidth != 0)
             {

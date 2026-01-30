@@ -109,13 +109,6 @@ namespace WateryTart.ViewModels
                 }
             });
 
-
-            var wvs = new WindowsVolumeService(_playersService);
-
-#if ARMRELEASE
-            var gpiovs = new GpioVolumeService(settings, _playersService);
-#endif
-
             Load();
         }
 

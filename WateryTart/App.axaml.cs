@@ -3,13 +3,11 @@ using Autofac;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Config.Net;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 using WateryTart.MassClient;
 using WateryTart.Services;
 using WateryTart.Settings;
@@ -27,7 +25,9 @@ public static class AntipatternExtensionsYesIKnowItsBad
 }
 public partial class App : Application
 {
-    private static readonly string AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Library", "WateryTart");
+
+    private static readonly string baseAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "WateryTart");  
+    private static readonly string AppDataPath = Path.Combine(baseAppDataPath, "Cache");
     private static readonly Lazy<DiskCachedWebImageLoader> LazyImageLoader = new(() => new DiskCachedWebImageLoader(AppDataPath));
     private static string _cachedBaseUrl;
     private static IEnumerable<IReaper> _reapers;
@@ -62,8 +62,9 @@ public partial class App : Application
         builder.RegisterType<PlayersService>().AsImplementedInterfaces().SingleInstance();
 
         //Settings
-        var settings = new ConfigurationBuilder<ISettings>().UseJsonFile(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Library", "WateryTart")).Build();
-        builder.RegisterInstance<ISettings>(settings).SingleInstance();
+        var x = Path.Combine(baseAppDataPath, "settings.json");
+        var settings = new Settings.Settings(x);
+        builder.RegisterInstance(settings).As<ISettings>().SingleInstance();  
 
         //View models that are singleton
         builder.RegisterType<SettingsViewModel>().SingleInstance();
@@ -73,11 +74,12 @@ public partial class App : Application
         builder.RegisterType<HomeViewModel>().SingleInstance();
 
         //Volume controllers
+
         builder.RegisterType<WindowsVolumeService>().AsImplementedInterfaces().SingleInstance();
 #if ARMRELEASE
         builder.RegisterType<GpioVolumeService>().AsImplementedInterfaces().SingleInstance();
 #endif
-
+        
         //Transient viewmodels
         builder.RegisterType<AlbumsListViewModel>();
         builder.RegisterType<AlbumViewModel>();

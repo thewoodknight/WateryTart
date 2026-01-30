@@ -24,7 +24,6 @@
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
-    <PackageReference Include="Config.Net" />
     <PackageReference Include="Iot.Device.Bindings" />
     <PackageReference Include="Material.Icons.Avalonia" />
     <PackageReference Include="ReactiveUI.Avalonia" />

@@ -18,6 +18,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
 {
     private readonly IMassWsClient _massClient;
     private readonly ISettings _settings;
+    public ISettings Settings { get { return _settings;  } }
     public RoutingState Router { get; } = new();
     public ReactiveCommand<Unit, IRoutableViewModel> GoBack => Router.NavigateBack;
     public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }

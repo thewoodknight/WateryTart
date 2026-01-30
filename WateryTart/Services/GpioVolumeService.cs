@@ -1,7 +1,6 @@
 ﻿using Iot.Device.RotaryEncoder;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
-using System;
 using WateryTart.Settings;
 
 namespace WateryTart.Services;
@@ -11,7 +10,6 @@ public partial class GpioVolumeService : ReactiveObject, IVolumeService, IReaper
     const int PinA = 17;
     const int PinB = 27;
     const int PulsesPerTurn = 20;
-    private readonly ISettings settings;
     private readonly IPlayersService playersService;
     double oldValue = 0;
     private QuadratureRotaryEncoder rotaryEncoder;
@@ -20,7 +18,6 @@ public partial class GpioVolumeService : ReactiveObject, IVolumeService, IReaper
 
     public GpioVolumeService(ISettings settings, IPlayersService playersService)
     {
-        this.settings = settings;
         this.playersService = playersService;
         Iot.Device.RotaryEncoder.QuadratureRotaryEncoder rotaryEncoder = new QuadratureRotaryEncoder(PinA, PinB, PulsesPerTurn);
         oldValue = rotaryEncoder.PulseCount;

@@ -16,15 +16,6 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 	
-	<!-- AOT stuff -->
-	<PropertyGroup>
-		
-		<TrimMode>partial</TrimMode>
-		<!--<PublishAot>true</PublishAot>
-		<IsAotCompatible>true</IsAotCompatible>-->
-		<EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
-	</PropertyGroup>
-
 	
 	<PropertyGroup>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
