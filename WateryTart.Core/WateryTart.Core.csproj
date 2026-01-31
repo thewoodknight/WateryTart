@@ -48,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WateryTart.MASSClient\WateryTart.Service.MassClient.csproj" />
     <ProjectReference Include="..\WateryTart.Service.MassClient\WateryTart.Service.MassClient.csproj" />
   </ItemGroup>
 

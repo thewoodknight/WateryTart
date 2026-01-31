@@ -1,9 +1,10 @@
 ﻿using Iot.Device.RotaryEncoder;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
 
-namespace WateryTart.Core.Services;
+namespace WateryTart.Platform.Linux;
 
 public partial class GpioVolumeService : ReactiveObject, IVolumeService, IReaper
 {
@@ -13,8 +14,6 @@ public partial class GpioVolumeService : ReactiveObject, IVolumeService, IReaper
     private readonly IPlayersService playersService;
     double oldValue = 0;
     private QuadratureRotaryEncoder rotaryEncoder;
-
-    [Reactive] public partial bool IsEnabled { get; set; }
 
     public GpioVolumeService(ISettings settings, IPlayersService playersService)
     {
@@ -41,4 +40,6 @@ public partial class GpioVolumeService : ReactiveObject, IVolumeService, IReaper
     {
         rotaryEncoder.Dispose();
     }
+
+    [Reactive] public partial bool IsEnabled { get; set; }
 }

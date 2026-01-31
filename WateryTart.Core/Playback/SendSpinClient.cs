@@ -70,10 +70,7 @@ public class SendSpinClient : IDisposable, IReaper
                     return buffer;
                 };
 
-            //  Func<IAudioPlayer> playerFactory = () => new SimpleWasapiPlayer();
-
-            Func<ITimedAudioBuffer, Func<long>, IAudioSampleSource> sourceFactory =
-                (buffer, getTime) => new BufferedAudioSampleSource(buffer, getTime);
+            Func<ITimedAudioBuffer, Func<long>, IAudioSampleSource> sourceFactory = (buffer, getTime) => new BufferedAudioSampleSource(buffer, getTime);
 
             _audioPipeline = new AudioPipeline(
                 loggerFactory.CreateLogger<AudioPipeline>(),
@@ -86,11 +83,9 @@ public class SendSpinClient : IDisposable, IReaper
                 waitForConvergence: true,
                 convergenceTimeoutMs: 5000);
 
-            //_audioPlayer = playerFactory();
-
             var capabilities = new ClientCapabilities
             {
-                ClientName = "WateryTart Player",
+                ClientName = $"WateryTart ({Environment.MachineName})",
                 ProductName = "WateryTart",
                 Manufacturer = "WateryTart",
                 SoftwareVersion = "1.0.0",
@@ -213,8 +208,10 @@ public class SendSpinClient : IDisposable, IReaper
 
     public void Reap()
     {
+        _audioPipeline.DisposeAsync();
         DisconnectAsync().GetAwaiter().GetResult();
         Dispose();
+        
     }
 
     private void HandleGroupStateChanged(object sender, GroupState group)

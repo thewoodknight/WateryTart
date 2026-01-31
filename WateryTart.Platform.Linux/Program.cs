@@ -2,6 +2,7 @@
 using ReactiveUI.Avalonia;
 using System;
 using WateryTart.Core;
+using WateryTart.Core.Playback;
 
 namespace WateryTart.Platform.Linux;
 
@@ -18,7 +19,11 @@ sealed class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>(() =>
         {
-            var x = new App([new LinuxAudioPlayerFactory()]);
+            var x = new App(
+                [
+                    new InstancePlatformSpecificRegistration(new LinuxAudioPlayerFactory()),
+                    new TypePlatformSpecificRegistration<GpioVolumeService>(),
+                ]);
 
             return x;
         })

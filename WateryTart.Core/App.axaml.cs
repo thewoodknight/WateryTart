@@ -53,11 +53,11 @@ public partial class App : Application
 
     public static DiskCachedWebImageLoader ImageLoaderInstance => LazyImageLoader.Value;
 
-    private IEnumerable<object> Foo { get; }
+    private IEnumerable<IPlatformSpecificRegistration> PlatformSpecificRegistrations { get; }
 
-    public App(IEnumerable<object> foo)
+    public App(IEnumerable<IPlatformSpecificRegistration> platformSpecificRegistrations)
     {
-        Foo = foo;
+        PlatformSpecificRegistrations = platformSpecificRegistrations;
     }
     public override void Initialize()
     {
@@ -88,20 +88,15 @@ public partial class App : Application
 
 
 
-        foreach (var f in Foo)
+        foreach (var platformSpecificRegistration in PlatformSpecificRegistrations)
         {
-            builder.RegisterInstance(f).AsImplementedInterfaces().SingleInstance();
-
+            platformSpecificRegistration.Register(builder);
         }
 
         builder.RegisterType<SendSpinClient>().AsSelf().SingleInstance();
 
         //Volume controllers
-
         builder.RegisterType<WindowsVolumeService>().AsImplementedInterfaces().SingleInstance();
-#if ARMRELEASE
-        builder.RegisterType<GpioVolumeService>().AsImplementedInterfaces().SingleInstance();
-#endif
 
         //Transient viewmodels
         builder.RegisterType<AlbumsListViewModel>();

@@ -2,6 +2,8 @@
 using ReactiveUI.Avalonia;
 using System;
 using WateryTart.Core;
+using WateryTart.Core.Playback;
+using WateryTart.Platform.Windows.Playback;
 
 namespace WateryTart.Platform.Windows;
 
@@ -18,8 +20,10 @@ sealed class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>(() =>
         {
-            var x = new App([new WindowsAudioPlayerFactory()]);
-
+            var x = new App(
+            [
+                new InstancePlatformSpecificRegistration(new WindowsAudioPlayerFactory()),
+            ]);
             return x;
         })
             .UsePlatformDetect()
