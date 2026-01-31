@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="WateryTart.Core.Views.Menus.MenuView"
+        x:DataType="vm:Menus.MenuViewModel">
+  <ListBox ItemsSource="{Binding MenuItems}" Background="{x:Null}">
+      <ListBox.ItemTemplate>
+          <DataTemplate>
+              <Grid Background="Transparent">
+                  <Interaction.Behaviors>
+                      <EventTriggerBehavior EventName="Tapped">
+                          <InvokeCommandAction Command="{Binding ClickedCommand}"/>
+                      </EventTriggerBehavior>
+                  </Interaction.Behaviors>
+
+                  <Grid.ColumnDefinitions>
+                      <ColumnDefinition Width="50" />
+                      <ColumnDefinition Width="*"/>
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Grid.Column="1" Text="{Binding Title}" />
+              </Grid>
+          </DataTemplate>
+      </ListBox.ItemTemplate>
+  </ListBox>
+</UserControl>

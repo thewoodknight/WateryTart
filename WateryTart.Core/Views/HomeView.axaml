@@ -1,0 +1,117 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:materialIcons="using:Material.Icons.Avalonia"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+			 xmlns:app="clr-namespace:WateryTart.Core"
+			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="WateryTart.Core.Views.HomeView"
+			 x:DataType="vm:HomeViewModel">
+	<UserControl.Resources>
+		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
+		<converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
+	</UserControl.Resources>
+	<UserControl.Styles>
+		<!-- This cascades to all children -->
+		<Style Selector="#lbRecommendations ContentPresenter#PART_ContentPresenter:pointerover">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+
+		<Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+
+		<!-- this 'undoes' the cascading -->
+		<Style Selector="ListBox.hoverable ContentPresenter#PART_ContentPresenter:pointerover">
+			<Setter Property="Background" Value="#11FFFFFF" />
+		</Style>
+	</UserControl.Styles>
+
+	<ItemsControl
+	x:Name="lbRecommendations"
+	ItemsSource="{Binding Recommendations}"
+	Background="{x:Null}">
+		<ItemsControl.GestureRecognizers>
+			<ScrollGestureRecognizer  CanVerticallyScroll="True"/>
+		</ItemsControl.GestureRecognizers>
+		<ItemsControl.ItemTemplate>
+			<DataTemplate>
+				<StackPanel>
+					<Border
+					BorderThickness="0,0,0,1"
+					BorderBrush="#66FFFFFF">
+						<Interaction.Behaviors>
+							<EventTriggerBehavior EventName="Tapped">
+								<InvokeCommandAction
+								Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).RecommendationListCommand }"
+								CommandParameter="{Binding Path=.}"/>
+							</EventTriggerBehavior>
+						</Interaction.Behaviors>
+						<TextBlock Text="{Binding Name, Converter={StaticResource ToUpperValueConverter}}" FontWeight="Bold" FontSize="16"  />
+					</Border>
+
+					<ItemsControl Background="{x:Null}"
+								  ItemsSource="{Binding items}"
+								  Classes="hoverable"
+								  Padding="0"
+								  >
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<VirtualizingStackPanel/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Grid Margin="5">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="50" />
+										<ColumnDefinition Width="*" />
+										<ColumnDefinition Width="Auto" />
+									</Grid.ColumnDefinitions>
+
+									<Border ClipToBounds ="True"
+											Margin="-10,0,0,0"
+											CornerRadius="5"
+											Grid.Column="0">
+										<asyncImageLoader:AdvancedImage
+										Loader="{x:Static app:App.ImageLoaderInstance}"
+										Height="50" Width="50" Source="{Binding Path=., Converter={StaticResource MetadataImageConverter}}">
+											<Interaction.Behaviors>
+												<EventTriggerBehavior EventName="Tapped">
+													<InvokeCommandAction
+													Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).ClickedCommand }"
+													CommandParameter="{Binding Path=.}"/>
+												</EventTriggerBehavior>
+											</Interaction.Behaviors>
+										</asyncImageLoader:AdvancedImage>
+									</Border>
+									<StackPanel Background="Transparent" Grid.Column="1" Margin="10,0,0,0">
+										<Interaction.Behaviors>
+											<EventTriggerBehavior EventName="Tapped">
+												<InvokeCommandAction
+												Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).ClickedCommand }"
+												CommandParameter="{Binding Path=.}"/>
+											</EventTriggerBehavior>
+										</Interaction.Behaviors>
+										<TextBlock Text="{Binding Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
+										<TextBlock Text="{Binding Path=., Converter={StaticResource HomeExtraToStringConverter}}" Opacity="0.7"  TextTrimming="CharacterEllipsis" />
+									</StackPanel>
+
+									<Button Grid.Column="2"
+											Classes="iconButton navButton"
+											Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).AltMenuCommand }"
+											CommandParameter="{Binding Path=.}"><materialIcons:MaterialIcon Kind="MoreVert" Width="25" Height="25" /></Button>
+								</Grid>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</DataTemplate>
+		</ItemsControl.ItemTemplate>
+	</ItemsControl>
+</UserControl>

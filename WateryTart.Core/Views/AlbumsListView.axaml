@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+			 xmlns:app="clr-namespace:WateryTart.Core"
+			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+			 xmlns:loaders="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 Background="{x:Null}"
+			 x:Class="WateryTart.Core.Views.AlbumsListView"
+			 x:DataType="vm:AlbumsListViewModel">
+	<UserControl.Resources>
+		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+		<converters:ArtistsToStringConverter x:Key="ArtistsToStringConverter" />
+	</UserControl.Resources>
+	<ListBox x:Name="albumsListBox" Background="{x:Null}" ItemsSource="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" >
+		<ListBox.Styles>
+		
+		</ListBox.Styles>
+		<Interaction.Behaviors>
+			<EventTriggerBehavior SourceObject="albumsListBox"
+								  EventName="SelectionChanged">
+				<InvokeCommandAction Command="{Binding GoNext}" />
+			</EventTriggerBehavior>
+		</Interaction.Behaviors>
+		<ListBox.ItemsPanel>
+			<ItemsPanelTemplate>
+				<WrapPanel ItemWidth="200" ItemSpacing="15" />
+			</ItemsPanelTemplate>
+		</ListBox.ItemsPanel>
+		<ListBox.ItemTemplate>
+			<DataTemplate>
+				<StackPanel>
+					<Border BoxShadow="0 0 10 0 Black"
+			                Margin="0,0,0,5"
+							Width="195"
+							Height="195">
+						<Border ClipToBounds ="True"
+                                CornerRadius="5">
+							<asyncImageLoader:AdvancedImage
+							Loader="{x:Static app:App.ImageLoaderInstance}"
+							Height="195" Width="195" Source="{Binding Path=., Converter={StaticResource MetadataImageConverter}}" />
+						</Border>
+					</Border>
+					<TextBlock Margin="-10,0,0,0" Text="{Binding Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
+                    <TextBlock Margin="-10,0,0,0" Text="{Binding Artists, Converter={StaticResource ArtistsToStringConverter}}" Opacity="0.7"  TextTrimming="CharacterEllipsis" ></TextBlock>
+				</StackPanel>
+			</DataTemplate>
+		</ListBox.ItemTemplate>
+	</ListBox>
+</UserControl>

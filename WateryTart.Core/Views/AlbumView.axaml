@@ -1,0 +1,80 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+			 xmlns:app="clr-namespace:WateryTart.Core"
+			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+			 xmlns:asyncImageLoader1="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+			 xmlns:wateryTart="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="WateryTart.Core.Views.AlbumView"
+			 x:DataType="vm:AlbumViewModel">
+	<UserControl.Resources>
+		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+		<converters:SecondsToMinutesConverter x:Key="SecondsToMinutesConverter" />
+
+	</UserControl.Resources>
+	<StackPanel>
+		<Border
+		Margin="0,0,10,20"
+		BorderThickness="0,0,0,1"
+		BorderBrush="#66FFFFFF">
+			<Grid Margin="0,0,0,20">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="200" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Border BoxShadow="0 0 10 0 Black"
+						Grid.Column="0"
+						Width="200"
+						Height="200">
+					<Border ClipToBounds ="True"
+							CornerRadius="5">
+						<asyncImageLoader1:AdvancedImage
+						Loader="{x:Static app:App.ImageLoaderInstance}"
+						Source="{Binding Album, Converter={StaticResource MetadataImageConverter}}"
+						/>
+					</Border>
+				</Border>
+				<StackPanel Grid.Column="1" Margin="10,0,0,0">
+					<TextBlock Text="{Binding Album.Artists[0].Name}"  />
+					<TextBlock Text="{Binding Album.Year}" Opacity="0.7" />
+					<Button Command="{Binding PlayAlbumCommand}">Play</Button>
+				</StackPanel>
+			</Grid>
+		</Border>
+
+		<!-- Tracks -->
+		<ListBox x:Name="lbTracks" ItemsSource="{Binding Tracks}" Background="{x:Null}" >
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid Background="Transparent">
+						<Interaction.Behaviors>
+							<EventTriggerBehavior EventName="DoubleTapped">
+								<InvokeCommandAction
+								Command="{Binding #lbTracks.((vm:AlbumViewModel)DataContext).TrackTappedCommand }"
+								CommandParameter="{Binding Path=.}"/>
+							</EventTriggerBehavior>
+						</Interaction.Behaviors>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="20" />
+							<ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Text="{Binding track_number}"  Opacity="0.7" />
+
+						<StackPanel Grid.Column="1">
+							<TextBlock Text="{Binding Name}"></TextBlock>
+							<TextBlock Text="{Binding duration, Converter={StaticResource SecondsToMinutesConverter}}"  Opacity="0.7"></TextBlock>
+						</StackPanel>
+
+						<Button Grid.Column="2"
+                                Command="{Binding #lbTracks.((vm:AlbumViewModel)DataContext).TrackAltMenuCommand }"
+                                CommandParameter="{Binding Path=.}">⋮</Button>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</StackPanel>
+</UserControl>

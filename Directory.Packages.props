@@ -24,16 +24,21 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.2" />
+    <PackageVersion Include="NAudio" Version="2.2.1" />
+    <PackageVersion Include="NAudio.Core" Version="2.2.1" />
+    <PackageVersion Include="NAudio.Wasapi" Version="2.2.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="ReactiveUI" Version="22.2.1" />
     <PackageVersion Include="ReactiveUI.AndroidSupport" Version="19.6.12" />
     <PackageVersion Include="ReactiveUI.AndroidX" Version="22.3.1" />
     <PackageVersion Include="ReactiveUI.Avalonia" Version="11.3.8" />
     <PackageVersion Include="ReactiveUI.SourceGenerators" Version="2.6.1" />
-    <PackageVersion Include="Sendspin.SDK" Version="6.0.0" />
+    <PackageVersion Include="Sendspin.SDK" Version="6.1.1" />
     <PackageVersion Include="SharpHook" Version="7.1.1" />
     <PackageVersion Include="SharpHook.R3" Version="7.1.1" />
     <PackageVersion Include="SharpHook.Reactive" Version="7.1.1" />
+    <PackageVersion Include="Silk.NET.OpenAL" Version="2.23.0" />
+    <PackageVersion Include="Silk.NET.OpenAL.Soft.Native" Version="1.23.1" />
     <PackageVersion Include="SkiaSharp" Version="2.88.9" />
     <PackageVersion Include="Splat.Autofac" Version="19.2.1" />
     <PackageVersion Include="Splat.Avalonia.Autofac" Version="15.5.3" />

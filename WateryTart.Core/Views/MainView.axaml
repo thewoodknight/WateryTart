@@ -1,0 +1,29 @@
+<reactiveui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                                xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                                xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                                xmlns:reactiveui="http://reactiveui.net/"
+                                xmlns:vm="using:WateryTart.Core.ViewModels"
+                                xmlns:wateryTart="using:WateryTart"
+                                xmlns:viewModels="clr-namespace:WateryTart.Core.ViewModels"
+                                xmlns:core="clr-namespace:WateryTart.Core"
+                                Loaded="MainView_Loaded"
+                                mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                                x:DataType="viewModels:MainWindowViewModel"
+                                x:Class="WateryTart.Core.Views.MainView">
+	<UserControl.Background>
+		<RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -15%" RadiusX="125%" RadiusY="125%"  >
+			<GradientStop Color="#FF5B4272" Offset="0.142"/>
+			<GradientStop Color="#FF6C191E" Offset="1"/>
+		</RadialGradientBrush>
+	</UserControl.Background>
+	<!-- Content -->
+	<ScrollViewer x:Name="sv" Grid.Row="1" Margin="10">
+
+		<TransitioningContentControl Content="{Binding CurrentViewModel}" >
+			<TransitioningContentControl.DataTemplates>
+				<core:ViewLocator />
+			</TransitioningContentControl.DataTemplates>
+		</TransitioningContentControl>
+	</ScrollViewer>
+</reactiveui:ReactiveUserControl>

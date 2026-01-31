@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+			 xmlns:app="clr-namespace:WateryTart.Core"
+			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="WateryTart.Core.Views.ArtistView"
+			 x:DataType="vm:ArtistViewModel">
+	<UserControl.Resources>
+		<converters:LibraryImageConverter x:Key="LibraryImageConverter" />
+		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
+		<converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
+	</UserControl.Resources>
+	<StackPanel>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+			<Ellipse Width="150" Height="150">
+				<Ellipse.Fill>
+					<ImageBrush
+					asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource LibraryImageConverter}}" />
+
+				</Ellipse.Fill>
+			</Ellipse>
+
+			<StackPanel Grid.Column="1" Margin="20,0,20,20">
+				<asyncImageLoader:AdvancedImage
+				Loader="{x:Static app:App.ImageLoaderInstance}"
+				MaxWidth="350" Source="{Binding Path=ArtistLogo, Converter={StaticResource LibraryImageConverter}}" />
+				<Button />
+				<Button />
+				<Button />
+			</StackPanel>
+		</Grid>
+
+
+		<TextBlock>Albums</TextBlock>
+		<ListBox Background="{x:Null}"
+				 ItemsSource="{Binding Albums}"
+				 Padding="0">
+			
+		</ListBox>
+		<TextBlock>Bio</TextBlock>
+		<TextBlock Text="{Binding Artist.Metadata.description}" TextWrapping="Wrap" Margin="10"></TextBlock>
+	</StackPanel>
+</UserControl>

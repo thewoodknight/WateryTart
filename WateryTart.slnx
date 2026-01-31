@@ -11,7 +11,11 @@
     <File Path="Directory.Packages.props" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="WateryTart.Android/WateryTart.Android.csproj">
+  <Project Path="WateryTart.Platform.Windows/WateryTart.Platform.Windows.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
+  </Project>
+  <Project Path="WateryTart.Platform.Android/WateryTart.Platform.Android.csproj">
     <BuildType Solution="ARMRELEASE|*" Project="Release" />
     <BuildType Solution="X64Debug|*" Project="Release" />
     <Build Solution="*|ARM64" Project="false" />
@@ -19,15 +23,15 @@
     <Build Solution="X64Debug|Any CPU" Project="false" />
     <Deploy Solution="Debug|Any CPU" />
   </Project>
-  <Project Path="WateryTart.Desktop/WateryTart.Desktop.csproj">
+  <Project Path="WateryTart.Platform.Linux/WateryTart.Platform.Linux.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
   </Project>
-  <Project Path="WateryTart.MASSClient/WateryTart.MassClient.csproj">
+  <Project Path="WateryTart.Service.MassClient/WateryTart.Service.MassClient.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
   </Project>
-  <Project Path="WateryTart/WateryTart.csproj">
+  <Project Path="WateryTart.Core/WateryTart.Core.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
   </Project>
