@@ -6,7 +6,7 @@ namespace WateryTart.Service.MassClient;
 
 public interface IMassWsClient
 {
-    Task<MassCredentials> Login(string username, string password, string baseurl);
+    Task<LoginResults> Login(string username, string password, string baseurl);
 
     Task<bool> Connect(IMassCredentials credentials);
 

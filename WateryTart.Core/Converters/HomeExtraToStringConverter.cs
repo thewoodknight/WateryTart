@@ -25,8 +25,8 @@ public class HomeExtraToStringConverter : IValueConverter
             case MediaType.Album:
             case MediaType.Track:
                 {
-                    //if (item.artists != null) 
-                    output = item?.artists?[0].Name ?? string.Empty;
+                    if (item.artists != null)
+                        output = item?.artists?[0].Name ?? string.Empty;
                     break;
                 }
             default:

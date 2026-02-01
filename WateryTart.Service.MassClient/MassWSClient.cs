@@ -42,7 +42,7 @@ namespace WateryTart.Service.MassClient
             JsonConvert.DefaultSettings = () => s;
         }
 
-        public async Task<MassCredentials> Login(string username, string password, string baseurl)
+        public async Task<LoginResults> Login(string username, string password, string baseurl)
         {
             MassCredentials mc = new MassCredentials();
 
@@ -51,7 +51,7 @@ namespace WateryTart.Service.MassClient
                 Options = { KeepAliveInterval = TimeSpan.FromSeconds(1) }
             });
 
-            var tcs = new TaskCompletionSource<MassCredentials>();
+            var tcs = new TaskCompletionSource<LoginResults>();
             using (_client = new WebsocketClient(new Uri($"ws://{baseurl}/ws"), factory))
             {
                 _client.MessageReceived.Subscribe(OnNext);
@@ -61,17 +61,25 @@ namespace WateryTart.Service.MassClient
                 {
                     if (!response.Result.success)
                     {
-                        tcs.TrySetResult(new MassCredentials());
+                        var r = new LoginResults
+                        {
+                            Success = false,
+                            Error = response.Result.error
+
+                        };
+                        tcs.TrySetResult(r);
                         return;
                     }
-
-                    mc = new MassCredentials()
+                    var success = new LoginResults
                     {
-                        Token = response.Result.access_token,
-                        BaseUrl = baseurl
+                        Credentials = new MassCredentials
+                        {
+                            Token = response.Result.access_token,
+                            BaseUrl = baseurl
+                        },
+                        Success = true
                     };
-
-                    tcs.TrySetResult(mc);
+                    tcs.TrySetResult(success);
                 });
 
                 return await tcs.Task;
@@ -198,7 +206,15 @@ namespace WateryTart.Service.MassClient
                 case EventType.PlayerUpdated:
                 case EventType.PlayerRemoved:
                 case EventType.PlayerConfigUpdated:
-                    subject.OnNext(JsonConvert.DeserializeObject<PlayerEventResponse>(response.Text));
+                    try
+                    {
+                        var x = JsonConvert.DeserializeObject<PlayerEventResponse>(response.Text);
+                        subject.OnNext(x);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
 
                     break;
 

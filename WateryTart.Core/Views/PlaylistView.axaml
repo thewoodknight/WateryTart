@@ -55,13 +55,8 @@
 
                         <StackPanel Grid.Column="1" Margin="10,0,0,0">
                             <TextBlock Text="{Binding Name}"></TextBlock>
-                            <TextBlock >
-                                <Run Text="{Binding artists[0].Name}"></Run>
-                                <Run> . </Run>
-                                <Run Text="{Binding duration, Converter={StaticResource SecondsToMinutesConverter}}"></Run>
-                            </TextBlock>
-
-                          
+                            <TextBlock Text="{Binding artists[0].Name}" />
+                            <TextBlock Opacity="0.7" Text="{Binding duration, Converter={StaticResource SecondsToMinutesConverter}}" />
                         </StackPanel>
                     </Grid>
                 </DataTemplate>

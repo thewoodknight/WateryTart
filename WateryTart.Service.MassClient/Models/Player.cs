@@ -29,14 +29,14 @@ public partial class Player : INotifyPropertyChanged, IResult
             NotifyPropertyChanged();
         }
     }
-    [JsonProperty("volume_muted")] public bool? VolumeMuted { get; set; }
+    [JsonProperty("volume_muted")] public bool? VolumeMuted { get; set; }/*
     [JsonProperty("group_members")] public List<object> GroupMembers { get; set; }
-    [JsonProperty("static_group_members")] public List<object> StaticGroupMembers { get; set; }
+    [JsonProperty("static_group_members")] public List<object> StaticGroupMembers { get; set; }*/
     [JsonProperty("can_group_with")] public List<string> CanGroupWith { get; set; }
-    [JsonProperty("synced_to")] public object SyncedTo { get; set; }
+    [JsonProperty("synced_to")] public object? SyncedTo { get; set; }
     [JsonProperty("active_source")] public string ActiveSource { get; set; }
     [JsonProperty("source_list")] public List<SourceList> SourceList { get; set; }
-    [JsonProperty("active_group")] public object ActiveGroup { get; set; }
+    [JsonProperty("active_group")] public object? ActiveGroup { get; set; }
     [JsonProperty("current_media")]
     public CurrentMedia CurrentMedia
     {

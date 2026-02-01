@@ -104,8 +104,9 @@ public partial class Settings : INotifyPropertyChanged, ISettings
         {
             var fileData = File.ReadAllText(Path);
             JsonConvert.PopulateObject(fileData, this);
-            suppressSave = false;
         }
+
+        suppressSave = false;
     }
 
     private void Save()

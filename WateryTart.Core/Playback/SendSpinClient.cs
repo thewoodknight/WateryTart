@@ -40,7 +40,7 @@ public class SendSpinClient : IDisposable, IReaper
         }
     }
 
-    public SendSpinClient(IPlayerFactory player, string serverUri = "ws://10.0.1.20:8095/sendspin", ILoggerFactory loggerFactory = null)
+    public SendSpinClient(IPlayerFactory player, ILoggerFactory loggerFactory = null)
     {
         try
         {
@@ -105,7 +105,7 @@ public class SendSpinClient : IDisposable, IReaper
             _sendspinClient.PlayerStateChanged += HandlePlayerStateChanged;
 
             State = AudioPlayerState.Stopped;
-            _logger.LogInformation("SendSpinNAudioClient initialized. Server URI: {ServerUri}", serverUri);
+            _logger.LogInformation("SendSpinNAudioClient initialized.");
         }
         catch (Exception ex)
         {
@@ -117,8 +117,14 @@ public class SendSpinClient : IDisposable, IReaper
         }
     }
 
-    public async Task ConnectAsync(string serverUri = "ws://10.0.1.20:8095/sendspin")
+    public async Task ConnectAsync(string serverUri)
     {
+        //for now, assume the url 
+        var temp = new Uri("ws://" + serverUri);
+        
+        //and also assuming the port, default/recommended port used
+        serverUri = $"ws://{temp.Host}:8927/sendspin";
+
         if (_isConnected)
         {
             _logger.LogInformation("Already connected to Sendspin server.");

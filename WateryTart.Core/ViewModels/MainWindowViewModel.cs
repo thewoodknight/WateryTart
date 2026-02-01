@@ -1,10 +1,12 @@
 ﻿using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
+using System.Buffers.Text;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using WateryTart.Core.Messages;
+using WateryTart.Core.Playback;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels.Menus;
@@ -13,10 +15,11 @@ using WateryTart.Service.MassClient;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class MainWindowViewModel : ReactiveObject, IScreen
+public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatableViewModel
 {
     private readonly IMassWsClient _massClient;
     private readonly ISettings _settings;
+    private readonly SendSpinClient _sendSpinClient;
     public ISettings Settings { get { return _settings; } }
     public RoutingState Router { get; } = new();
     public ReactiveCommand<Unit, IRoutableViewModel> GoBack => Router.NavigateBack;
@@ -39,11 +42,12 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
     [Reactive]
     public partial IViewModelBase CurrentViewModel { get; set; }
 
-    public MainWindowViewModel(IMassWsClient massClient, IPlayersService playersService, ISettings settings, IColourService colourService)
+    public MainWindowViewModel(IMassWsClient massClient, IPlayersService playersService, ISettings settings, IColourService colourService, SendSpinClient sendSpinClient)
     {
         _massClient = massClient;
         PlayersService = playersService;
         _settings = settings;
+        _sendSpinClient = sendSpinClient;
         ColourService = colourService;
         ShowSlideupMenu = false;
 
@@ -65,7 +69,16 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
 
                 MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
             }
+
         });
+
+
+
+        MessageBus.Current.Listen<FromLoginMessage>()
+            .Subscribe(x =>
+            {
+                Connect();
+            });
 
         MessageBus.Current.Listen<MenuViewModel>()
             .Subscribe(x =>
@@ -86,8 +99,6 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
         /* This shouldn't be set too early otherwise the UI hangs
             Needs to be tied to a message to open/close the menu
          */
-        SlideupMenu = App.Container.GetRequiredService<SearchViewModel>();
-
         if (string.IsNullOrEmpty(_settings.Credentials.Token))
         {
             Router.Navigate.Execute(App.Container.GetRequiredService<LoginViewModel>());
@@ -102,5 +113,9 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen
         PlayersService.GetPlayers();
 
         GoHome.Execute();
+
+        _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
     }
+
+    public ViewModelActivator Activator { get; }
 }

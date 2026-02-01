@@ -13,23 +13,25 @@ public partial class CurrentMedia : INotifyPropertyChanged
     public string artist { get; set; }
     public string album { get; set; }
     public string image_url { get; set; }
-    public double duration { get; set; }
+    public double? duration { get; set; }
     public string source_id { get; set; }
     public string queue_item_id { get; set; }
-    public object custom_data { get; set; }
-    public double elapsed_time
+    public object? custom_data { get; set; }
+    public double? elapsed_time
     {
         get => elapsed_time1;
         set
         {
-
-            elapsed_time1 = value;
-            NotifyPropertyChanged();
-            NotifyPropertyChanged("progress");
+            if (value.HasValue)
+            {
+                elapsed_time1 = value.Value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("progress");
+            }
         }
     }
 
-    public double progress => (elapsed_time / duration) * 100;
+    public double progress => (elapsed_time.Value / duration.Value) * 100;
 
     public double? elapsed_time_last_updated { get; set; }
 

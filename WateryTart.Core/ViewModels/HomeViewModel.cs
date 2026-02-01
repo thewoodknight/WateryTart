@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,7 +15,7 @@ using WateryTart.Service.MassClient.Models;
 
 namespace WateryTart.Core.ViewModels
 {
-    public class HomeViewModel : ReactiveObject, IViewModelBase
+    public class HomeViewModel : ReactiveObject, IViewModelBase //, IActivatableViewModel
     {
         private readonly IMassWsClient _massClient;
         private readonly ISettings _settings;
@@ -30,6 +31,16 @@ namespace WateryTart.Core.ViewModels
 
         public HomeViewModel(IScreen screen, IMassWsClient massClient, ISettings settings, IPlayersService playersService)
         {
+            /*
+            Activator = new ViewModelActivator();
+            Activator.Activated.Subscribe(_ =>
+            {
+                
+                Console.WriteLine("Activated");
+            });
+;*/
+
+
             Title = "Home";
             _massClient = massClient;
             _settings = settings;
@@ -45,6 +56,8 @@ namespace WateryTart.Core.ViewModels
                 vm.SetRecommendation(SourceRecommendations.SingleOrDefault(x => x.ItemId == r.ItemId));
                 screen.Router.Navigate.Execute(vm);
             });
+
+
 
             AltMenuCommand = ReactiveCommand.Create<Item>(i =>
             {
@@ -146,5 +159,7 @@ namespace WateryTart.Core.ViewModels
             }
             return clone;
         }
+
+        public ViewModelActivator Activator { get; }
     }
 }

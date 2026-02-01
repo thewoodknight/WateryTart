@@ -119,11 +119,6 @@ public partial class App : Application
 
         var vm = Container.Resolve<IScreen>();
 
-
-        var playback = Container.Resolve<SendSpinClient>();
-        playback.ConnectAsync("ws://10.0.1.20:8927/sendspin");
-
-
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new Views.MainWindow
