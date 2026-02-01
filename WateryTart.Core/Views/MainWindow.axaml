@@ -108,7 +108,7 @@
 		MaxHeight="500"
 		Classes.show="{Binding ShowSlideupMenu}"
 		Classes.hide="{Binding !ShowSlideupMenu}">
-
+<!--
 			<Grid.Transitions>
 				<Transitions>
 					<DoubleTransition Property="Opacity" Duration="0:0:.2" Easing="SineEaseInOut"/>
@@ -116,7 +116,7 @@
 												   Easing="SineEaseInOut"
 												   Duration="0:0:.2" />
 				</Transitions>
-			</Grid.Transitions>
+			</Grid.Transitions>-->
 			<Grid.Styles>
 				<Style Selector="Grid.show">
 					<Setter Property="IsVisible" Value="True" />
