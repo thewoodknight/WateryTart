@@ -33,6 +33,7 @@
 							CornerRadius="5">
 						<asyncImageLoader1:AdvancedImage
 						Loader="{x:Static app:App.ImageLoaderInstance}"
+                        FallbackImage="{x:Static app:App.FallbackImage}"
 						Source="{Binding Album, Converter={StaticResource MetadataImageConverter}}"
 						/>
 					</Border>

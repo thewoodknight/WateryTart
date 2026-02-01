@@ -41,6 +41,7 @@
 							Grid.Column="0">
 						<asyncImageLoader:AdvancedImage
 						Loader="{x:Static app:App.ImageLoaderInstance}"
+                        FallbackImage="{x:Static app:App.FallbackImage}"
 						Height="50" Width="50" Source="{Binding Path=., Converter={StaticResource MetadataImageConverter}}">
 
 						</asyncImageLoader:AdvancedImage>

@@ -40,7 +40,8 @@ public class MetadataImageConverter : IValueConverter
 
             item = (MediaItemBase?)value;
 
-        else return null;
+        else
+            return null; //string.Empty;
 
         //If it's not an item, return
         if (item == null)

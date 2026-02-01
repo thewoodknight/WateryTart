@@ -3,6 +3,8 @@ using Autofac;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using ReactiveUI;
 using Splat;
 using System;
@@ -17,7 +19,6 @@ using WateryTart.Core.ViewModels;
 using WateryTart.Core.ViewModels.Players;
 using WateryTart.Core.Views;
 using WateryTart.Service.MassClient;
-
 using ColourService = WateryTart.Core.Services.ColourService;
 using PlayersService = WateryTart.Core.Services.PlayersService;
 
@@ -53,6 +54,14 @@ public partial class App : Application
         }
     }
 
+    private static Bitmap fallbackImage;
+    public static Bitmap FallbackImage
+    {
+        get
+        {
+            return fallbackImage ??= new Bitmap(AssetLoader.Open(new Uri("avares://WateryTart.Core/Assets/cover_dark.png")));
+        }
+    }
     public static DiskCachedWebImageLoader ImageLoaderInstance => LazyImageLoader.Value;
 
     private IEnumerable<IPlatformSpecificRegistration> PlatformSpecificRegistrations { get; }
@@ -90,7 +99,8 @@ public partial class App : Application
         builder.RegisterType<MiniPlayerViewModel>().AsSelf().AsImplementedInterfaces().SingleInstance();
         builder.RegisterType<BigPlayerViewModel>().AsSelf().AsImplementedInterfaces().SingleInstance();
         builder.RegisterType<HomeViewModel>().SingleInstance();
-
+        builder.RegisterType<KeyboardVolumeKeyBindingsViewModel>().AsImplementedInterfaces().SingleInstance();
+        builder.RegisterType<SearchResultsViewModel>().AsSelf().AsImplementedInterfaces().SingleInstance();
 
         //Platform specific registrations from Platform.Linux, Platform.Windows projects
         foreach (var platformSpecificRegistration in PlatformSpecificRegistrations)
