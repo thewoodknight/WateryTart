@@ -66,7 +66,8 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         QueuedItems.Clear();
         try
         {
-            QueuedItems.AddRange(items.Result);
+            if (items.Result != null)
+                QueuedItems.AddRange(items.Result);
         }
         catch (Exception ex)
         {
