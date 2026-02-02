@@ -6,6 +6,7 @@
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
 			 xmlns:viewModels="clr-namespace:WateryTart.Core.ViewModels"
 			 x:Class="WateryTart.Core.App"
+			 Name="WateryTart"
 			 RequestedThemeVariant="Dark">
 	<Application.Resources>
 

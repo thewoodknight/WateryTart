@@ -126,7 +126,7 @@ namespace WateryTart.Core.ViewModels
             {
                 SourceRecommendations.Add(n);
                 Recommendation x = (Recommendation)CustomMemberwiseClone(n);
-                
+
                 if (x.items.Count > 4)
                     x.items = x.items.GetRange(0, 4);
 
