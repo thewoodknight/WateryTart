@@ -51,5 +51,7 @@
 	  </Compile>
 	</ItemGroup>
 
-
+	<PropertyGroup>
+		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+	</PropertyGroup>
 </Project>
