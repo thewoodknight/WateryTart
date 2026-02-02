@@ -21,5 +21,7 @@ jobs:
           cache-dependency-path: './WateryTart.Platform.Linux/packages.lock.json'
       - name: Install dependencies
         run: dotnet restore
+      - name: Install workloads
+        run: dotnet workload restore
       - name: Build
         run: dotnet publish WateryTart.Platform.Linux -p:PublishProfile=LinuxArm
