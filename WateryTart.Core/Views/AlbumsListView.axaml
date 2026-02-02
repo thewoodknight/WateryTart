@@ -40,7 +40,7 @@
 
 							Loader="{x:Static app:App.ImageLoaderInstance}"
 							FallbackImage="{x:Static app:App.FallbackImage}"
-							Height="195" Width="195" Source="{Binding Path=., Converter={StaticResource MetadataImageConverter}}" />
+							Height="195" Width="195" Source="{Binding Path=Album, Converter={StaticResource MetadataImageConverter}}" />
 						</Border>
 					</Border>
 					<TextBlock Margin="-10,0,0,0" Text="{Binding Album.Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>

@@ -16,32 +16,38 @@ namespace WateryTart.Core.Utilities
         /// </summary>
         /// <param name="imageSource">The image source to analyze</param>
         /// <param name="sampleSize">Optional: Number of colors to quantize to (default: 256)</param>
+        /// <param name="ensureWhiteTextContrast">Optional: Whether to ensure colors have sufficient contrast with white text</param>
+        /// <param name="minContrastRatio">Optional: Minimum contrast ratio for white text (default: 4.5)</param>
         /// <returns>A list of the top 3 dominant colors</returns>
-        public static async Task<List<Color>> GetDominantColorsAsync(IImage imageSource, int sampleSize = 256)
+        public static async Task<List<Color>> GetDominantColorsAsync(
+            IImage imageSource, 
+            int sampleSize = 256, 
+            bool ensureWhiteTextContrast = false,
+            double minContrastRatio = 4.5)
         {
             if (imageSource == null)
                 return new List<Color>();
 
-            return await Task.Run(() => GetDominantColors(imageSource, sampleSize));
+            return await Task.Run(() => GetDominantColors(imageSource, sampleSize, ensureWhiteTextContrast, minContrastRatio));
         }
 
         /// <summary>
         /// Synchronous version of GetDominantColorsAsync.
         /// </summary>
-        public static List<Color> GetDominantColors(IImage imageSource, int sampleSize = 256)
+        public static List<Color> GetDominantColors(IImage imageSource, int sampleSize = 256, bool ensureWhiteTextContrast = false, double minContrastRatio = 4.5)
         {
             if (imageSource == null)
                 return new List<Color>();
 
             if (imageSource is Bitmap bitmap)
             {
-                return ExtractColorsFromBitmap(bitmap, sampleSize);
+                return ExtractColorsFromBitmap(bitmap, sampleSize, ensureWhiteTextContrast, minContrastRatio);
             }
 
             return new List<Color>();
         }
 
-        private static List<Color> ExtractColorsFromBitmap(Bitmap bitmap, int sampleSize)
+        private static List<Color> ExtractColorsFromBitmap(Bitmap bitmap, int sampleSize, bool ensureWhiteTextContrast, double minContrastRatio)
         {
             try
             {
@@ -50,7 +56,7 @@ namespace WateryTart.Core.Utilities
                 memoryStream.Seek(0, SeekOrigin.Begin);
 
                 using var skBitmap = SKBitmap.Decode(memoryStream);
-                return ExtractColorsFromSkBitmap(skBitmap, sampleSize);
+                return ExtractColorsFromSkBitmap(skBitmap, sampleSize, ensureWhiteTextContrast, minContrastRatio);
             }
             catch
             {
@@ -58,7 +64,7 @@ namespace WateryTart.Core.Utilities
             }
         }
 
-        private static List<Color> ExtractColorsFromSkBitmap(SKBitmap bitmap, int sampleSize)
+        private static List<Color> ExtractColorsFromSkBitmap(SKBitmap bitmap, int sampleSize, bool ensureWhiteTextContrast, double minContrastRatio)
         {
             var colorBuckets = new Dictionary<int, int>();
             int width = bitmap.Width;
@@ -87,12 +93,26 @@ namespace WateryTart.Core.Utilities
                 }
             }
 
-            // Get top 3 colors
+            // Get colors with sufficient contrast for white text
             var topColors = colorBuckets
                 .OrderByDescending(x => x.Value)
-                .Take(3)
                 .Select(x => UnquantizeColor(x.Key))
+                .Where(color => HasSufficientContrastWithWhite(color, minContrastRatio))
+                .Take(3)
                 .ToList();
+
+            // If we don't have enough colors with good contrast, darken the original colors
+            if (topColors.Count < 3)
+            {
+                var fallbackColors = colorBuckets
+                    .OrderByDescending(x => x.Value)
+                    .Select(x => UnquantizeColor(x.Key))
+                    .Take(3)
+                    .Select(color => DarkenColor(color))
+                    .ToList();
+                
+                return fallbackColors;
+            }
 
             return topColors;
         }
@@ -118,6 +138,40 @@ namespace WateryTart.Core.Utilities
             byte b = (byte)((qb << 5) | (qb << 2) | (qb >> 1));
 
             return new Color(255, r, g, b);
+        }
+        private static double GetRelativeLuminance(Color color)
+        {
+            // Convert to sRGB and calculate relative luminance (WCAG 2.0)
+            double r = color.R / 255.0;
+            double g = color.G / 255.0;
+            double b = color.B / 255.0;
+
+            r = r <= 0.03928 ? r / 12.92 : Math.Pow((r + 0.055) / 1.055, 2.4);
+            g = g <= 0.03928 ? g / 12.92 : Math.Pow((g + 0.055) / 1.055, 2.4);
+            b = b <= 0.03928 ? b / 12.92 : Math.Pow((b + 0.055) / 1.055, 2.4);
+
+            return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        }
+
+        private static bool HasSufficientContrastWithWhite(Color color, double minContrastRatio = 4.5)
+        {
+            // WCAG AA standard requires 4.5:1 for normal text, 3:1 for large text
+            double colorLuminance = GetRelativeLuminance(color);
+            double whiteLuminance = 1.0; // White has luminance of 1
+
+            double contrastRatio = (whiteLuminance + 0.05) / (colorLuminance + 0.05);
+            return contrastRatio >= minContrastRatio;
+        }
+
+        private static Color DarkenColor(Color color, double factor = 0.6)
+        {
+            // Darken the color to ensure better contrast
+            return new Color(
+                color.A,
+                (byte)(color.R * factor),
+                (byte)(color.G * factor),
+                (byte)(color.B * factor)
+            );
         }
     }
 }

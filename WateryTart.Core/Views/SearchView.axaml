@@ -4,6 +4,7 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
 			 xmlns:controls="clr-namespace:WateryTart.Core.Controls"
+			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="WateryTart.Core.Views.SearchView"
 			 x:DataType="vm:SearchViewModel">
@@ -13,59 +14,78 @@
 	</UserControl.Resources>
 	<StackPanel Margin="10,0,10,0">
 		<TextBox Text="{Binding SearchTerm}"
-				 Watermark="🔍 Search..."/>
+				 Watermark="🔍 Search..." Margin="0,0,0,10"/>
 
 		<!-- Artist Results -->
-		<Border
-		BorderThickness="0,0,0,1"
-		BorderBrush="#66FFFFFF">
-			<Grid HorizontalAlignment="Stretch" Background="Transparent">
-                <Interaction.Behaviors>
-                    <EventTriggerBehavior EventName="Tapped">
-                        <InvokeCommandAction Command="{Binding ExpandArtistsResultsCommand}"/>
-                    </EventTriggerBehavior>
-                </Interaction.Behaviors>
-                <TextBlock Text="Artists" FontWeight="Bold" FontSize="16"  />
-                <TextBlock Text=">" HorizontalAlignment="Right" FontWeight="Bold" FontSize="16"  />
-			</Grid>
-		</Border>
-		<ItemsControl ItemsSource="{Binding SearchArtists}" Background="Transparent" ItemTemplate="{StaticResource artistSmallReusableTemplate}" />
+		<StackPanel IsVisible="{Binding SearchArtists.Count}">
+			<Border
+			BorderThickness="0,0,0,1"
+			BorderBrush="#66FFFFFF">
+				<Grid HorizontalAlignment="Stretch" Background="Transparent">
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="Tapped">
+							<InvokeCommandAction Command="{Binding ExpandArtistsResultsCommand}"/>
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+					<TextBlock Text="Artists" FontWeight="Bold" FontSize="16"  />
+                    <avalonia:MaterialIcon HorizontalAlignment="Right"  Kind="ChevronRight" Width="25" Height="25" />
+				</Grid>
+			</Border>
+			<ItemsControl ItemsSource="{Binding SearchArtists}" Background="Transparent" ItemTemplate="{StaticResource artistSmallReusableTemplate}" Margin="0,0,0,10"/>
+		</StackPanel>
 
 		<!-- Album Results -->
-		<Border
-		BorderThickness="0,0,0,1"
-		BorderBrush="#66FFFFFF">
-			<Interaction.Behaviors>
-				<EventTriggerBehavior EventName="Tapped">
-					<InvokeCommandAction Command="{Binding ExpandAlbumResultsCommand}"/>
-				</EventTriggerBehavior>
-			</Interaction.Behaviors>
-			<TextBlock Text="Albums" FontWeight="Bold" FontSize="16"  />
-		</Border>
-		<ItemsControl ItemsSource="{Binding SearchAlbums}" Background="Transparent" ItemTemplate="{StaticResource albumSmallReusableTemplate}" />
+		<StackPanel IsVisible="{Binding SearchAlbums.Count}">
+			<Border
+			BorderThickness="0,0,0,1"
+			BorderBrush="#66FFFFFF">
+				<Grid HorizontalAlignment="Stretch" Background="Transparent">
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="Tapped">
+							<InvokeCommandAction Command="{Binding ExpandAlbumResultsCommand}"/>
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+					<TextBlock Text="Albums" FontWeight="Bold" FontSize="16"  />
+                    <avalonia:MaterialIcon HorizontalAlignment="Right"  Kind="ChevronRight" Width="25" Height="25" />
+				</Grid>
+			</Border>
+			<ItemsControl ItemsSource="{Binding SearchAlbums}" Background="Transparent" ItemTemplate="{StaticResource albumSmallReusableTemplate}" Margin="0,0,0,10" />
+		</StackPanel>
 
-		<Border
-		BorderThickness="0,0,0,1"
-		BorderBrush="#66FFFFFF">
-			<Interaction.Behaviors>
-				<EventTriggerBehavior EventName="Tapped">
-					<InvokeCommandAction Command="{Binding ExpandTracksResultsCommand}"/>
-				</EventTriggerBehavior>
-			</Interaction.Behaviors>
-			<TextBlock Text="Tracks" FontWeight="Bold" FontSize="16"  />
-		</Border>
-		<ItemsControl ItemsSource="{Binding SearchItem}" Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" />
+		<!-- Track Results -->
+		<StackPanel IsVisible="{Binding SearchItem.Count}">
+			<Border
+			BorderThickness="0,0,0,1"
+			BorderBrush="#66FFFFFF">
+				<Grid HorizontalAlignment="Stretch" Background="Transparent">
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="Tapped">
+							<InvokeCommandAction Command="{Binding ExpandTracksResultsCommand}"/>
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+					<TextBlock Text="Tracks" FontWeight="Bold" FontSize="16"  />
+                    <avalonia:MaterialIcon HorizontalAlignment="Right"  Kind="ChevronRight" Width="25" Height="25" />
+				</Grid>
+			</Border>
+			<ItemsControl ItemsSource="{Binding SearchItem}" Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" Margin="0,0,0,10"/>
+		</StackPanel>
 
-		<Border
-		BorderThickness="0,0,0,1"
-		BorderBrush="#66FFFFFF">
-			<Interaction.Behaviors>
-				<EventTriggerBehavior EventName="Tapped">
-					<InvokeCommandAction Command="{Binding ExpandPlaylistResultsCommand}"/>
-				</EventTriggerBehavior>
-			</Interaction.Behaviors>
-			<TextBlock Text="Playlists" FontWeight="Bold" FontSize="16"  />
-		</Border>
-		<ItemsControl ItemsSource="{Binding SearchPlaylist}" Background="Transparent" ItemTemplate="{StaticResource playlistSmallReusableTemplate}" />
+		<!-- Playlist Results -->
+		<StackPanel IsVisible="{Binding SearchPlaylist.Count}">
+			<Border
+			BorderThickness="0,0,0,1"
+			BorderBrush="#66FFFFFF">
+				<Grid HorizontalAlignment="Stretch" Background="Transparent">
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="Tapped">
+							<InvokeCommandAction Command="{Binding ExpandPlaylistResultsCommand}"/>
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+					<TextBlock Text="Playlists" FontWeight="Bold" FontSize="16"  />
+                    <avalonia:MaterialIcon HorizontalAlignment="Right"  Kind="ChevronRight" Width="25" Height="25" />
+				</Grid>
+			</Border>
+			<ItemsControl ItemsSource="{Binding SearchPlaylist}" Background="Transparent" ItemTemplate="{StaticResource playlistSmallReusableTemplate}" />
+		</StackPanel>
 	</StackPanel>
 </UserControl>

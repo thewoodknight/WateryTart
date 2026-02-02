@@ -117,7 +117,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
             case EventType.QueueUpdated: //replacing a queue is just 'updated'
 
                 //It seems like when a queue is updated, the best thing is to clear/refetch
-                if (SelectedQueue != null)
+                if (SelectedQueue != null && e.data.queue_id == SelectedQueue.queue_id)
                 {
                     SelectedQueue.current_index = e.data.current_index;
                     SelectedQueue.current_item = e.data.current_item;
@@ -180,7 +180,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async void GetPlayers()
+    public async Task GetPlayers()
     {
         try
         {
@@ -209,7 +209,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async void PlayerVolumeDown(Player p)
+    public async Task PlayerVolumeDown(Player p)
     {
         p ??= SelectedPlayer;
 
@@ -226,7 +226,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async void PlayerVolumeUp(Player p)
+    public async Task PlayerVolumeUp(Player p)
     {
         p ??= SelectedPlayer;
 
@@ -243,7 +243,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async void PlayerPlayPause(Player p)
+    public async Task PlayerPlayPause(Player p)
     {
         p ??= SelectedPlayer;
         try
@@ -256,7 +256,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async void PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null, PlayMode mode = PlayMode.Replace)
+    public async Task PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null, PlayMode mode = PlayMode.Replace)
     {
         p ??= SelectedPlayer;
 
@@ -297,7 +297,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async void PlayerNext(Player p = null)
+    public async Task PlayerNext(Player p = null)
     {
         p ??= SelectedPlayer;
         try
@@ -310,7 +310,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async void PlayerPrevious(Player p)
+    public async Task PlayerPrevious(Player p)
     {
         p ??= SelectedPlayer;
         try

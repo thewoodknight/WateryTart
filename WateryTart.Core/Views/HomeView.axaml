@@ -51,7 +51,11 @@
 								CommandParameter="{Binding Path=.}"/>
 							</EventTriggerBehavior>
 						</Interaction.Behaviors>
-						<TextBlock Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" FontWeight="Bold" FontSize="16"  />
+						<Grid>
+							<TextBlock Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" FontWeight="Bold" FontSize="16"  />
+
+							<materialIcons:MaterialIcon HorizontalAlignment="Right"  Kind="ChevronRight" Width="25" Height="25" />
+						</Grid>
 					</Border>
 
 					<ItemsControl Background="{x:Null}"

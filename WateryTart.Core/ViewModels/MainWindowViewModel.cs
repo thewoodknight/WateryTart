@@ -33,7 +33,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     [Reactive] public partial IPlayersService PlayersService { get; set; }
     public IColourService ColourService { get; }
     [Reactive] public partial ReactiveObject SlideupMenu { get; set; }
-    [Reactive] public ReactiveCommand<Unit, Unit> CloseSlideupCommand { get; set; }
+    [Reactive] public partial ReactiveCommand<Unit, Unit> CloseSlideupCommand { get; set; }
 
     [Reactive] public partial bool ShowSlideupMenu { get; set; }
 
@@ -51,11 +51,27 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
         ColourService = colourService;
         ShowSlideupMenu = false;
 
-        GoHome = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<HomeViewModel>()));
-        GoMusic = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<LibraryViewModel>()));
-        GoSearch = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SearchViewModel>()));
-        GoSettings = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SettingsViewModel>()));
-        GoPlayers = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<PlayersViewModel>()));
+        // Create observables that check if we're already on the target page
+        var canNavigateToHome = Router.CurrentViewModel
+            .Select(vm => vm is not HomeViewModel);
+
+        var canNavigateToMusic = Router.CurrentViewModel
+            .Select(vm => vm is not LibraryViewModel);
+
+        var canNavigateToSearch = Router.CurrentViewModel
+            .Select(vm => vm is not SearchViewModel);
+
+        var canNavigateToSettings = Router.CurrentViewModel
+            .Select(vm => vm is not SettingsViewModel);
+
+        var canNavigateToPlayers = Router.CurrentViewModel
+            .Select(vm => vm is not PlayersViewModel);
+
+        GoHome = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<HomeViewModel>()), canNavigateToHome);
+        GoMusic = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<LibraryViewModel>()), canNavigateToMusic);
+        GoSearch = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SearchViewModel>()), canNavigateToSearch);
+        GoSettings = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SettingsViewModel>()), canNavigateToSettings);
+        GoPlayers = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<PlayersViewModel>()), canNavigateToPlayers);
         CloseSlideupCommand = ReactiveCommand.Create<Unit>(_ => ShowSlideupMenu = false);
 
         Router.CurrentViewModel.Subscribe((vm) =>

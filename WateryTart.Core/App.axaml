@@ -215,10 +215,10 @@
 		<Style Selector="Button.iconButton">
 			<Setter Property="Background" Value="Transparent" /> <!-- Transparent is still a touch/click target, but x:x:Null is not -->
 		</Style>
-		<Style Selector="Button.iconButton:disabled">
-			<Setter Property="Background" Value="Transparent" />
-			<Setter Property="IsVisible" Value="False" />
-		</Style>
+        <Style Selector="Button.iconButton:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#44FFFFFF" />
+        </Style>
 		<Style Selector="Button.navButton">
 			<Setter Property="HorizontalAlignment" Value="Stretch" />
 		</Style>
