@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '3.1.x', '6.0.x' ]
+        dotnet-version: [ '10.0.x' ]
 
     steps:
       - uses: actions/checkout@v6
@@ -23,3 +23,4 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
       - run: dotnet build WateryTart.Platform.Windows/WateryTart.Platform.Windows.csproj
+      - run: dotnet publish WateryTart.Platform.Linux -p:PublishProfile=LinuxArm
