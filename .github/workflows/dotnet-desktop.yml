@@ -3,22 +3,50 @@ name: dotnet package
 on: workflow_dispatch 
 
 jobs:
-  build:
-
+  linuxbuild:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: [ '3.1.x', '6.0.x' ]
+        dotnet-version: [ '10.0.x' ]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Setup .NET 10.x
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           # Semantic version range syntax or exact version of a dotnet version
           dotnet-version: '10.x'
           cache: true
+          cache-dependency-path: './WateryTart.Platform.Linux/packages.lock.json'
       - name: Install dependencies
         run: dotnet restore
-      - name: Build
-        run: dotnet publish WateryTart.Platform.Linux -p:PublishProfile=LinuxArm
+      - run: dotnet publish WateryTart.Platform.Linux -p:PublishProfile=LinuxArm
+      - name: Linux-arm64 files
+        uses: actions/upload-artifact@v4
+        with:    
+          name: WateryTart.LinuxArm64
+          path: /home/runner/work/WateryTart/WateryTart/WateryTart.Platform.Linux/bin/release/net10.0/publish/linux-arm64/**
+          
+  windowsbuild:
+      runs-on: windows-latest
+      strategy:
+        matrix:
+          dotnet-version: [ '10.0.x' ]
+  
+      steps:
+        - uses: actions/checkout@v6
+        - name: Setup .NET 10.x
+          uses: actions/setup-dotnet@v5
+          with:
+            # Semantic version range syntax or exact version of a dotnet version
+            dotnet-version: '10.x'
+            cache: true
+            cache-dependency-path: './WateryTart.Platform.Linux/packages.lock.json'
+        - name: Install dependencies
+          run: dotnet restore
+        - run: dotnet publish WateryTart.Platform.Windows -p:PublishProfile=Winx64
+        - name: Win-x64 files
+          uses: actions/upload-artifact@v4
+          with:    
+            name: WateryTart.Windows-x64
+            path: D:\a\WateryTart\WateryTart\WateryTart.Platform.Windows\bin\Release\net10.0\publish\win-x64\**
