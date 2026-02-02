@@ -2,13 +2,19 @@
 > Disclaimer: This is an unofficial project and is not affiliated with, endorsed by, or associated with the Music Assistant project.
 > It is really just a proof of concept that has gotten out of hand - I'm very much a hobbyist coder, so I won't be surprised if I haven't somehow invented the definitive example of 'Worst Practices'
 
+Please see the Issues for some of the things not yet implemented. There is a long list.
 
 ## Goals
 This is aimed as a Plexamp-like experience for MediaAssistant, with a personal focus on Windows and Linux/RaspberryPi on a 5" touch screen.
 
 While there is an Android project, this is mostly provided through Avalonia's crossplatform project setup and is currently not actively being tested/developed for Android.
 
+Windows  
+<img src="https://github.com/user-attachments/assets/d236796a-8e50-48ff-811b-0df6037d08de" width="300" /> <img src="https://github.com/user-attachments/assets/85e48cb2-788e-48ac-804d-069601fa1630" width="300" />
 
+Raspberry Pi5 w/ Hifiberry Amp4  
+<img src="https://github.com/user-attachments/assets/c75337c9-f48c-4ac3-a268-8214215ad99d" width="300" />
+<img src="https://github.com/user-attachments/assets/e985a9c7-9882-4061-aaa9-4a04b1c84014" width="300" />
 ## Download & Install
 
 ### Requirements
