@@ -40,6 +40,7 @@ public partial class App : Application
     private static readonly Lazy<DiskCachedWebImageLoader> LazyImageLoader = new(() => new DiskCachedWebImageLoader(AppDataPath));
     private static string _cachedBaseUrl;
     private static IEnumerable<IReaper> _reapers;
+    private static bool _isShuttingDown;
 
     public static IContainer Container;
     public static string BaseUrl
@@ -145,7 +146,15 @@ public partial class App : Application
 
             desktop.ShutdownRequested += (s, e) =>
             {
+                // Prevent re-entry - if we're already shutting down, let it proceed
+                if (_isShuttingDown)
+                {
+                    Debug.WriteLine("=== SHUTDOWN PROCEEDING (cleanup already done) ===");
+                    return;
+                }
+
                 Debug.WriteLine("=== SHUTDOWN STARTED ===");
+                _isShuttingDown = true;
                 e.Cancel = true;
 
                 foreach (var reaper in _reapers)
