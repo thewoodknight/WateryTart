@@ -18,7 +18,7 @@ jobs:
           # Semantic version range syntax or exact version of a dotnet version
           dotnet-version: '10.x'
           cache: true
-          cache-dependency-path: 'WateryTart.Platform.Linux/package-lock.json'
+          cache-dependency-path: './WateryTart.Platform.Linux/package-lock.json'
       - name: Install dependencies
         run: dotnet restore
       - name: Build
