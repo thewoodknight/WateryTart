@@ -87,7 +87,9 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
 
         /* Subscribe to the relevant websocket events from MASS */
         _subscriptions.Add(_massClient.Events
-            .Subscribe((e) => OnEvents(e)));
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .SelectMany(e => Observable.FromAsync(() => OnEvents(e)))
+            .Subscribe());
 
 
         /* This takes care of filtering the two lists, though unsure on INPC */
@@ -130,7 +132,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         {
             case EventType.MediaItemPlayed:
                 mediaEvent = (MediaItemEventResponse)e;
-                if (mediaEvent.object_id == SelectedQueue.current_item.media_item.Uri)
+                if (mediaEvent.object_id == SelectedQueue?.current_item?.media_item.Uri)
                     SelectedQueue.current_item.media_item.elapsed_time = mediaEvent.data.seconds_played;
                 break;
             case EventType.QueueTimeUpdated:
@@ -143,7 +145,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
 
             case EventType.PlayerAdded:
                 playerEvent = (PlayerEventResponse)e;
-                if (!Players.Contains((playerEvent.data))) //Any?
+                if (!Players.Contains((playerEvent.data)) && playerEvent.data != null) //Any?
                     Players.Add(playerEvent.data);
 
                 break;
@@ -197,85 +199,6 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
                 break;
         }
     }
-
-    //public async Task OnPlayerQueueEvents(PlayerQueueEventResponse e)
-    //{
-
-    //    switch (e.EventName)
-    //    {
-    //        case EventType.QueueAdded:
-    //            break;
-
-    //        case EventType.QueueUpdated: //replacing a queue is just 'updated'
-
-    //            //It seems like when a queue is updated, the best thing is to clear/refetch
-    //            if (SelectedQueue != null && e.data.queue_id == SelectedQueue.queue_id)
-    //            {
-    //                SelectedQueue.current_index = e.data.current_index;
-    //                SelectedQueue.current_item = e.data.current_item;
-
-    //                var currentItem = SelectedQueue.current_item;
-    //                if (currentItem == null)
-    //                    break;
-    //                if (currentItem.image.remotely_accessible)
-    //                    colourService.Update(currentItem.media_item.ItemId, currentItem.image.path);
-    //                else
-    //                {
-    //                    var url = string.Format("http://{0}/imageproxy?path={1}&provider={2}&checksum=&size=256", App.BaseUrl, Uri.EscapeDataString(currentItem.image.path), currentItem.image.provider);
-    //                    colourService.Update(currentItem.media_item.ItemId, url);
-    //                }
-    //            }
-
-    //            await FetchQueueContentsAsync();
-    //            break;
-
-    //        case EventType.QueueTimeUpdated:
-
-    //            break;
-    //        case EventType.QueueItemsUpdated:
-
-    //            break;
-
-    //        default:
-    //            break;
-    //    }
-    //}
-
-    //public void OnPlayerEvents(PlayerEventResponse e)
-    //{
-    //    switch (e.EventName)
-    //    {
-    //        case EventType.PlayerAdded:
-    //            if (!Players.Contains((e.data))) //Any?
-    //                Players.Add(e.data);
-
-    //            break;
-
-    //        case EventType.PlayerUpdated:
-    //            var player = Players.FirstOrDefault(p => p.PlayerId == e.data.PlayerId);
-
-    //            if (player != null)
-    //            {
-    //                player.PlaybackState = e.data.PlaybackState;
-    //                player.CurrentMedia = e.data.CurrentMedia; // this should probably be more of a clone
-    //                player.VolumeLevel = e.data.VolumeLevel;
-
-    //            }
-
-
-
-    //            break;
-
-    //        case EventType.PlayerRemoved:
-    //            Players.RemoveAll(p => p.PlayerId == e.data.PlayerId);
-    //            break;
-
-    //        default:
-
-    //            break;
-    //    }
-    //}
-
     public async Task GetPlayers()
     {
         try
@@ -283,7 +206,8 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
             var playersResponse = await _massClient.PlayersAllAsync();
             foreach (var y in playersResponse.Result)
             {
-                Players.Add(y);
+                if (y != null)
+                    Players.Add(y);
             }
 
             var queuesResponse = await _massClient.PlayerQueuesAllAsync();

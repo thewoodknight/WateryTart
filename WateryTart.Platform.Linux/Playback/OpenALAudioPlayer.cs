@@ -342,7 +342,7 @@ public sealed class OpenALAudioPlayer : IAudioPlayer, IAudioDeviceEnumerator
             try { _al.SourceUnqueueBuffers(_source, buf); } catch { break; }
         }
     }
-
+    //TODO: Implement flag for app or systemwide volume setting
     private void ApplyVolume()
     {
         if (_al == null) return;

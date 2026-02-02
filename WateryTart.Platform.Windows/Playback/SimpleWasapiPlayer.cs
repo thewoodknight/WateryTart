@@ -2,12 +2,14 @@
 // Licensed under the MIT License. See LICENSE file in the project root. https://github.com/chrisuthe/windowsSpin/.
 // </copyright>
 
+using Iot.Device.Card.CreditCardProcessing;
 using NAudio.Wave;
 using Sendspin.SDK.Audio;
 using Sendspin.SDK.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using UnitsNet;
 using WateryTart.Core;
 
 namespace WateryTart.Platform.Windows.Playback;
@@ -20,13 +22,30 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
     private SampleSourceProvider? _provider;
 
     public AudioPlayerState State { get; private set; } = AudioPlayerState.Uninitialized;
-    public float Volume { get; set; } = 1.0f;
+
+    public float Volume
+    {
+        get => field;
+        set
+        {
+            field = value;
+            SetVolume();
+        }
+    } = 1.0f;
+
     public bool IsMuted { get; set; }
     public int OutputLatencyMs { get; private set; }
 
     public event EventHandler<AudioPlayerState>? StateChanged;
     public event EventHandler<AudioPlayerError>? ErrorOccurred;
 
+    //TODO: Implement IsMuted functionality, Implement flag for app or systemwide volume setting
+    public void SetVolume()
+    {
+        if (_wasapiOut == null) 
+            return;
+        _wasapiOut.Volume = Volume;
+    }
     public Task InitializeAsync(AudioFormat format, CancellationToken ct = default)
     {
         // Create NAudio wave format (SDK always outputs 32-bit float)
