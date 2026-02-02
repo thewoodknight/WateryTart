@@ -4,48 +4,73 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
              xmlns:discovery="clr-namespace:WateryTart.Core.Services.Discovery"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
-             x:Class="WateryTart.Core.Views.LoginView"
-             x:DataType="vm:LoginViewModel">
-  <UserControl.Resources>
-    <SolidColorBrush x:Key="ErrorBrush">#FFE81123</SolidColorBrush>
-    <SolidColorBrush x:Key="SuccessBrush">#107C10</SolidColorBrush>
-    <SolidColorBrush x:Key="WarningBrush">#FFA500</SolidColorBrush>
-  </UserControl.Resources>
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="600"
+             x:Class="WateryTart.Core.Views.ServerSettingsView"
+             x:DataType="vm:ServerSettingsViewModel">
 
-  <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-    <StackPanel Width="380" Spacing="12">
-      <!-- Header -->
-      <TextBlock FontSize="28" FontWeight="Bold">
-        Login
-      </TextBlock>
+  <ScrollViewer>
+    <StackPanel Margin="20" Spacing="16" MaxWidth="400">
 
-      <!-- Error Message Display -->
+      <!-- Current Connection Section -->
+      <TextBlock Text="Current Connection" FontSize="18" FontWeight="Bold" />
+
+      <Border Background="#33FFFFFF" CornerRadius="8" Padding="16">
+        <StackPanel Spacing="12">
+          <StackPanel Spacing="4">
+            <TextBlock Text="Server" FontWeight="SemiBold" FontSize="12" Foreground="Gray" />
+            <TextBlock Text="{Binding CurrentServer}" FontSize="14" />
+          </StackPanel>
+
+          <StackPanel Spacing="4">
+            <TextBlock Text="Username" FontWeight="SemiBold" FontSize="12" Foreground="Gray" />
+            <TextBlock Text="{Binding CurrentUsername}" FontSize="14" />
+          </StackPanel>
+
+          <StackPanel Spacing="4">
+            <TextBlock Text="Password" FontWeight="SemiBold" FontSize="12" Foreground="Gray" />
+            <TextBlock Text="{Binding MaskedPassword}" FontSize="14" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+
+      <Separator Margin="0,8" />
+
+      <!-- Reconfigure Section -->
+      <TextBlock Text="Change Server" FontSize="18" FontWeight="Bold" />
+
+      <!-- Success Message -->
+      <Border Background="#1E7E34"
+              BorderBrush="#28A745"
+              BorderThickness="1"
+              CornerRadius="4"
+              IsVisible="{Binding ShowSuccess}"
+              Padding="12">
+        <TextBlock Text="Server configuration updated successfully!"
+                   Foreground="White"
+                   FontSize="12" />
+      </Border>
+
+      <!-- Error Message -->
       <Border Background="#FFF7CCCF"
               BorderBrush="#FFE81123"
               BorderThickness="1"
               CornerRadius="4"
               IsVisible="{Binding HasError}"
               Padding="12">
-        <StackPanel Spacing="4">
-          <TextBlock FontWeight="Bold" Foreground="#E81123" FontSize="12">
-            Error
-          </TextBlock>
-          <TextBlock Text="{Binding ErrorMessage}"
-                     Foreground="#E81123"
-                     TextWrapping="Wrap"
-                     FontSize="12" />
-        </StackPanel>
+        <TextBlock Text="{Binding ErrorMessage}"
+                   Foreground="#E81123"
+                   TextWrapping="Wrap"
+                   FontSize="12" />
       </Border>
 
-      <!-- Loading/Success Message Display -->
+      <!-- Loading Message -->
       <Border Background="#F7FFF7"
               BorderBrush="#107C10"
               BorderThickness="1"
               CornerRadius="4"
               IsVisible="{Binding IsLoading}"
               Padding="12">
-        <TextBlock Text="Logging in..."
+        <TextBlock Text="Connecting..."
                    Foreground="#107C10"
                    FontSize="12" />
       </Border>
@@ -60,14 +85,14 @@
         <TextBlock Foreground="#996300"
                    TextWrapping="Wrap"
                    FontSize="11">
-          HA Addon detected. Create a user in Music Assistant (Settings → Users) and use those credentials here.
+          HA Addon detected. Create a user in Music Assistant (Settings - Users) and use those credentials here.
         </TextBlock>
       </Border>
 
-      <!-- Discovered Servers Section -->
+      <!-- Discovered Servers -->
       <StackPanel Spacing="4">
         <Grid ColumnDefinitions="*,Auto">
-          <Label Content="Discovered Servers" FontWeight="SemiBold" Grid.Column="0" />
+          <TextBlock Text="Discovered Servers" FontWeight="SemiBold" Grid.Column="0" />
           <StackPanel Orientation="Horizontal" Grid.Column="1" Spacing="8">
             <TextBlock Text="Scanning..."
                        FontSize="11"
@@ -107,11 +132,10 @@
                    IsVisible="{Binding !DiscoveredServers.Count}" />
       </StackPanel>
 
-      <!-- Server Input (manual entry) -->
+      <!-- Server Address -->
       <StackPanel Spacing="4">
-        <Label Content="Server Address" FontWeight="SemiBold" />
+        <TextBlock Text="Server Address" FontWeight="SemiBold" />
         <TextBox Height="36"
-                 TextWrapping="Wrap"
                  Text="{Binding Server}"
                  Watermark="192.168.1.100:8095"
                  IsEnabled="{Binding !IsLoading}" />
@@ -120,37 +144,35 @@
                    Foreground="Gray" />
       </StackPanel>
 
-      <!-- Username Input -->
+      <!-- Username -->
       <StackPanel Spacing="4">
-        <Label Content="Username" FontWeight="SemiBold" />
+        <TextBlock Text="Username" FontWeight="SemiBold" />
         <TextBox Height="36"
-                 TextWrapping="Wrap"
                  Text="{Binding Username}"
-                 Watermark="Home Assistant username"
+                 Watermark="Username"
                  IsEnabled="{Binding !IsLoading}" />
       </StackPanel>
 
-      <!-- Password Input -->
+      <!-- Password -->
       <StackPanel Spacing="4">
-        <Label Content="Password" FontWeight="SemiBold" />
+        <TextBlock Text="Password" FontWeight="SemiBold" />
         <TextBox PasswordChar="*"
-                 Watermark="Home Assistant password"
                  Height="36"
-                 TextWrapping="Wrap"
                  Text="{Binding Password}"
+                 Watermark="Password"
                  IsEnabled="{Binding !IsLoading}" />
       </StackPanel>
 
-      <!-- Sign In Button -->
-      <Button Command="{Binding LoginCommand}"
+      <!-- Save Button -->
+      <Button Command="{Binding SaveCommand}"
               Height="40"
               FontSize="14"
               FontWeight="SemiBold"
+              HorizontalAlignment="Stretch"
               IsEnabled="{Binding !IsLoading}">
-        <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
-          <TextBlock Text="Sign In" VerticalAlignment="Center" />
-        </StackPanel>
+        Save Changes
       </Button>
+
     </StackPanel>
-  </Grid>
+  </ScrollViewer>
 </UserControl>

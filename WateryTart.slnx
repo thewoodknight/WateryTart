@@ -27,4 +27,7 @@
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
   </Project>
+  <Project Path="WateryTart.Platform.macOS/WateryTart.Platform.macOS.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+  </Project>
 </Solution>

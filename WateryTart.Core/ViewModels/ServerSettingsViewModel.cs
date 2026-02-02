@@ -1,11 +1,9 @@
-using Avalonia.Controls;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
-using System.Runtime;
 using System.Threading.Tasks;
 using WateryTart.Core.Services.Discovery;
 using WateryTart.Core.Settings;
@@ -14,55 +12,48 @@ using WateryTart.Service.MassClient.Models.Auth;
 
 namespace WateryTart.Core.ViewModels;
 
-public class FromLoginMessage()
-{
-
-}
-public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposable
+public partial class ServerSettingsViewModel : ReactiveObject, IHaveSettings, IDisposable
 {
     private readonly IMassWsClient _massClient;
     private readonly ISettings _settings;
-    private readonly IScreen _screen;
     private readonly IMassServerDiscovery _discovery;
     private bool _disposed;
 
-    public string? UrlPathSegment { get; }
-    public IScreen HostScreen { get; }
-    public string Title { get; set; }
-    public bool ShowMiniPlayer { get; }
-    public bool ShowNavigation { get; }
+    public string Icon => "Server";
 
+    // Current connection info (read-only display)
+    [Reactive] public partial string CurrentServer { get; set; }
+    [Reactive] public partial string CurrentUsername { get; set; }
+    public string MaskedPassword => "**********";
+
+    // New connection fields
     [Reactive] public partial string Server { get; set; }
-
     [Reactive] public partial string Username { get; set; }
-
     [Reactive] public partial string Password { get; set; }
-
     [Reactive] public partial string ErrorMessage { get; set; }
-
     [Reactive] public partial bool HasError { get; set; }
-
     [Reactive] public partial bool IsLoading { get; set; }
-
     [Reactive] public partial bool IsScanning { get; set; }
-
     [Reactive] public partial DiscoveredServer? SelectedServer { get; set; }
-
     [Reactive] public partial bool IsHomeAssistantAddon { get; set; }
+    [Reactive] public partial bool ShowSuccess { get; set; }
 
     public ObservableCollection<DiscoveredServer> DiscoveredServers { get; } = new();
 
-    public ReactiveCommand<Unit, Unit> LoginCommand { get; }
+    public ReactiveCommand<Unit, Unit> SaveCommand { get; }
     public ReactiveCommand<Unit, Unit> RefreshServersCommand { get; }
 
-    public LoginViewModel(IScreen screen, IMassWsClient massClient, ISettings settings, IMassServerDiscovery? discovery = null)
+    public ServerSettingsViewModel(IMassWsClient massClient, ISettings settings, IMassServerDiscovery? discovery = null)
     {
         _massClient = massClient;
         _settings = settings;
-        _screen = screen;
         _discovery = discovery ?? new MassServerDiscovery();
 
-        LoginCommand = ReactiveCommand.CreateFromTask(ExecuteLogin);
+        // Load current settings
+        CurrentServer = _settings.Credentials?.BaseUrl ?? "Not configured";
+        CurrentUsername = _settings.Credentials?.Username ?? "Not configured";
+
+        SaveCommand = ReactiveCommand.CreateFromTask(ExecuteSave);
         RefreshServersCommand = ReactiveCommand.CreateFromTask(RefreshServers);
 
         // Subscribe to discovery events
@@ -95,7 +86,6 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
             IsScanning = true;
             await _discovery.StartDiscoveryAsync();
 
-            // Do an initial scan
             var servers = await _discovery.ScanAsync(TimeSpan.FromSeconds(3));
             foreach (var server in servers)
             {
@@ -105,7 +95,6 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
                 }
             }
 
-            // Auto-select first server if none selected and we found servers
             if (SelectedServer == null && DiscoveredServers.Count > 0)
             {
                 SelectedServer = DiscoveredServers[0];
@@ -134,7 +123,7 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
 
             if (DiscoveredServers.Count == 0)
             {
-                SetError("No Music Assistant servers found on the network. Make sure your server is running.");
+                SetError("No Music Assistant servers found on the network.");
             }
             else if (SelectedServer == null)
             {
@@ -153,14 +142,12 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
 
     private void OnServerDiscovered(object? sender, DiscoveredServer server)
     {
-        // Ensure UI thread
         Avalonia.Threading.Dispatcher.UIThread.Post(() =>
         {
             if (!DiscoveredServers.Any(s => s.Address == server.Address && s.Port == server.Port))
             {
                 DiscoveredServers.Add(server);
 
-                // Auto-select if it's the first one
                 if (SelectedServer == null)
                 {
                     SelectedServer = server;
@@ -180,7 +167,6 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
             {
                 DiscoveredServers.Remove(existing);
 
-                // If we lost the selected server, clear selection
                 if (SelectedServer == existing)
                 {
                     SelectedServer = DiscoveredServers.FirstOrDefault();
@@ -189,38 +175,18 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
         });
     }
 
-    private async Task Login()
-    {
-        var x = await _massClient.Login(Username, Password, Server);
-
-        if (x.Success)
-        {
-            _settings.Credentials = new MassCredentials()
-            {
-                BaseUrl = x.Credentials.BaseUrl,
-                Token = x.Credentials.Token,
-                Username = Username
-            };
-
-            MessageBus.Current.SendMessage(new FromLoginMessage());
-            _screen.Router.NavigateBack.Execute();
-            return;
-        }
-        SetError(x.Error);
-    }
-
-    private async Task ExecuteLogin()
+    private async Task ExecuteSave()
     {
         try
         {
             IsLoading = true;
             HasError = false;
+            ShowSuccess = false;
             ErrorMessage = string.Empty;
 
-            // Validation
             if (string.IsNullOrWhiteSpace(Server))
             {
-                SetError("Server address is required. Select a discovered server or enter manually.");
+                SetError("Server address is required.");
                 return;
             }
 
@@ -236,11 +202,40 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
                 return;
             }
 
-            await Login();
+            var result = await _massClient.Login(Username, Password, Server);
+
+            if (result.Success)
+            {
+                _settings.Credentials = new MassCredentials()
+                {
+                    BaseUrl = result.Credentials.BaseUrl,
+                    Token = result.Credentials.Token,
+                    Username = Username
+                };
+
+                // Update display
+                CurrentServer = result.Credentials.BaseUrl;
+                CurrentUsername = Username;
+
+                // Clear form
+                Server = string.Empty;
+                Username = string.Empty;
+                Password = string.Empty;
+
+                ShowSuccess = true;
+
+                // Hide success after 3 seconds
+                _ = Task.Delay(3000).ContinueWith(_ =>
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() => ShowSuccess = false));
+            }
+            else
+            {
+                SetError(result.Error ?? "Login failed");
+            }
         }
         catch (Exception ex)
         {
-            SetError($"Login failed: {ex.Message}");
+            SetError($"Failed to save: {ex.Message}");
         }
         finally
         {

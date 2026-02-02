@@ -95,6 +95,7 @@ public partial class App : Application
 
         //View models that are singleton
         builder.RegisterType<SettingsViewModel>().SingleInstance();
+        builder.RegisterType<ServerSettingsViewModel>().As<IHaveSettings>().SingleInstance();
         builder.RegisterType<PlayersViewModel>().SingleInstance();
         builder.RegisterType<MiniPlayerViewModel>().AsSelf().AsImplementedInterfaces().SingleInstance();
         builder.RegisterType<BigPlayerViewModel>().AsSelf().AsImplementedInterfaces().SingleInstance();
