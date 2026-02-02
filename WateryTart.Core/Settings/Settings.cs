@@ -103,7 +103,21 @@ public partial class Settings : INotifyPropertyChanged, ISettings
         if (File.Exists(Path))
         {
             var fileData = File.ReadAllText(Path);
-            JsonConvert.PopulateObject(fileData, this);
+            try
+            {
+                JsonConvert.PopulateObject(fileData, this);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+        else
+        {
+            var fi = new FileInfo(Path);
+            if (!fi.Directory.Exists)
+                fi.Directory.Create();
+            var x = fi.Create();
+            x.Close();
         }
 
         suppressSave = false;
