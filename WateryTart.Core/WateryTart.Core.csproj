@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AsyncImageLoader.Avalonia" />
     <PackageReference Include="Autofac" />
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Themes.Fluent" />
@@ -47,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AsyncImageLoader.Avalonia\AsyncImageLoader.Avalonia\AsyncImageLoader.Avalonia.csproj" />
     <ProjectReference Include="..\WateryTart.Service.MassClient\WateryTart.Service.MassClient.csproj" />
   </ItemGroup>
 

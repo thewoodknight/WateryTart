@@ -21,29 +21,43 @@ namespace WateryTart.Core.ViewModels
         private readonly IPlayersService _playersService;
         public bool ShowMiniPlayer { get => true; }
         public bool ShowNavigation => true;
-        [Reactive] public partial PlaylistResponse Playlist { get; set; }
+        [Reactive] public partial Playlist Playlist { get; set; }
         [Reactive] public partial string Title { get; set; }
 
-        public ObservableCollection<Item> Tracks { get; set; }
+        public ObservableCollection<TrackViewModel> Tracks { get; set; }
         public ReactiveCommand<Item, Unit> PlayCommand { get; }
+        public ReactiveCommand<Unit, Unit> PlaylistAltMenuCommand { get; }
 
-        public PlaylistViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService)
+        public ReactiveCommand<Unit, Unit> PlaylistFullViewCommand { get; }
+        public PlaylistViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService, Playlist playlist = null)
         {
             _massClient = massClient;
             _playersService = playersService;
             HostScreen = screen;
             Title = "";
+            Playlist = playlist;
+
+            PlaylistFullViewCommand = ReactiveCommand.Create(() =>
+            {
+                LoadFromId(Playlist.ItemId, Playlist.Provider);
+                screen.Router.Navigate.Execute(this);
+            });
+
+            PlaylistAltMenuCommand = ReactiveCommand.Create(() =>
+            {
+                MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(playersService, Playlist));
+            });
 
             PlayCommand = ReactiveCommand.Create<Item>((i) =>
             {
-                if (Playlist?.Result != null)
-                    _playersService.PlayItem(Playlist.Result as MediaItemBase);
+                if (Playlist != null)
+                    _playersService.PlayItem(Playlist as MediaItemBase);
             });
         }
 
         public void LoadFromId(string id, string provider)
         {
-            Tracks = new ObservableCollection<Item>();
+            Tracks = new ObservableCollection<TrackViewModel>();
             _ = LoadPlaylistDataAsync(id, provider);
         }
 
@@ -54,7 +68,7 @@ namespace WateryTart.Core.ViewModels
                 var playlistResponse = await _massClient.PlaylistGetAsync(id, provider);
                 if (playlistResponse?.Result != null)
                 {
-                    Playlist = playlistResponse;
+                    Playlist = playlistResponse.Result;
                     Title = playlistResponse.Result.Name;
                 }
             }
@@ -69,7 +83,7 @@ namespace WateryTart.Core.ViewModels
                 if (tracksResponse?.Result != null)
                 {
                     foreach (var t in tracksResponse.Result)
-                        Tracks.Add(t);
+                        Tracks.Add(new TrackViewModel(_massClient, HostScreen, _playersService, t));
                 }
             }
             catch (Exception ex)

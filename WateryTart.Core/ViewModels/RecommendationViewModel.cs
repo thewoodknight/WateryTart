@@ -1,5 +1,7 @@
 ﻿using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Reactive;
 using WateryTart.Core.Settings;
 using WateryTart.Service.MassClient;
@@ -19,6 +21,9 @@ public partial class RecommendationViewModel : ReactiveObject, IViewModelBase
     public ReactiveCommand<Item, Unit> ClickedCommand { get; }
     public bool ShowMiniPlayer { get => true; }
     public bool ShowNavigation => true;
+
+    [Reactive] public partial ObservableCollection<IViewModelBase> Items { get; set; }
+
     public RecommendationViewModel(IScreen screen, IMassWsClient massClient, ISettings settings)
     {
         _massClient = massClient;
@@ -67,10 +72,17 @@ public partial class RecommendationViewModel : ReactiveObject, IViewModelBase
 
     public void SetRecommendation(Recommendation r)
     {
-        if (r == null)
-            return;
-
         Title = r.Name;
         Recommendation = r;
+
+        var viewModels = new List<IViewModelBase>();
+        foreach (var item in r.items)
+        {
+            IViewModelBase viewModel = item.CreateViewModelForItem();
+            if (viewModel != null)
+                viewModels.Add(viewModel);
+        }
+
+        Items = new ObservableCollection<IViewModelBase>(viewModels);
     }
 }

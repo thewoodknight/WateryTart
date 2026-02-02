@@ -6,16 +6,16 @@
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="WateryTart.Core.Views.LibraryView"
 			 x:DataType="vm:LibraryViewModel">
-	<ListBox Background="{x:Null}" ItemsSource="{Binding Items}">
+	<ListBox Background="Transparent" ItemsSource="{Binding Items}">
 		<ListBox.ItemTemplate>
 			<DataTemplate>
 				<StackPanel>
-<!--                    <Interaction.Behaviors>
+                    <Interaction.Behaviors>
                         <EventTriggerBehavior EventName="Tapped">
                             <InvokeCommandAction
                                 Command="{Binding ClickedCommand }" />
                         </EventTriggerBehavior>
-                    </Interaction.Behaviors>-->
+                    </Interaction.Behaviors>
 
                     <TextBlock Text="{Binding Title}" />
 					<TextBlock Opacity="0.5">

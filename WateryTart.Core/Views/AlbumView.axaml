@@ -7,6 +7,7 @@
 			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
 			 xmlns:asyncImageLoader1="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
 			 xmlns:wateryTart="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
+			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="WateryTart.Core.Views.AlbumView"
 			 x:DataType="vm:AlbumViewModel">
@@ -47,15 +48,14 @@
 		</Border>
 
 		<!-- Tracks -->
-		<ListBox x:Name="lbTracks" ItemsSource="{Binding Tracks}" Background="{x:Null}" >
+		<ListBox x:Name="lbTracks" ItemsSource="{Binding Tracks}" Background="Transparent" >
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Grid Background="Transparent">
 						<Interaction.Behaviors>
 							<EventTriggerBehavior EventName="DoubleTapped">
 								<InvokeCommandAction
-								Command="{Binding #lbTracks.((vm:AlbumViewModel)DataContext).TrackTappedCommand }"
-								CommandParameter="{Binding Path=.}"/>
+								Command="{Binding TrackFullViewCommand }" />
 							</EventTriggerBehavior>
 						</Interaction.Behaviors>
 						<Grid.ColumnDefinitions>
@@ -63,16 +63,14 @@
 							<ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<TextBlock Text="{Binding track_number}"  Opacity="0.7" />
+						<TextBlock Text="{Binding Track.track_number}"  Opacity="0.7" />
 
 						<StackPanel Grid.Column="1">
-							<TextBlock Text="{Binding Name}"></TextBlock>
-							<TextBlock Text="{Binding duration, Converter={StaticResource SecondsToMinutesConverter}}"  Opacity="0.7"></TextBlock>
+							<TextBlock Text="{Binding Track.Name}"></TextBlock>
+							<TextBlock Text="{Binding Track.duration, Converter={StaticResource SecondsToMinutesConverter}}"  Opacity="0.7"></TextBlock>
 						</StackPanel>
 
-						<Button Grid.Column="2"
-                                Command="{Binding #lbTracks.((vm:AlbumViewModel)DataContext).TrackAltMenuCommand }"
-                                CommandParameter="{Binding Path=.}">⋮</Button>
+						<Button Grid.Column="2" Command="{Binding TrackAltMenuCommand }" Classes="iconButton navButton"><avalonia:MaterialIcon Kind="MoreVert" Width="25" Height="25" /></Button>
 					</Grid>
 				</DataTemplate>
 			</ListBox.ItemTemplate>

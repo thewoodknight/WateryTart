@@ -1,12 +1,10 @@
 <Application xmlns="https://github.com/avaloniaui"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="using:WateryTart"
 			 xmlns:app="clr-namespace:WateryTart.Core"
 			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
 			 xmlns:converters="using:WateryTart.Core.Converters"
 			 xmlns:materialIcons="using:Material.Icons.Avalonia"
-			 xmlns:models="using:WateryTart.Service.MassClient.Models"
-			 xmlns:models1="clr-namespace:WateryTart.Service.MassClient.Models;assembly=WateryTart.Service.MassClient"
+			 xmlns:viewModels="clr-namespace:WateryTart.Core.ViewModels"
 			 x:Class="WateryTart.Core.App"
 			 RequestedThemeVariant="Dark">
 	<Application.Resources>
@@ -16,56 +14,196 @@
 			<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
 			<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
 			<converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
+
+			<app:WateryTartSmallViewSelector x:Key="smallViewSelector">
+				<StaticResource x:Key="AlbumViewModel" ResourceKey="albumSmallReusableTemplate" />
+				<StaticResource x:Key="PlaylistViewModel" ResourceKey="playlistSmallReusableTemplate" />
+				<StaticResource x:Key="ArtistViewModel" ResourceKey="artistSmallReusableTemplate" />
+				<StaticResource x:Key="TrackViewModel" ResourceKey="trackSmallReusableTemplate" />
+				<!-- MediaType.Genre => null,
+				MediaType.Radio => null,
+				MediaType.Audiobook => null,
+				MediaType.Folder => null,
+				MediaType.Podcast => null,
+				MediaType.PodcastEpisode => null,-->
+			</app:WateryTartSmallViewSelector>
+
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="/Controls/ResponsiveColumnPanel.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
+
+			<!-- These templates are used in any "small results" such as search, home, playlist etc -->
+			<DataTemplate x:Key="albumSmallReusableTemplate" x:DataType="viewModels:AlbumViewModel">
+				<Grid Margin="5">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="50" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<Border ClipToBounds ="True"
+							Margin="-10,0,0,0"
+							CornerRadius="5"
+							Grid.Column="0">
+						<asyncImageLoader:AdvancedImage
+						Loader="{x:Static app:App.ImageLoaderInstance}"
+						FallbackImage="{x:Static app:App.FallbackImage}"
+						Height="50" Width="50" Source="{Binding Path=Album, Converter={StaticResource MetadataImageConverter}}">
+							<Interaction.Behaviors>
+								<EventTriggerBehavior EventName="Tapped">
+                                    <InvokeCommandAction Command="{Binding AlbumFullViewCommand}" />
+                                </EventTriggerBehavior>
+							</Interaction.Behaviors>
+						</asyncImageLoader:AdvancedImage>
+					</Border>
+					<StackPanel Background="Transparent" Grid.Column="1" Margin="10,0,0,0">
+						<Interaction.Behaviors>
+							<EventTriggerBehavior EventName="Tapped">
+								<InvokeCommandAction Command="{Binding AlbumFullViewCommand}" />
+							</EventTriggerBehavior>
+						</Interaction.Behaviors>
+						<TextBlock Text="{Binding Album.Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
+					</StackPanel>
+
+					<Button Grid.Column="2"
+							Classes="iconButton navButton"
+							Command="{Binding AlbumAltMenuCommand}">
+						<materialIcons:MaterialIcon Kind="MoreVert" Width="25" Height="25" />
+					</Button>
+				</Grid>
+			</DataTemplate>
+
+			<DataTemplate x:Key="trackSmallReusableTemplate" x:DataType="viewModels:TrackViewModel">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border ClipToBounds ="True"
+                            Margin="-10,0,0,0"
+                            CornerRadius="5"
+                            Grid.Column="0">
+                        <asyncImageLoader:AdvancedImage
+                            Loader="{x:Static app:App.ImageLoaderInstance}"
+                            FallbackImage="{x:Static app:App.FallbackImage}"
+                            Height="50" Width="50" Source="{Binding Path=Track, Converter={StaticResource MetadataImageConverter}}">
+                            <Interaction.Behaviors>
+                                <EventTriggerBehavior EventName="Tapped">
+                                    <InvokeCommandAction Command="{Binding TrackFullViewCommand}" />
+                                </EventTriggerBehavior>
+                            </Interaction.Behaviors>
+                        </asyncImageLoader:AdvancedImage>
+                    </Border>
+                    <StackPanel Background="Transparent" Grid.Column="1" Margin="10,0,0,0">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="Tapped">
+                                <InvokeCommandAction Command="{Binding TrackFullViewCommand}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+                        <TextBlock Text="{Binding Track.Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
+                    </StackPanel>
+
+                    <Button Grid.Column="2"
+                            Classes="iconButton navButton"
+                            Command="{Binding TrackAltMenuCommand}">
+                        <materialIcons:MaterialIcon Kind="MoreVert" Width="25" Height="25" />
+                    </Button>
+                </Grid>
+			</DataTemplate>
+
+			<DataTemplate x:Key="playlistSmallReusableTemplate" x:DataType="viewModels:PlaylistViewModel">
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border ClipToBounds ="True"
+                            Margin="-10,0,0,0"
+                            CornerRadius="5"
+                            Grid.Column="0">
+                        <asyncImageLoader:AdvancedImage
+                            Loader="{x:Static app:App.ImageLoaderInstance}"
+                            FallbackImage="{x:Static app:App.FallbackImage}"
+                            Height="50" Width="50" Source="{Binding Path=Playlist, Converter={StaticResource MetadataImageConverter}}">
+                            <Interaction.Behaviors>
+                                <EventTriggerBehavior EventName="Tapped">
+                                    <InvokeCommandAction Command="{Binding PlaylistFullViewCommand}" />
+                                </EventTriggerBehavior>
+                            </Interaction.Behaviors>
+                        </asyncImageLoader:AdvancedImage>
+                    </Border>
+                    <StackPanel Background="Transparent" Grid.Column="1" Margin="10,0,0,0">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="Tapped">
+                                <InvokeCommandAction Command="{Binding PlaylistFullViewCommand}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+                        <TextBlock Text="{Binding Playlist.Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
+                    </StackPanel>
+
+                    <Button Grid.Column="2"
+                            Classes="iconButton navButton"
+                            Command="{Binding PlaylistAltMenuCommand}">
+                        <materialIcons:MaterialIcon Kind="MoreVert" Width="25" Height="25" />
+                    </Button>
+                </Grid>
+			</DataTemplate>
+
+			<DataTemplate x:Key="artistSmallReusableTemplate" x:DataType="viewModels:ArtistViewModel">
+				<Grid Margin="5">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="50" />
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<Ellipse Width="50" Height="50" Grid.Column="0">
+						<Ellipse.Fill>
+							<ImageBrush
+							asyncImageLoader:ImageBrushLoader.Source="{Binding Path=Artist, Converter={StaticResource MetadataImageConverter}}" />
+
+						</Ellipse.Fill>
+						<Interaction.Behaviors>
+							<EventTriggerBehavior EventName="Tapped">
+                                <InvokeCommandAction Command="{Binding ArtistFullViewCommand}" />
+							</EventTriggerBehavior>
+						</Interaction.Behaviors>
+					</Ellipse>
+					<StackPanel Background="Transparent" Grid.Column="1" Margin="10,0,0,0">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="Tapped">
+                                <InvokeCommandAction Command="{Binding ArtistFullViewCommand}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+						<TextBlock Text="{Binding Artist.Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
+
+					</StackPanel>
+
+					<Button Grid.Column="2"
+							Command="{Binding AltMenuCommand}"
+							Classes="iconButton navButton"><materialIcons:MaterialIcon Kind="MoreVert" Width="25" Height="25" /></Button>
+				</Grid>
+			</DataTemplate>
+			<!--            <DataTemplate x:Key="trackSmallReusableTemplate" x:DataType="viewModels:AlbumViewModel">
+			</DataTemplate>-->
+
+			<!-- MediaType.Genre => null,
+			MediaType.Radio => null,
+			MediaType.Track => null,
+			MediaType.Audiobook => null,
+			MediaType.Folder => null,
+			MediaType.Podcast => null,
+			MediaType.PodcastEpisode => null,-->
+
 		</ResourceDictionary>
 	</Application.Resources>
 	<Application.DataTemplates>
 		<app:ViewLocator/>
-		<DataTemplate x:DataType="models1:Album">
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="50" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
 
-				<Border ClipToBounds ="True"
-						Margin="-10,0,0,0"
-						CornerRadius="5"
-						Grid.Column="0">
-					<asyncImageLoader:AdvancedImage
-					Loader="{x:Static app:App.ImageLoaderInstance}"
-					Height="50" Width="50" Source="{Binding Path=., Converter={StaticResource MetadataImageConverter}}">
-						<Interaction.Behaviors>
-							<EventTriggerBehavior EventName="Tapped">
-								<!--						<InvokeCommandAction
-								Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).ClickedCommand }"
-								CommandParameter="{Binding Path=.}"/>-->
-							</EventTriggerBehavior>
-						</Interaction.Behaviors>
-					</asyncImageLoader:AdvancedImage>
-				</Border>
-				<StackPanel Background="Transparent" Grid.Column="1" Margin="10,0,0,0">
-					<Interaction.Behaviors>
-						<EventTriggerBehavior EventName="Tapped">
-							<!--									<InvokeCommandAction
-							Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).ClickedCommand }"
-							CommandParameter="{Binding Path=.}"/>-->
-						</EventTriggerBehavior>
-					</Interaction.Behaviors>
-					<TextBlock Text="{Binding Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
-					<!--<TextBlock Text="{Binding Path=., Converter={StaticResource HomeExtraToStringConverter}}" Opacity="0.7"  TextTrimming="CharacterEllipsis" />-->
-				</StackPanel>
-
-				<Button Grid.Column="2"
-						Classes="iconButton navButton"
-						><materialIcons:MaterialIcon Kind="MoreVert" Width="25" Height="25" /></Button>
-				<!-- Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).AltMenuCommand }"
-				CommandParameter="{Binding Path=.}" -->
-			</Grid>
-		</DataTemplate>
 	</Application.DataTemplates>
 
 	<Application.Styles>

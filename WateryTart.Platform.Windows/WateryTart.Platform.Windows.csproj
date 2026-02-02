@@ -29,8 +29,13 @@
 			<IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
 			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
 		<PackageReference Include="NAudio.Core" />
 		<PackageReference Include="NAudio.Wasapi" />
+		<PackageReference Include="ReactiveUI.SourceGenerators">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Xaml.Behaviors.Avalonia" />
 
 	</ItemGroup>

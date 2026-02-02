@@ -6,7 +6,7 @@
   <ItemGroup>
     <!-- Avalonia packages -->
     <!-- Important: keep version in sync! -->
-    <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.5.0" />
+    <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.6.0" />
     <PackageVersion Include="Autofac" Version="9.0.0" />
     <PackageVersion Include="Avalonia" Version="11.3.11" />
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.11" />

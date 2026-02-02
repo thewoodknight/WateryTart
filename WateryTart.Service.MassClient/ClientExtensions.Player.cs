@@ -5,6 +5,7 @@ using WateryTart.Service.MassClient.Responses;
 
 namespace WateryTart.Service.MassClient;
 
+
 public static partial class MassClientExtensions
 {
     extension(IMassWsClient c)
@@ -102,4 +103,21 @@ public static partial class MassClientExtensions
             return await SendAsync<PlayersQueuesResponse>(c, JustId(Commands.PlayerGroupVolumeDown, playerId, "player_id"));
         }
     }
+}
+
+public class SearchResponse : ResponseBase<Search>
+{
+
+}
+
+public class Search
+{
+    public List<Artist> artists { get; set; }
+    public List<Album> albums { get; set; }
+    public List<object> genres { get; set; }
+    public List<Item> tracks { get; set; }
+    public List<Playlist> playlists { get; set; }
+    public List<object> radio { get; set; }
+    public List<object> audiobooks { get; set; }
+    public List<object> podcasts { get; set; }
 }

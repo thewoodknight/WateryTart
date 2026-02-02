@@ -31,14 +31,14 @@
 		</Style>
 	</UserControl.Styles>
 
-	<ItemsControl
+	<ListBox
 	x:Name="lbRecommendations"
 	ItemsSource="{Binding Recommendations}"
-	Background="{x:Null}">
-		<ItemsControl.GestureRecognizers>
+	Background="Transparent">
+		<ListBox.GestureRecognizers>
 			<ScrollGestureRecognizer  CanVerticallyScroll="True"/>
-		</ItemsControl.GestureRecognizers>
-		<ItemsControl.ItemTemplate>
+		</ListBox.GestureRecognizers>
+		<ListBox.ItemTemplate>
 			<DataTemplate>
 				<StackPanel>
 					<Border
@@ -51,11 +51,11 @@
 								CommandParameter="{Binding Path=.}"/>
 							</EventTriggerBehavior>
 						</Interaction.Behaviors>
-						<TextBlock Text="{Binding Name, Converter={StaticResource ToUpperValueConverter}}" FontWeight="Bold" FontSize="16"  />
+						<TextBlock Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" FontWeight="Bold" FontSize="16"  />
 					</Border>
 
 					<ItemsControl Background="{x:Null}"
-								  ItemsSource="{Binding items}"
+								  ItemsSource="{Binding Items}"
 								  Classes="hoverable"
 								  Padding="0"
 								  >
@@ -64,54 +64,12 @@
 								<VirtualizingStackPanel/>
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<Grid Margin="5">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="50" />
-										<ColumnDefinition Width="*" />
-										<ColumnDefinition Width="Auto" />
-									</Grid.ColumnDefinitions>
-
-									<Border ClipToBounds ="True"
-											Margin="-10,0,0,0"
-											CornerRadius="5"
-											Grid.Column="0">
-										<asyncImageLoader:AdvancedImage
-										Loader="{x:Static app:App.ImageLoaderInstance}"
-										Height="50" Width="50" Source="{Binding Path=., Converter={StaticResource MetadataImageConverter}}">
-											<Interaction.Behaviors>
-												<EventTriggerBehavior EventName="Tapped">
-													<InvokeCommandAction
-													Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).ClickedCommand }"
-													CommandParameter="{Binding Path=.}"/>
-												</EventTriggerBehavior>
-											</Interaction.Behaviors>
-										</asyncImageLoader:AdvancedImage>
-									</Border>
-									<StackPanel Background="Transparent" Grid.Column="1" Margin="10,0,0,0">
-										<Interaction.Behaviors>
-											<EventTriggerBehavior EventName="Tapped">
-												<InvokeCommandAction
-												Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).ClickedCommand }"
-												CommandParameter="{Binding Path=.}"/>
-											</EventTriggerBehavior>
-										</Interaction.Behaviors>
-										<TextBlock Text="{Binding Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
-										<TextBlock Text="{Binding Path=., Converter={StaticResource HomeExtraToStringConverter}}" Opacity="0.7"  TextTrimming="CharacterEllipsis" />
-									</StackPanel>
-
-									<Button Grid.Column="2"
-											Classes="iconButton navButton"
-											Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).AltMenuCommand }"
-											CommandParameter="{Binding Path=.}"><materialIcons:MaterialIcon Kind="MoreVert" Width="25" Height="25" /></Button>
-								</Grid>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
+						<ItemsControl.DataTemplates>
+							<StaticResource  ResourceKey="smallViewSelector" />
+						</ItemsControl.DataTemplates>
 					</ItemsControl>
-
 				</StackPanel>
 			</DataTemplate>
-		</ItemsControl.ItemTemplate>
-	</ItemsControl>
+		</ListBox.ItemTemplate>
+	</ListBox>
 </UserControl>

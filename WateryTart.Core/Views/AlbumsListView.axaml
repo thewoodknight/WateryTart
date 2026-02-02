@@ -15,10 +15,7 @@
 		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
 		<converters:ArtistsToStringConverter x:Key="ArtistsToStringConverter" />
 	</UserControl.Resources>
-	<ListBox x:Name="albumsListBox" Background="{x:Null}" ItemsSource="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" >
-		<ListBox.Styles>
-		
-		</ListBox.Styles>
+	<ListBox x:Name="albumsListBox" Background="Transparent" ItemsSource="{Binding Albums}" SelectedItem="{Binding SelectedAlbum}" >
 		<Interaction.Behaviors>
 			<EventTriggerBehavior SourceObject="albumsListBox"
 								  EventName="SelectionChanged">
@@ -34,18 +31,20 @@
 			<DataTemplate>
 				<StackPanel>
 					<Border BoxShadow="0 0 10 0 Black"
-			                Margin="0,0,0,5"
+							Margin="0,0,0,5"
 							Width="195"
 							Height="195">
 						<Border ClipToBounds ="True"
-                                CornerRadius="5">
+								CornerRadius="5">
 							<asyncImageLoader:AdvancedImage
+
 							Loader="{x:Static app:App.ImageLoaderInstance}"
+							FallbackImage="{x:Static app:App.FallbackImage}"
 							Height="195" Width="195" Source="{Binding Path=., Converter={StaticResource MetadataImageConverter}}" />
 						</Border>
 					</Border>
-					<TextBlock Margin="-10,0,0,0" Text="{Binding Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
-                    <TextBlock Margin="-10,0,0,0" Text="{Binding Artists, Converter={StaticResource ArtistsToStringConverter}}" Opacity="0.7"  TextTrimming="CharacterEllipsis" ></TextBlock>
+					<TextBlock Margin="-10,0,0,0" Text="{Binding Album.Name}"  TextTrimming="CharacterEllipsis" ></TextBlock>
+					<TextBlock Margin="-10,0,0,0" Text="{Binding Album.Artists, Converter={StaticResource ArtistsToStringConverter}}" Opacity="0.7"  TextTrimming="CharacterEllipsis" ></TextBlock>
 				</StackPanel>
 			</DataTemplate>
 		</ListBox.ItemTemplate>

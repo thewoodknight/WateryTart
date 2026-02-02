@@ -41,9 +41,10 @@
 
 
 		<TextBlock>Albums</TextBlock>
-		<ListBox Background="{x:Null}"
+		<ListBox Background="Transparent"
 				 ItemsSource="{Binding Albums}"
-				 Padding="0">
+				 Padding="0"
+                 ItemTemplate="{StaticResource albumSmallReusableTemplate}">
 			
 		</ListBox>
 		<TextBlock>Bio</TextBlock>

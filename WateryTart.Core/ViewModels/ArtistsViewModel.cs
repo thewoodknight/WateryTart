@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System.Collections.ObjectModel;
 using System.Reactive;
@@ -17,8 +18,8 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
     private readonly IPlayersService _playersService;
 
     [Reactive] public partial string Title { get; set; }
-    [Reactive] public partial ObservableCollection<Artist> Artists { get; set; } = new();
-    public ReactiveCommand<Artist, Unit> ClickedCommand { get; }
+    [Reactive] public partial ObservableCollection<ArtistViewModel> Artists { get; set; } = new();
+    public ReactiveCommand<ArtistViewModel, Unit> ClickedCommand { get; }
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
     public ArtistsViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService)
@@ -28,11 +29,11 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
         HostScreen = screen;
         Title = "Artists";
 
-        ClickedCommand = ReactiveCommand.Create<Artist>(item =>
+        ClickedCommand = ReactiveCommand.Create<ArtistViewModel>(item =>
         {
-            var artistViewModel = App.Container.GetRequiredService<ArtistViewModel>();
-            artistViewModel.LoadFromId(item.ItemId, item.Provider);
-            screen.Router.Navigate.Execute(artistViewModel);
+            //var artistViewModel = App.Container.GetRequiredService<ArtistViewModel>();
+            //artistViewModel.LoadFromId(item.ItemId, item.Provider);
+            screen.Router.Navigate.Execute(item);
         });
 
         Load();
@@ -41,7 +42,10 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
     private async Task Load()
     {
         var response = await _massClient.ArtistsGetAsync();
+
         foreach (var a in response.Result)
-            Artists.Add(a);
+        {
+            Artists.Add(new ArtistViewModel(_massClient, HostScreen, _playersService,a ));
+        }
     }
 }

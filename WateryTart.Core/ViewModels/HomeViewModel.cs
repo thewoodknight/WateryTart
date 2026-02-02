@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Input;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +8,7 @@ using System.Reactive;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Autofac;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels.Menus;
@@ -21,52 +23,42 @@ namespace WateryTart.Core.ViewModels
         private readonly ISettings _settings;
         private readonly IPlayersService _playersService;
         private readonly IScreen _screen;
-        public ObservableCollection<Recommendation> Recommendations { get; set; }
+        private readonly ObservableCollection<RecommendationDisplayModel> _displayRecommendations;
+
+        public ObservableCollection<RecommendationDisplayModel> Recommendations => _displayRecommendations;
         private List<Recommendation> SourceRecommendations { get; set; }
         public bool ShowMiniPlayer => true;
         public bool ShowNavigation => true;
         public ReactiveCommand<Item, Unit> ClickedCommand { get; }
         public ReactiveCommand<Item, Unit> AltMenuCommand { get; }
-        public ReactiveCommand<Recommendation, Unit> RecommendationListCommand { get; }
+        public ReactiveCommand<RecommendationDisplayModel, Unit> RecommendationListCommand { get; }
 
         public HomeViewModel(IScreen screen, IMassWsClient massClient, ISettings settings, IPlayersService playersService)
         {
-            /*
-            Activator = new ViewModelActivator();
-            Activator.Activated.Subscribe(_ =>
-            {
-                
-                Console.WriteLine("Activated");
-            });
-;*/
-
-
             Title = "Home";
             _massClient = massClient;
             _settings = settings;
             _playersService = playersService;
             _screen = screen;
 
-            Recommendations = new ObservableCollection<Recommendation>();
+            _displayRecommendations = new ObservableCollection<RecommendationDisplayModel>();
             SourceRecommendations = new List<Recommendation>();
 
-            RecommendationListCommand = ReactiveCommand.Create<Recommendation>(r =>
+            RecommendationListCommand = ReactiveCommand.Create<RecommendationDisplayModel>(r =>
             {
                 var vm = App.Container.GetRequiredService<RecommendationViewModel>();
                 vm.SetRecommendation(SourceRecommendations.SingleOrDefault(x => x.ItemId == r.ItemId));
                 screen.Router.Navigate.Execute(vm);
             });
 
-
-
             AltMenuCommand = ReactiveCommand.Create<Item>(i =>
             {
                 var menu = new MenuViewModel(
                     [
-                    new Menus.MenuItemViewModel("Add to library", string.Empty, ReactiveCommand.Create<Unit>(r => {})),
-                    new Menus.MenuItemViewModel("Add to favourites", string.Empty, ReactiveCommand.Create<Unit>(r => { })),
-                    new Menus.MenuItemViewModel("Add to playlist", string.Empty, ReactiveCommand.Create<Unit>(r => { })),
-                    new Menus.MenuItemViewModel("Play", string.Empty, ReactiveCommand.Create<Unit>(r => { }))
+                    new MenuItemViewModel("Add to library", string.Empty, ReactiveCommand.Create<Unit>(r => {})),
+                    new MenuItemViewModel("Add to favourites", string.Empty, ReactiveCommand.Create<Unit>(r => { })),
+                    new MenuItemViewModel("Add to playlist", string.Empty, ReactiveCommand.Create<Unit>(r => { })),
+                    new MenuItemViewModel("Play", string.Empty, ReactiveCommand.Create<Unit>(r => { }))
                     ]);
 
                 foreach (var p in _playersService.Players)
@@ -93,7 +85,7 @@ namespace WateryTart.Core.ViewModels
                         vm.LoadFromId(item.ItemId, item.Provider);
                         screen.Router.Navigate.Execute(vm);
                         break;
-
+                            
                     case MediaType.Playlist:
                         var playlistViewModel = App.Container.GetRequiredService<PlaylistViewModel>();
                         playlistViewModel.LoadFromId(item.ItemId, item.Provider);
@@ -132,17 +124,26 @@ namespace WateryTart.Core.ViewModels
 
             foreach (var n in nonEmptyRecommendations)
             {
-                SourceRecommendations.Add(n); //C# is byref, not byval, so would have to clone it.
-                // https://docs.avaloniaui.net/docs/concepts/reactiveui/binding-to-sorted-filtered-list
-                // Theoretically dynamicdata should be used with a SourceList, but a copied list of view models may be better suited.
-
+                SourceRecommendations.Add(n);
                 Recommendation x = (Recommendation)CustomMemberwiseClone(n);
+                
                 if (x.items.Count > 4)
                     x.items = x.items.GetRange(0, 4);
 
-                Recommendations.Add(x);
+                // Convert items to appropriate view models based on MediaType
+                var viewModels = new List<object>();
+                foreach (var item in x.items)
+                {
+                    IViewModelBase viewModel = item.CreateViewModelForItem();
+                    if (viewModel != null)
+                        viewModels.Add(viewModel);
+                }
+
+                var displayModel = new RecommendationDisplayModel(x, viewModels);
+                _displayRecommendations.Add(displayModel);
             }
         }
+
 
         public string? UrlPathSegment { get; }
         public IScreen HostScreen { get; }

@@ -122,6 +122,7 @@ public partial class App : Application
         builder.RegisterType<SearchViewModel>();
         builder.RegisterType<ArtistsViewModel>();
         builder.RegisterType<LibraryViewModel>();
+        builder.RegisterType<TrackViewModel>();
         builder.RegisterType<RecommendationViewModel>();
 
         Container = builder.Build();

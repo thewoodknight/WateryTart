@@ -7,5 +7,6 @@
         public static string ArtistGet = "music/artists/get";
         public static string ArtistsGet = "music/artists/library_items";
         public static string ArtistsCount = "music/artists/count";
+        public static string Search = "music/search";
     }
 }
