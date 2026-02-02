@@ -1,0 +1,24 @@
+name: dotnet package
+
+on: release
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '3.1.x', '6.0.x' ]
+
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup .NET 10.x
+        uses: actions/setup-dotnet@v4
+        with:
+          # Semantic version range syntax or exact version of a dotnet version
+          dotnet-version: '10.x'
+          cache: true
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet publish WateryTart.Platform.Linux -p:PublishProfile=LinuxArm
