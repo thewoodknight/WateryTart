@@ -21,9 +21,15 @@ jobs:
           cache-dependency-path: './WateryTart.Platform.Linux/packages.lock.json'
       - name: Install dependencies
         run: dotnet restore
-     # - run: dotnet build WateryTart.Platform.Windows/WateryTart.Platform.Windows.csproj
+      - run: dotnet publish WateryTart.Platform.Windows -p:PublishProfile=Winx64
+      - name: Win-x64 files
+        uses: actions/upload-artifact@v4
+        with:    
+          name: Windows-x64
+          path: /home/runner/work/WateryTart/WateryTart/WateryTart.Platform.Windows/bin/release/net10.0/publish/win-x64/**
       - run: dotnet publish WateryTart.Platform.Linux -p:PublishProfile=LinuxArm
       - name: Linux-arm64 files
         uses: actions/upload-artifact@v4
-        with:           
+        with:    
+          name: LinuxArm64
           path: /home/runner/work/WateryTart/WateryTart/WateryTart.Platform.Linux/bin/release/net10.0/publish/linux-arm64/**
