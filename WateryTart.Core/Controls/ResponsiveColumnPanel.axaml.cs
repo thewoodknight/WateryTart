@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using System;
 
 namespace WateryTart.Core.Controls;
 
@@ -57,14 +58,35 @@ public class ResponsiveColumnPanel : TemplatedControl
     {
         base.OnApplyTemplate(e);
 
+        // Unsubscribe from previous events if any
+        if (_firstColumnContent is not null)
+        {
+            _firstColumnContent.SizeChanged -= OnFirstColumnSizeChanged;
+        }
+
         // Cache template element references
         _contentGridContainer = e.NameScope.Find<Grid>("ContentGridContainer");
         _firstColumnContent = e.NameScope.Find<ContentPresenter>("FirstColumnContent");
         _secondColumnContent = e.NameScope.Find<ContentPresenter>("SecondColumnContent");
 
+        // Subscribe to first column size changes
+        if (_firstColumnContent is not null)
+        {
+            _firstColumnContent.SizeChanged += OnFirstColumnSizeChanged;
+        }
+
         // Initialize _isWideView based on current width
         _isWideView = Bounds.Width > Breakpoint;
         UpdateLayout();
+    }
+
+    private void OnFirstColumnSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        // When in wide view, match the second column height to the first column
+        if (_isWideView && _secondColumnContent is not null)
+        {
+            _secondColumnContent.MaxHeight = e.NewSize.Height;
+        }
     }
 
     private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
@@ -95,6 +117,12 @@ public class ResponsiveColumnPanel : TemplatedControl
             {
                 Grid.SetColumn(_secondColumnContent, 1);
                 Grid.SetRow(_secondColumnContent, 0);
+                
+                // Apply current first column height as max height
+                if (_firstColumnContent is not null)
+                {
+                    _secondColumnContent.MaxHeight = _firstColumnContent.Bounds.Height;
+                }
             }
         }
         else
@@ -114,6 +142,9 @@ public class ResponsiveColumnPanel : TemplatedControl
             {
                 Grid.SetColumn(_secondColumnContent, 0);
                 Grid.SetRow(_secondColumnContent, 1);
+                
+                // Remove height restriction in single column mode
+                _secondColumnContent.MaxHeight = double.PositiveInfinity;
             }
         }
     }
