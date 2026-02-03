@@ -1,6 +1,7 @@
 using ReactiveUI;
 using System;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls.Primitives;
 using WateryTart.Core.Services;
@@ -22,6 +23,13 @@ public class TrackViewModel : ReactiveObject, IViewModelBase
         set => this.RaiseAndSetIfChanged(ref _track, value);
     }
 
+    private bool _isNowPlaying;
+    public bool IsNowPlaying
+    {
+        get => _isNowPlaying;
+        private set => this.RaiseAndSetIfChanged(ref _isNowPlaying, value);
+    }
+
     public string? UrlPathSegment { get; }
     public IScreen HostScreen { get; }
     public string Title { get; set; }
@@ -39,6 +47,16 @@ public class TrackViewModel : ReactiveObject, IViewModelBase
         HostScreen = screen;
 
         Track = t;
+
+        // Monitor for changes to the currently playing track
+        this.WhenAnyValue(
+            x => x._playersService.SelectedPlayer,
+            x => x._playersService.SelectedPlayer.CurrentMedia,
+            x => x._playersService.SelectedPlayer.CurrentMedia.uri,
+            x => x.Track.Uri)
+            .Select(_ => _playersService.SelectedPlayer?.CurrentMedia?.uri == Track?.Uri)
+            .DistinctUntilChanged()
+            .Subscribe(isPlaying => IsNowPlaying = isPlaying);
 
         TrackFullViewCommand = ReactiveCommand.Create(() =>
         {
