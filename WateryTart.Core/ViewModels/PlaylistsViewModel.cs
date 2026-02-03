@@ -20,7 +20,14 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
 
     [Reactive] public partial string Title { get; set; }
     [Reactive] public partial ObservableCollection<PlaylistViewModel> Playlists { get; set; } = new();
+    [Reactive] public partial bool IsLoading { get; set; }
+    [Reactive] public partial bool HasMoreItems { get; set; } = true;
+    [Reactive] public partial int CurrentOffset { get; set; } = 0;
+    
+    private const int PageSize = 50;
+
     public ReactiveCommand<PlaylistViewModel, Unit> ClickedCommand { get; }
+    public ReactiveCommand<Unit, Unit> LoadMoreCommand { get; }
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
 
@@ -37,17 +44,38 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
             screen.Router.Navigate.Execute(item);
         });
 
-#pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
-        _ = LoadAsync();
+        LoadMoreCommand = ReactiveCommand.CreateFromTask(
+            LoadMoreAsync,
+            this.WhenAnyValue(x => x.IsLoading, x => x.HasMoreItems, (loading, hasMore) => !loading && hasMore)
+        );
+
+#pragma warning disable CS4014
+        _ = LoadInitialAsync();
 #pragma warning restore CS4014
     }
 
-    private async Task LoadAsync()
+    private async Task LoadInitialAsync()
     {
+        CurrentOffset = 0;
+        Playlists.Clear();
+        await LoadPlaylistsAsync();
+    }
+
+    private async Task LoadMoreAsync()
+    {
+        await LoadPlaylistsAsync();
+    }
+
+    private async Task LoadPlaylistsAsync()
+    {
+        if (IsLoading)
+            return;
+
         try
         {
-            Playlists.Clear();
-            var response = await _massClient.PlaylistsGetAsync();
+            IsLoading = true;
+            
+            var response = await _massClient.PlaylistsGetAsync(limit: PageSize, offset: CurrentOffset);
             
             if (response?.Result != null)
             {
@@ -55,11 +83,27 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
                 {
                     Playlists.Add(new PlaylistViewModel(_massClient, HostScreen, _playersService, playlist));
                 }
+
+                HasMoreItems = response.Result.Count == PageSize;
+                
+                if (HasMoreItems)
+                {
+                    CurrentOffset += PageSize;
+                }
+            }
+            else
+            {
+                HasMoreItems = false;
             }
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error loading playlists: {ex.Message}");
+            HasMoreItems = false;
+        }
+        finally
+        {
+            IsLoading = false;
         }
     }
 }

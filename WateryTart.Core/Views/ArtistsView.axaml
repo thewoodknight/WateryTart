@@ -5,6 +5,7 @@
 			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
 			 xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
 			 xmlns:app="clr-namespace:WateryTart.Core"
+			 xmlns:behaviors="clr-namespace:WateryTart.Core.Behaviors"
 			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="WateryTart.Core.Views.ArtistsView"
@@ -14,39 +15,48 @@
 		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
 		<converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
 	</UserControl.Resources>
-	<ListBox x:Name="lbArtists" ItemsSource="{Binding Artists}" Background="Transparent" >
-		<ListBox.ItemsPanel>
-			<ItemsPanelTemplate>
-				<WrapPanel ItemWidth="200" ItemSpacing="15" />
-			</ItemsPanelTemplate>
-		</ListBox.ItemsPanel>
-		<ListBox.ItemTemplate>
-			<DataTemplate>
-				<StackPanel>
-					<Interaction.Behaviors>
-						<EventTriggerBehavior EventName="Tapped">
-							<InvokeCommandAction
-							Command="{Binding #lbArtists.((vm:ArtistsViewModel)DataContext).ClickedCommand }"
-							CommandParameter="{Binding Path=.}"/>
-						</EventTriggerBehavior>
-					</Interaction.Behaviors>
-					<Border BoxShadow="0 0 10 0 Black"
-							Margin="0,0,0,5"
-							Width="195"
-							Height="195">
-						<Border ClipToBounds ="True"
-								CornerRadius="5">
-							<asyncImageLoader:AdvancedImage
-							Loader="{x:Static app:App.ImageLoaderInstance}"
-							Height="195" Width="195" 
-							FallbackImage="{x:Static app:App.FallbackImage}"
-                            Source="{Binding Path=Artist, Converter={StaticResource MetadataImageConverter}}" />
+	
+	<!-- The key is this DockPanel with LastChildFill="True" that forces the ListBox to fill available space -->
+	<DockPanel>
+		<ListBox x:Name="lbArtists" ItemsSource="{Binding Artists}" Background="Transparent">
+			<Interaction.Behaviors>
+				<behaviors:GridScrollBehavior 
+					LoadMoreCommand="{Binding $parent[UserControl].DataContext.LoadMoreCommand}"
+					IsLoading="{Binding $parent[UserControl].DataContext.IsLoading}"
+					HasMoreItems="{Binding $parent[UserControl].DataContext.HasMoreItems}" />
+			</Interaction.Behaviors>
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel ItemWidth="200" ItemSpacing="15" />
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel>
+						<Interaction.Behaviors>
+							<EventTriggerBehavior EventName="Tapped">
+								<InvokeCommandAction
+								Command="{Binding #lbArtists.((vm:ArtistsViewModel)DataContext).ClickedCommand }"
+								CommandParameter="{Binding Path=.}"/>
+							</EventTriggerBehavior>
+						</Interaction.Behaviors>
+						<Border BoxShadow="0 0 10 0 Black"
+								Margin="0,0,0,5"
+								Width="195"
+								Height="195">
+							<Border ClipToBounds ="True"
+									CornerRadius="5">
+								<asyncImageLoader:AdvancedImage
+								Loader="{x:Static app:App.ImageLoaderInstance}"
+								Height="195" Width="195" 
+								FallbackImage="{x:Static app:App.FallbackImage}"
+								Source="{Binding Path=Artist, Converter={StaticResource MetadataImageConverter}}" />
+							</Border>
 						</Border>
-					</Border>
-					<TextBlock Margin="-10,0,0,0" Text="{Binding Artist.Name}" TextTrimming="CharacterEllipsis" ></TextBlock>
-				</StackPanel>
-			</DataTemplate>
-			
-		</ListBox.ItemTemplate>
-	</ListBox>
+						<TextBlock Margin="-10,0,0,0" Text="{Binding Artist.Name}" TextTrimming="CharacterEllipsis" ></TextBlock>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</DockPanel>
 </UserControl>

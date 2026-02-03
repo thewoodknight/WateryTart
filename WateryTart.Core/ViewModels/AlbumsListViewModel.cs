@@ -1,6 +1,8 @@
 ﻿using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reactive;
 using System.Threading.Tasks;
 using WateryTart.Core.Services;
@@ -20,7 +22,15 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
     public ObservableCollection<AlbumViewModel> Albums { get; set; }
     public AlbumViewModel SelectedAlbum { get; set; }
     public ReactiveCommand<Unit, IRoutableViewModel> SelectedItemChangedCommand { get; }
+    
     [Reactive] public partial string Title { get; set; }
+    [Reactive] public partial bool IsLoading { get; set; }
+    [Reactive] public partial bool HasMoreItems { get; set; } = true;
+    [Reactive] public partial int CurrentOffset { get; set; } = 0;
+    
+    private const int PageSize = 50;
+    
+    public ReactiveCommand<Unit, Unit> LoadMoreCommand { get; }
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
 
@@ -31,7 +41,6 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
         HostScreen = screen;
         Albums = new ObservableCollection<AlbumViewModel>();
 
-        //I don't love this, there might be a better way to pass a parameter
         GoNext = ReactiveCommand.CreateFromObservable(() =>
             {
                 var e = screen.Router.Navigate.Execute(SelectedAlbum);
@@ -41,17 +50,66 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
             }
         );
 
-        Load();
+        LoadMoreCommand = ReactiveCommand.CreateFromTask(
+            LoadMoreAsync,
+            this.WhenAnyValue(x => x.IsLoading, x => x.HasMoreItems, (loading, hasMore) => !loading && hasMore)
+        );
+
+#pragma warning disable CS4014
+        _ = LoadInitialAsync();
+#pragma warning restore CS4014
     }
 
-    public async Task Load()
+    private async Task LoadInitialAsync()
     {
+        CurrentOffset = 0;
         Albums.Clear();
-        var response = await _massClient.MusicAlbumsLibraryItemsAsync();
-        foreach (var a in response.Result)
+        await LoadAlbumsAsync();
+    }
+
+    private async Task LoadMoreAsync()
+    {
+        await LoadAlbumsAsync();
+    }
+
+    private async Task LoadAlbumsAsync()
+    {
+        if (IsLoading)
+            return;
+
+        try
         {
-            Albums.Add(new AlbumViewModel(_massClient, HostScreen, _playersService, a));
+            IsLoading = true;
+            
+            var response = await _massClient.MusicAlbumsLibraryItemsAsync(limit: PageSize, offset: CurrentOffset);
+            
+            if (response?.Result != null)
+            {
+                foreach (var album in response.Result)
+                {
+                    Albums.Add(new AlbumViewModel(_massClient, HostScreen, _playersService, album));
+                }
+
+                HasMoreItems = response.Result.Count == PageSize;
+                
+                if (HasMoreItems)
+                {
+                    CurrentOffset += PageSize;
+                }
+            }
+            else
+            {
+                HasMoreItems = false;
+            }
         }
-           
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error loading albums: {ex.Message}");
+            HasMoreItems = false;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 }

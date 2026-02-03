@@ -104,9 +104,45 @@ public static partial class MassClientExtensions
             return await SendAsync<TracksResponse>(c, IdAndProvider(Commands.PlaylistTracksGet, playlistId, provider_instance_id_or_domain));
         }
 
-        public async Task<AlbumsResponse> MusicAlbumsLibraryItemsAsync()
+        public async Task<ArtistsResponse> ArtistsGetAsync(int? limit = null, int? offset = null)
         {
-            return await SendAsync<AlbumsResponse>(c, JustCommand(Commands.MusicAlbumLibraryItems));
+            var m = new Message("music/artists/library_items")
+            {
+                args = new Hashtable
+                {
+                    { "favorite_only", "false" },
+                }
+            };
+            
+            if (limit.HasValue)
+            {
+                m.args["limit"] = limit.Value.ToString();
+            }
+            if (offset.HasValue)
+            {
+                m.args["offset"] = offset.Value.ToString();
+            }
+            
+            return await SendAsync<ArtistsResponse>(c, m);
+        }
+
+        public async Task<AlbumsResponse> MusicAlbumsLibraryItemsAsync(int? limit = null, int? offset = null)
+        {
+            var m = new Message(Commands.MusicAlbumLibraryItems)
+            {
+                args = new Hashtable()
+            };
+            
+            if (limit.HasValue)
+            {
+                m.args["limit"] = limit.Value.ToString();
+            }
+            if (offset.HasValue)
+            {
+                m.args["offset"] = offset.Value.ToString();
+            }
+            
+            return await SendAsync<AlbumsResponse>(c, m);
         }
 
         public async Task<AlbumResponse> MusicAlbumGetAsync(string id, string provider_instance_id_or_domain)
