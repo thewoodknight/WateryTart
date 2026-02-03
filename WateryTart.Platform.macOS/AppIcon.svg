@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- Water gradient -->
+    <linearGradient id="waterGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e90ff;stop-opacity:0.7"/>
+      <stop offset="100%" style="stop-color:#0a4d7a;stop-opacity:1"/>
+    </linearGradient>
+    <!-- Sword blade gradient -->
+    <linearGradient id="bladeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e8e8e8"/>
+      <stop offset="50%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#c0c0c0"/>
+    </linearGradient>
+    <!-- Gold gradient for crossguard -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700"/>
+      <stop offset="50%" style="stop-color:#ffec8b"/>
+      <stop offset="100%" style="stop-color:#daa520"/>
+    </linearGradient>
+    <!-- Handle wrap -->
+    <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4a2810"/>
+      <stop offset="50%" style="stop-color:#6b3a1a"/>
+      <stop offset="100%" style="stop-color:#4a2810"/>
+    </linearGradient>
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Water ripple clip -->
+    <clipPath id="waterClip">
+      <rect x="0" y="280" width="512" height="232"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#1a1a2e"/>
+
+  <!-- Water body -->
+  <ellipse cx="256" cy="380" rx="220" ry="100" fill="url(#waterGrad)"/>
+
+  <!-- Water surface waves -->
+  <path d="M36 330 Q100 310 160 330 T280 330 T400 330 T476 330"
+        stroke="#4db8ff" stroke-width="3" fill="none" opacity="0.6"/>
+  <path d="M56 350 Q120 330 180 350 T300 350 T420 350 T456 350"
+        stroke="#4db8ff" stroke-width="2" fill="none" opacity="0.4"/>
+
+  <!-- Sword with glow -->
+  <g filter="url(#glow)">
+    <!-- Blade -->
+    <path d="M256 40 L270 320 L256 340 L242 320 Z" fill="url(#bladeGrad)" stroke="#a0a0a0" stroke-width="1"/>
+
+    <!-- Blade center line -->
+    <line x1="256" y1="60" x2="256" y2="310" stroke="#d0d0d0" stroke-width="2" opacity="0.5"/>
+
+    <!-- Crossguard -->
+    <path d="M200 300 Q210 290 256 290 Q302 290 312 300 Q302 310 256 310 Q210 310 200 300 Z"
+          fill="url(#goldGrad)" stroke="#b8860b" stroke-width="1"/>
+
+    <!-- Crossguard gems -->
+    <circle cx="210" cy="300" r="6" fill="#ff4444"/>
+    <circle cx="302" cy="300" r="6" fill="#ff4444"/>
+
+    <!-- Handle -->
+    <rect x="248" y="310" width="16" height="60" fill="url(#handleGrad)" rx="2"/>
+
+    <!-- Handle wrapping -->
+    <path d="M248 320 L264 325 M248 335 L264 340 M248 350 L264 355"
+          stroke="#3a2010" stroke-width="2" fill="none"/>
+
+    <!-- Pommel -->
+    <circle cx="256" cy="380" r="14" fill="url(#goldGrad)" stroke="#b8860b" stroke-width="1"/>
+    <circle cx="256" cy="380" r="6" fill="#4444ff"/>
+  </g>
+
+  <!-- Water splash around sword -->
+  <g clip-path="url(#waterClip)">
+    <ellipse cx="256" cy="340" rx="30" ry="15" fill="#4db8ff" opacity="0.5"/>
+    <!-- Droplets -->
+    <circle cx="230" cy="310" r="4" fill="#4db8ff" opacity="0.7"/>
+    <circle cx="285" cy="305" r="3" fill="#4db8ff" opacity="0.6"/>
+    <circle cx="220" cy="325" r="3" fill="#4db8ff" opacity="0.5"/>
+    <circle cx="295" cy="320" r="4" fill="#4db8ff" opacity="0.6"/>
+  </g>
+
+  <!-- Sparkles on blade -->
+  <circle cx="256" cy="80" r="3" fill="white" opacity="0.9"/>
+  <circle cx="260" cy="150" r="2" fill="white" opacity="0.7"/>
+  <circle cx="252" cy="220" r="2" fill="white" opacity="0.6"/>
+</svg>

@@ -58,7 +58,9 @@ namespace WateryTart.Core.ViewModels
         public void LoadFromId(string id, string provider)
         {
             Tracks = new ObservableCollection<TrackViewModel>();
+#pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
             _ = LoadPlaylistDataAsync(id, provider);
+#pragma warning restore CS4014
         }
 
         private async Task LoadPlaylistDataAsync(string id, string provider)

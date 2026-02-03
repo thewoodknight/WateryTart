@@ -52,20 +52,31 @@ namespace WateryTart.Service.MassClient
                 Options = { KeepAliveInterval = TimeSpan.FromSeconds(1) }
             });
 
+            // Music Assistant uses port 8095 for HTTP and 8097 for WebSocket API
+            var wsUrl = GetWebSocketUrl(baseurl);
+
             var tcs = new TaskCompletionSource<LoginResults>();
-            using (_client = new WebsocketClient(new Uri($"ws://{baseurl}/ws"), factory))
+            using (_client = new WebsocketClient(new Uri(wsUrl), factory))
             {
+                Console.WriteLine($"Connecting to WebSocket: {wsUrl}");
                 _client.MessageReceived.Subscribe(OnNext);
-                _client.Start();
+                await _client.Start();
+                Console.WriteLine("WebSocket connected, sending auth request");
 
                 this.GetAuthToken(username, password, (response) =>
                 {
+                    Console.WriteLine($"Auth response received: success={response?.Result?.success}");
+                    if (response?.Result == null)
+                    {
+                        tcs.TrySetResult(new LoginResults { Success = false, Error = "No response from server" });
+                        return;
+                    }
                     if (!response.Result.success)
                     {
                         var r = new LoginResults
                         {
                             Success = false,
-                            Error = response.Result.error
+                            Error = response.Result.error ?? "Authentication failed"
 
                         };
                         tcs.TrySetResult(r);
@@ -83,6 +94,15 @@ namespace WateryTart.Service.MassClient
                     tcs.TrySetResult(success);
                 });
 
+                // Add timeout to prevent hanging forever
+                var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10));
+                var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
+
+                if (completedTask == timeoutTask)
+                {
+                    return new LoginResults { Success = false, Error = "Connection timed out" };
+                }
+
                 return await tcs.Task;
             }
         }
@@ -94,7 +114,7 @@ namespace WateryTart.Service.MassClient
             {
                 if (!_currentConnectTask.IsCompleted)
                 {
-                    Debug.WriteLine("Connect already in progress, returning existing task");
+                    Console.WriteLine("Connect already in progress, returning existing task");
                     return false;
                 }
             }
@@ -111,7 +131,9 @@ namespace WateryTart.Service.MassClient
                 Options = { KeepAliveInterval = TimeSpan.FromSeconds(1) }
             });
 
-            _client = new WebsocketClient(new Uri($"ws://{credentials.BaseUrl}/ws"), factory);
+            // Music Assistant uses port 8095 for HTTP and 8097 for WebSocket API
+            var wsUrl = GetWebSocketUrl(credentials.BaseUrl);
+            _client = new WebsocketClient(new Uri(wsUrl), factory);
 
             _reconnectionSubscription = _client.ReconnectionHappened.Subscribe(info =>
             {
@@ -132,10 +154,20 @@ namespace WateryTart.Service.MassClient
             }
             catch (OperationCanceledException)
             {
-                Debug.WriteLine("Connect cancelled");
+                Console.WriteLine("Connect cancelled");
             }
 
             return !_connectionCts.Token.IsCancellationRequested;
+        }
+
+        /// <summary>
+        /// Converts a base URL (e.g., "192.168.1.63:8095") to the WebSocket URL.
+        /// Music Assistant WebSocket is on the same port as HTTP.
+        /// </summary>
+        private static string GetWebSocketUrl(string baseUrl)
+        {
+            // WebSocket is on the same port as HTTP, just different protocol
+            return $"ws://{baseUrl}/ws";
         }
 
         private void SendLogin(IMassCredentials credentials)
@@ -151,6 +183,8 @@ namespace WateryTart.Service.MassClient
 
         public void Send<T>(MessageBase message, Action<string> responseHandler, bool ignoreConnection = false)
         {
+            var json = message.ToJson();
+            Console.WriteLine($"WS Sending: {json}");
             _routing.Add(message.message_id, responseHandler);
 
             if (!ignoreConnection && (_client == null || !_client.IsRunning))
@@ -160,7 +194,7 @@ namespace WateryTart.Service.MassClient
                 {
                     if (_currentConnectTask.IsCompleted)
                     {
-                        Debug.WriteLine("Starting new Connect task from Send");
+                        Console.WriteLine("Starting new Connect task from Send");
                         _currentConnectTask = ConnectSafely();
                     }
                 }
@@ -177,7 +211,7 @@ namespace WateryTart.Service.MassClient
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Connect error: {ex}");
+                Console.WriteLine($"Connect error: {ex}");
             }
         }
 
@@ -188,12 +222,20 @@ namespace WateryTart.Service.MassClient
             if (string.IsNullOrEmpty(response.Text))
                 return;
 
-            if (response.Text.Contains("\"server_id\"") || response.Text.Contains("\"auth-123\""))
+            Console.WriteLine($"WS Received: {response.Text.Substring(0, Math.Min(200, response.Text.Length))}...");
+
+            // Skip server info messages but NOT auth responses
+            if (response.Text.Contains("\"server_id\"") && !response.Text.Contains("\"message_id\""))
+            {
+                Console.WriteLine("Skipping server info message");
                 return;
+            }
 
             TempResponse y = JsonConvert.DeserializeObject<TempResponse>(response.Text);
+            Console.WriteLine($"Parsed message_id: {y?.message_id}, routing keys: {string.Join(",", _routing.Keys)}");
             if (y?.message_id != null && _routing.ContainsKey(y.message_id))
             {
+                Console.WriteLine($"Found routing match for {y.message_id}");
                 _routing[y.message_id].Invoke(response.Text);
                 _routing.Remove(y.message_id);
                 return;
@@ -242,7 +284,7 @@ namespace WateryTart.Service.MassClient
 
         public async Task DisconnectAsync()
         {
-            Debug.WriteLine("MassWsClient Disconnecting...");
+            Console.WriteLine("MassWsClient Disconnecting...");
 
             try
             {
@@ -260,20 +302,20 @@ namespace WateryTart.Service.MassClient
 
                     if (_client.IsRunning)
                     {
-                        Debug.WriteLine("Stopping WebSocket client...");
+                        Console.WriteLine("Stopping WebSocket client...");
                         try
                         {
                             await _client.Stop(WebSocketCloseStatus.NormalClosure, "Shutdown");
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine($"Error calling Stop: {ex}");
+                            Console.WriteLine($"Error calling Stop: {ex}");
                         }
 
                         // Force abort if still running
                         if (_client.IsRunning)
                         {
-                            Debug.WriteLine("WebSocket still running, attempting abort...");
+                            Console.WriteLine("WebSocket still running, attempting abort...");
                             _client.NativeClient?.Abort();
                         }
 
@@ -283,7 +325,7 @@ namespace WateryTart.Service.MassClient
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error stopping WebSocket: {ex}");
+                Console.WriteLine($"Error stopping WebSocket: {ex}");
             }
 
             try
@@ -294,7 +336,7 @@ namespace WateryTart.Service.MassClient
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error disposing WebSocket: {ex}");
+                Console.WriteLine($"Error disposing WebSocket: {ex}");
             }
 
             try
@@ -303,7 +345,7 @@ namespace WateryTart.Service.MassClient
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error disposing CTS: {ex}");
+                Console.WriteLine($"Error disposing CTS: {ex}");
             }
 
             try
@@ -312,10 +354,10 @@ namespace WateryTart.Service.MassClient
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error disposing subject: {ex}");
+                Console.WriteLine($"Error disposing subject: {ex}");
             }
 
-            Debug.WriteLine("MassWsClient Disconnected");
+            Console.WriteLine("MassWsClient Disconnected");
         }
     }
 }

@@ -25,7 +25,7 @@ jobs:
           cache: true
           cache-dependency-path: './WateryTart.Platform.Linux/packages.lock.json'
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore WateryTart.Platform.Linux
       - run: dotnet publish WateryTart.Platform.Linux -p:PublishProfile=LinuxArm
       - name: Zip Linux-arm64 files
         run: |
@@ -54,7 +54,7 @@ jobs:
           cache: true
           cache-dependency-path: './WateryTart.Platform.Linux/packages.lock.json'
       - name: Install dependencies
-        run: dotnet restore
+        run: dotnet restore WateryTart.Platform.Windows
       - run: dotnet publish WateryTart.Platform.Windows -p:PublishProfile=Winx64
       - name: Zip Windows win-x64 files
         shell: pwsh
@@ -73,10 +73,58 @@ jobs:
           name: WateryTart.Windows-x64
           path: artifacts/WateryTart.Windows-x64.zip
 
+  macosbuild:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup .NET 10.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+      - name: Install dependencies
+        run: dotnet restore WateryTart.Platform.macOS
+      - name: Publish
+        run: dotnet publish WateryTart.Platform.macOS -p:PublishProfile=MacOSArm64
+      - name: Create .app bundle
+        run: |
+          APP_NAME="WateryTart.app"
+          PUBLISH_DIR="WateryTart.Platform.macOS/bin/Release/net10.0/publish/osx-arm64"
+
+          # Create bundle structure
+          mkdir -p "$APP_NAME/Contents/MacOS"
+          mkdir -p "$APP_NAME/Contents/Resources"
+
+          # Copy executable and dependencies
+          cp -R "$PUBLISH_DIR"/* "$APP_NAME/Contents/MacOS/"
+
+          # Copy Info.plist
+          cp WateryTart.Platform.macOS/Info.plist "$APP_NAME/Contents/"
+
+          # Copy icon
+          cp WateryTart.Platform.macOS/AppIcon.icns "$APP_NAME/Contents/Resources/"
+
+          # Make executable
+          chmod +x "$APP_NAME/Contents/MacOS/WateryTartMacOS"
+      - name: Create DMG
+        run: |
+          mkdir -p artifacts
+          hdiutil create -volname "WateryTart" -srcfolder WateryTart.app -ov -format UDZO artifacts/WateryTart.macOS-arm64.dmg
+      - name: Zip .app bundle
+        run: |
+          zip -r artifacts/WateryTart.macOS-arm64.app.zip WateryTart.app
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: WateryTart.macOS-arm64
+          path: |
+            artifacts/WateryTart.macOS-arm64.dmg
+            artifacts/WateryTart.macOS-arm64.app.zip
+
   publish:
     needs:
       - linuxbuild
       - windowsbuild
+      - macosbuild
     runs-on: ubuntu-latest
     # make sure this only runs when a release was published via the UI/API
     if: ${{ github.event_name == 'release' && github.event.action == 'published' }}
@@ -93,18 +141,28 @@ jobs:
           name: WateryTart.Windows-x64
           path: artifacts/windows
 
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: WateryTart.macOS-arm64
+          path: artifacts/macos
+
       - name: List downloaded files (debug)
         run: |
           echo "Linux files:"
           ls -R artifacts/linux || true
           echo "Windows files:"
           ls -R artifacts/windows || true
+          echo "macOS files:"
+          ls -R artifacts/macos || true
 
-      - name: Upload assets to published Release (only ZIPs)
+      - name: Upload assets to published Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             artifacts/linux/*.zip
             artifacts/windows/*.zip
+            artifacts/macos/*.dmg
+            artifacts/macos/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

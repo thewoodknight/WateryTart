@@ -47,7 +47,9 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
             if (value != null)
             {
                 _settings.LastSelectedPlayerId = value.PlayerId;
+#pragma warning disable CS4014 // Fire-and-forget intentional - fetches queue in background
                 _ = FetchPlayerQueueAsync(value.PlayerId);
+#pragma warning restore CS4014
             }
 
             this.RaiseAndSetIfChanged(ref field, value);
@@ -96,14 +98,14 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         _subscriptions.Add(QueuedItems
                 .Connect()
                 .Sort(SortExpressionComparer<QueuedItem>.Ascending(t => t.sort_index))
-                .Filter(i => i.sort_index > SelectedQueue.current_index)  //There is a "race condition" when new tracks are prepended to a queue I think
+                .Filter(i => SelectedQueue != null && i.sort_index > SelectedQueue.current_index)  //There is a "race condition" when new tracks are prepended to a queue I think
                 .Bind(out currentQueue)
                 .Subscribe());
 
         _subscriptions.Add(QueuedItems
                 .Connect()
                 .Sort(SortExpressionComparer<QueuedItem>.Descending(t => t.sort_index))
-                .Filter(i => i.sort_index <= SelectedQueue.current_index)
+                .Filter(i => SelectedQueue != null && i.sort_index <= SelectedQueue.current_index)
                 .Bind(out playedQueue)
                 .Subscribe());
 
@@ -118,8 +120,11 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         if (SelectedPlayer?.PlaybackState != PlaybackState.playing)
             return;
 
-        Progress = SelectedQueue.current_item.media_item.progress;
-        SelectedQueue?.current_item.media_item.elapsed_time += 1;
+        if (SelectedQueue?.current_item?.media_item != null)
+        {
+            Progress = SelectedQueue.current_item.media_item.progress;
+            SelectedQueue.current_item.media_item.elapsed_time += 1;
+        }
     }
 
     public async Task OnEvents(BaseEventResponse e)

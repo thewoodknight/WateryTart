@@ -57,14 +57,18 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     public void LoadFromId(string id, string provider)
     {
         Tracks = new ObservableCollection<TrackViewModel>();
+#pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
         _ = LoadAlbumDataAsync(id, provider);
+#pragma warning restore CS4014
     }
 
     public void Load(Album album)
     {
         Album = album;
         Tracks = new ObservableCollection<TrackViewModel>();
+#pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
         _ = LoadAlbumDataAsync(album.ItemId, album.Provider);
+#pragma warning restore CS4014
     }
 
     private async Task LoadAlbumDataAsync(string id, string provider)

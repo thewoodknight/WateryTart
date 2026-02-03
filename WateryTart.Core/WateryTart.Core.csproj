@@ -45,6 +45,7 @@
     <PackageReference Include="System.Device.Gpio" />
     <PackageReference Include="Xaml.Behaviors.Avalonia" />
     <PackageReference Include="Xaml.Behaviors.Interactivity" />
+    <PackageReference Include="Zeroconf" />
   </ItemGroup>
 
   <ItemGroup>

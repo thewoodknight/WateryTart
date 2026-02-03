@@ -56,7 +56,9 @@ public partial class LibraryViewModel : ReactiveObject, IViewModelBase
         ];
 
         // Load counts asynchronously in the background
+#pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
         _ = LoadLibraryCountsAsync(artists, albums, tracks);
+#pragma warning restore CS4014
     }
 
     private async Task LoadLibraryCountsAsync(LibraryItem artists, LibraryItem albums, LibraryItem tracks)
