@@ -18,6 +18,9 @@
 		<x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
 		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
 		<converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
+		<converters:AudioFormatCodecConverter x:Key="AudioFormatCodecConverter" />
+		<converters:AudioFormatSampleRateConverter x:Key="AudioFormatSampleRateConverter" />
+		<converters:AudioFormatBitDepthConverter x:Key="AudioFormatBitDepthConverter" />
 	</UserControl.Resources>
 
 	<Grid>
@@ -52,6 +55,48 @@
 						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.artists[0].Name}" FontSize="18"/>
 						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.Name}" FontSize="20" FontWeight="Bold" />
 						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.album.Name}" />
+						
+						<!-- Quality Badges - Each as separate tag -->
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6" Margin="0,10,0,0">
+							<!-- Codec Badge (FLAC, MP3, OPUS, etc.) -->
+							<Border Background="#1A1A1A" 
+									BorderBrush="#1DB954"
+									BorderThickness="1"
+									CornerRadius="4" 
+									Padding="8,3"
+									IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
+								<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatCodecConverter}}" 
+										   FontSize="11" 
+										   FontWeight="Bold"
+										   Foreground="#1DB954" />
+							</Border>
+							
+							<!-- Sample Rate Badge (44.1kHz, 48kHz, etc.) -->
+							<Border Background="#1A1A1A" 
+									BorderBrush="#64B5F6"
+									BorderThickness="1"
+									CornerRadius="4" 
+									Padding="8,3"
+									IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
+								<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatSampleRateConverter}}" 
+										   FontSize="11" 
+										   FontWeight="Bold"
+										   Foreground="#64B5F6" />
+							</Border>
+							
+							<!-- Bit Depth Badge (16bit, 24bit, etc.) -->
+							<Border Background="#1A1A1A" 
+									BorderBrush="#FFB74D"
+									BorderThickness="1"
+									CornerRadius="4" 
+									Padding="8,3"
+									IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
+								<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatBitDepthConverter}}" 
+										   FontSize="11" 
+										   FontWeight="Bold"
+										   Foreground="#FFB74D" />
+							</Border>
+						</StackPanel>
 					</StackPanel>
 
 					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -130,6 +175,48 @@
 			<StackPanel Grid.Column="1" Margin="10" Spacing="5"  VerticalAlignment="Top">
 				<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.Name}"  FontWeight="Bold" TextTrimming="CharacterEllipsis" />
 				<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.artists[0].Name}" TextTrimming="CharacterEllipsis"/>
+
+				<!-- Quality Badges for Small Display - Each as separate tag -->
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4" Margin="0,5,0,0">
+					<!-- Codec Badge -->
+					<Border Background="#1A1A1A" 
+							BorderBrush="#1DB954"
+							BorderThickness="1"
+							CornerRadius="3" 
+							Padding="5,2"
+							IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
+						<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatCodecConverter}}" 
+								   FontSize="9" 
+								   FontWeight="Bold"
+								   Foreground="#1DB954" />
+					</Border>
+					
+					<!-- Sample Rate Badge -->
+					<Border Background="#1A1A1A" 
+							BorderBrush="#64B5F6"
+							BorderThickness="1"
+							CornerRadius="3" 
+							Padding="5,2"
+							IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
+						<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatSampleRateConverter}}" 
+								   FontSize="9" 
+								   FontWeight="Bold"
+								   Foreground="#64B5F6" />
+					</Border>
+					
+					<!-- Bit Depth Badge -->
+					<Border Background="#1A1A1A" 
+							BorderBrush="#FFB74D"
+							BorderThickness="1"
+							CornerRadius="3" 
+							Padding="5,2"
+							IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
+						<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatBitDepthConverter}}" 
+								   FontSize="9" 
+								   FontWeight="Bold"
+								   Foreground="#FFB74D" />
+					</Border>
+				</StackPanel>
 
 				<!-- Compact Progress Bar -->
 				<Grid Margin="5,10,5,0">
