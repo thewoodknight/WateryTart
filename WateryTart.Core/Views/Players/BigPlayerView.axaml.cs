@@ -1,11 +1,8 @@
-using Avalonia;
 using Avalonia.Controls;
-using System;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using Avalonia.VisualTree;
+using Avalonia.Markup.Xaml;
+using AsyncImageLoader;
 using ReactiveUI;
+using System;
 using ReactiveUI.Avalonia;
 using WateryTart.Core.ViewModels.Players;
 
@@ -13,67 +10,42 @@ namespace WateryTart.Core.Views.Players;
 
 public partial class BigPlayerView : ReactiveUserControl<BigPlayerViewModel>
 {
-    private const double SmallDisplayBreakpointWidth = 800.0;
-    private const double SmallDisplayBreakpointHeight = 480;
-    private bool _isSmallDisplay;
-
     public BigPlayerView()
     {
-        InitializeComponent();
+        AvaloniaXamlLoader.Load(this);
 
-        this.WhenActivated(disposables =>
+        var advancedImage = this.Find<AdvancedImage>("imgAlbumArt");
+        if (advancedImage != null)
         {
-                // Subscribe immediately if already attached, otherwise wait
-            SubscribeToWindowBounds(disposables);
-        });
-    }
-
-    private void SubscribeToWindowBounds(CompositeDisposable disposables)
-    {
-        var window = this.FindAncestorOfType<Window>();
-        
-        if (window != null)
-        {
-            // Already attached, subscribe now
-            SetupWindowBoundsObservable(window, disposables);
-        }
-        else
-        {
-            // Not attached yet, wait for AttachedToVisualTree
-            void OnAttached(object? sender, VisualTreeAttachmentEventArgs e)
+            advancedImage.PropertyChanged += (s, e) =>
             {
-                AttachedToVisualTree -= OnAttached;
-                var win = this.FindAncestorOfType<Window>();
-                if (win != null)
+                if (e.Property == AdvancedImage.CurrentImageProperty && DataContext is BigPlayerViewModel vm)
                 {
-                    SetupWindowBoundsObservable(win, disposables);
+                    if (advancedImage.CurrentImage != null && 
+                        advancedImage.Width > 0 && 
+                        advancedImage.Height > 0)
+                    {
+                        vm.UpdateCachedDimensions(advancedImage.Width, advancedImage.Height);
+                    }
                 }
-            }
-            
-            AttachedToVisualTree += OnAttached;
-            Disposable.Create(() => AttachedToVisualTree -= OnAttached).DisposeWith(disposables);
+            };      
         }
-    }
 
-    private void SetupWindowBoundsObservable(Window window, CompositeDisposable disposables)
-    {
-        window.GetObservable(Window.BoundsProperty)
-            .Subscribe(bounds =>
+        var advancedImageSmall = this.Find<AdvancedImage>("imgAlbumArtSmall");
+        if (advancedImageSmall != null)
+        {
+            advancedImageSmall.PropertyChanged += (s, e) =>
             {
-                bool wasSmall = _isSmallDisplay;
-                _isSmallDisplay = bounds.Width < SmallDisplayBreakpointWidth && bounds.Height < SmallDisplayBreakpointHeight;
-
-                if (wasSmall != _isSmallDisplay && ViewModel != null)
+                if (e.Property == AdvancedImage.CurrentImageProperty && DataContext is BigPlayerViewModel vm)
                 {
-                    ViewModel.IsSmallDisplay = _isSmallDisplay;
+                    if (advancedImageSmall.CurrentImage != null && 
+                        advancedImageSmall.Width > 0 && 
+                        advancedImageSmall.Height > 0)
+                    {
+                        vm.UpdateCachedDimensions(advancedImageSmall.Width, advancedImageSmall.Height);
+                    }
                 }
-                
-                // Also update immediately if ViewModel exists
-                if (ViewModel != null && wasSmall == _isSmallDisplay)
-                {
-                    ViewModel.IsSmallDisplay = _isSmallDisplay;
-                }
-            })
-            .DisposeWith(disposables);
+            };
+        }
     }
 }
