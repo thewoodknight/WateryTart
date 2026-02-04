@@ -1,7 +1,8 @@
-﻿    using Avalonia.Media;
+﻿using Avalonia.Media;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -13,6 +14,9 @@ public partial class ColourService : ReactiveObject, IColourService
 {
     [Reactive] public partial Color ColourA { get; set; }
     [Reactive] public partial Color ColourB { get; set; }
+    [Reactive] public partial Color ColourC { get; set; }
+    [Reactive] public partial Color ColourD { get; set; }
+    [Reactive] public partial ColourChosen LastPick { get; set; }
 
     [Reactive] public partial string LastId { get; set; }
 
@@ -21,9 +25,7 @@ public partial class ColourService : ReactiveObject, IColourService
         ColourA = FromHex("FF5B4272");
         ColourB = FromHex("FF1C1C1E");
 
-        /* Plexamp default
-         ColourA = FromHex("FF5B4272");
-        ColourB = FromHex("FF6C191E");*/
+        LastPick = ColourChosen.AB;
     }
     public async Task Update(string id, string url)
     {
@@ -45,8 +47,23 @@ public partial class ColourService : ReactiveObject, IColourService
             var image = new Avalonia.Media.Imaging.Bitmap(stream);
 
             var colors = await DominantColorExtractor.GetDominantColorsAsync(image, colorSimilarityThreshold: 10);
-            ColourA = colors[0];
-            ColourB = colors[2];
+
+            if (LastPick == ColourChosen.AB)
+            {
+                ColourC = colors[0];
+                ColourD = colors[2];
+                LastPick = ColourChosen.CD;
+
+                Debug.Write($"Last colours {ColourC} & {ColourD}");
+            }
+            else
+            {
+                ColourA = colors[0];
+                ColourB = colors[2];
+                LastPick = ColourChosen.AB;
+                Debug.Write($"Last colours {ColourA} & {ColourB}");
+            }
+
         }
         catch (Exception ex)
         {

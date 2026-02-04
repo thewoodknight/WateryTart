@@ -6,7 +6,6 @@
 		xmlns:materialIcons="using:Material.Icons.Avalonia"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:avalonia="http://reactiveui.net"
-		xmlns:wateryTart="clr-namespace:WateryTart"
 		xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
 		xmlns:converters="clr-namespace:WateryTart.Core.Converters"
 		xmlns:players1="clr-namespace:WateryTart.Core.Views.Players"
@@ -30,19 +29,47 @@
 		<converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
 	</Window.Resources>
 
-	<Window.Background>
-		<RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -15%" RadiusX="125%" RadiusY="125%"  >
-			<GradientStop Color="{Binding ColourService.ColourA}" Offset="0.142"/>
-			<GradientStop Color="{Binding ColourService.ColourB}" Offset="1"/>
-		</RadialGradientBrush>
-	</Window.Background>
-
-	<Grid x:Name="grd" Background="{x:Null}" Margin="0">
+	<Grid x:Name="grd" Margin="0">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="50" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
+
+		<Rectangle Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False"
+				   Classes="CD AB"
+				   Classes.CD="{Binding ColourService.LastPick, Converter={StaticResource ColourPickConverter}, ConverterParameter=CD}"
+				   Classes.AB="{Binding ColourService.LastPick, Converter={StaticResource ColourPickConverter}, ConverterParameter=AB}">
+
+			<Rectangle.Styles>
+				<Style Selector="Rectangle.CD">
+					<Setter Property="Fill">
+						<RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -15%" RadiusX="125%" RadiusY="125%">
+							<RadialGradientBrush.GradientStops>
+								<GradientStop Offset="0.142" Color="{Binding ColourService.ColourC}" />
+								<GradientStop Offset="1" Color="{Binding ColourService.ColourD}" />
+							</RadialGradientBrush.GradientStops>
+						</RadialGradientBrush>
+					</Setter>
+				</Style>
+				<Style Selector="Rectangle.AB">
+					<Setter Property="Fill"  >
+						<RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -15%" RadiusX="125%" RadiusY="125%">
+							<RadialGradientBrush.GradientStops>
+								<GradientStop Offset="0.142" Color="{Binding ColourService.ColourA}" />
+								<GradientStop Offset="1" Color="{Binding ColourService.ColourB}" />
+							</RadialGradientBrush.GradientStops>
+						</RadialGradientBrush>
+					</Setter>
+				</Style>
+			</Rectangle.Styles>
+
+			<Rectangle.Transitions>
+				<Transitions>
+					<BrushTransition Property="Fill" Duration="0:0:1"/>
+				</Transitions>
+			</Rectangle.Transitions>
+		</Rectangle>
 
 		<!-- Top Navigation -->
 		<Grid Background="{x:Null}" Grid.Row="0" Margin="15,10,10,0">
@@ -59,7 +86,7 @@
 		<!-- Content -->
 		<ScrollViewer x:Name="sv"  Background="Transparent" Grid.Row="1" Margin="10,0,10,0">
 			<ScrollViewer.GestureRecognizers>
-				    <ScrollGestureRecognizer  CanVerticallyScroll="True"/>
+				<ScrollGestureRecognizer  CanVerticallyScroll="True"/>
 			</ScrollViewer.GestureRecognizers>
 			<avalonia:RoutedViewHost x:Name="Router" Router="{Binding Router}" Background="Transparent">
 				<avalonia:RoutedViewHost.ViewLocator>
@@ -109,14 +136,14 @@
 		MaxHeight="500"
 		Classes.show="{Binding ShowSlideupMenu}"
 		Classes.hide="{Binding !ShowSlideupMenu}">
-<!--
+			<!--
 			<Grid.Transitions>
-				<Transitions>
-					<DoubleTransition Property="Opacity" Duration="0:0:.2" Easing="SineEaseInOut"/>
-					<TransformOperationsTransition Property="RenderTransform"
-												   Easing="SineEaseInOut"
-												   Duration="0:0:.2" />
-				</Transitions>
+			<Transitions>
+			<DoubleTransition Property="Opacity" Duration="0:0:.2" Easing="SineEaseInOut"/>
+			<TransformOperationsTransition Property="RenderTransform"
+			Easing="SineEaseInOut"
+			Duration="0:0:.2" />
+			</Transitions>
 			</Grid.Transitions>-->
 			<Grid.Styles>
 				<Style Selector="Grid.show">
