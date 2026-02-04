@@ -12,7 +12,6 @@
 
 		<ResourceDictionary>
             <converters:ColourPickConverter x:Key="ColourPickConverter" />
-            <converters:RadialGradientBrushConverter x:Key="RadialGradientBrushConverter" />
 			<converters:MassImageImageConverter x:Key="MassImageImageConverter" />
 			<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
 			<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
