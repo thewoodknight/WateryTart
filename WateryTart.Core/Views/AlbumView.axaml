@@ -51,40 +51,44 @@
 		<ListBox x:Name="lbTracks" ItemsSource="{Binding Tracks}" Background="Transparent" >
 			<ListBox.ItemTemplate>
 				<DataTemplate x:DataType="vm:TrackViewModel">
-					<Grid Background="Transparent">
-						<Interaction.Behaviors>
-							<EventTriggerBehavior EventName="DoubleTapped">
-								<InvokeCommandAction
-								Command="{Binding TrackFullViewCommand }" />
-							</EventTriggerBehavior>
-						</Interaction.Behaviors>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="20" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
+                    <Grid Background="Transparent">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="DoubleTapped">
+                                <InvokeCommandAction Command="{Binding TrackFullViewCommand }" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-						<TextBlock Text="{Binding Track.track_number}"  Opacity="0.7" />
+                        <TextBlock Text="{Binding Track.track_number}" Opacity="0.7" />
 
-						<StackPanel Orientation="Horizontal"  Grid.Column="1">
-							<!-- Now Playing Indicator -->
-							<avalonia:MaterialIcon
-							Kind="VolumeHigh"
-							Width="24"
-							Height="24"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							Margin="5,0,5,0"
-							IsVisible="{Binding IsNowPlaying}" />
-							<StackPanel>
-								<TextBlock Text="{Binding Track.Name}"></TextBlock>
-								<TextBlock Text="{Binding Track.duration, Converter={StaticResource SecondsToMinutesConverter}}"  Opacity="0.7"></TextBlock>
-							</StackPanel>
-						</StackPanel>
+                        <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
+                            <!-- Now Playing Indicator -->
+                            <avalonia:MaterialIcon
+                                Kind="VolumeHigh"
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Margin="5,0,5,0"
+                                IsVisible="{Binding IsNowPlaying}" />
+							
+                            <!-- Track Info -->
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding Track.Name}" 
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Track.duration, Converter={StaticResource SecondsToMinutesConverter}}" 
+                                           Opacity="0.7" />
+                            </StackPanel>
+                        </Grid>
 
-
-						<Button Grid.Column="2" Command="{Binding TrackAltMenuCommand }" Classes="iconButton navButton"><avalonia:MaterialIcon Kind="MoreVert" Width="25" Height="25" /></Button>
-					</Grid>
+                        <Button Grid.Column="2" Command="{Binding TrackAltMenuCommand }" Classes="iconButton navButton">
+                            <avalonia:MaterialIcon Kind="MoreVert" Width="25" Height="25" />
+                        </Button>
+                    </Grid>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
