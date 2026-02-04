@@ -4,6 +4,7 @@ using DynamicData.Binding;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -26,17 +27,18 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
     private readonly IMassWsClient _massClient;
     private readonly ISettings _settings;
     private readonly IColourService colourService;
-    private ReadOnlyObservableCollection<QueuedItem> currentQueue;
-    private ReadOnlyObservableCollection<QueuedItem> playedQueue;
+    private ReadOnlyObservableCollection<TrackViewModel> currentQueue;
+    private ReadOnlyObservableCollection<TrackViewModel> playedQueue;
     private CompositeDisposable _subscriptions = new CompositeDisposable();
+    private readonly Dictionary<string, TrackViewModel> _trackViewModelCache = new Dictionary<string, TrackViewModel>();
 
     [Reactive] public partial SourceList<QueuedItem> QueuedItems { get; set; } = new SourceList<QueuedItem>();
     [Reactive] public partial ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
     [Reactive] public partial ObservableCollection<PlayerQueue> Queues { get; set; } = new ObservableCollection<PlayerQueue>();
     [Reactive] public partial string SelectedPlayerQueueId { get; set; }
     [Reactive] public partial PlayerQueue SelectedQueue { get; set; }
-    public ReadOnlyObservableCollection<QueuedItem> CurrentQueue { get => currentQueue; }
-    public ReadOnlyObservableCollection<QueuedItem> PlayedQueue { get => playedQueue; }
+    public ReadOnlyObservableCollection<TrackViewModel> CurrentQueue { get => currentQueue; }
+    public ReadOnlyObservableCollection<TrackViewModel> PlayedQueue { get => playedQueue; }
 
     [Reactive] public partial double Progress { get; set; }
     public Player SelectedPlayer
@@ -47,7 +49,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
             if (value != null)
             {
                 _settings.LastSelectedPlayerId = value.PlayerId;
-#pragma warning disable CS4014 // Fire-and-forget intentional - fetches queue in background
+#pragma warning disable CS4014
                 _ = FetchPlayerQueueAsync(value.PlayerId);
 #pragma warning restore CS4014
             }
@@ -67,11 +69,13 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
     private async Task FetchQueueContentsAsync()
     {
         var items = await _massClient.PlayerQueueItemsAsync(SelectedPlayerQueueId);
-        QueuedItems.Clear();
         try
         {
             if (items.Result != null)
+            {
+                QueuedItems.Clear();
                 QueuedItems.AddRange(items.Result);
+            }
         }
         catch (Exception ex)
         {
@@ -93,19 +97,21 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
             .SelectMany(e => Observable.FromAsync(() => OnEvents(e)))
             .Subscribe());
 
-
         /* This takes care of filtering the two lists, though unsure on INPC */
         _subscriptions.Add(QueuedItems
                 .Connect()
                 .Sort(SortExpressionComparer<QueuedItem>.Ascending(t => t.sort_index))
-                .Filter(i => SelectedQueue != null && i.sort_index > SelectedQueue.current_index)  //There is a "race condition" when new tracks are prepended to a queue I think
+                .Filter(i => SelectedQueue != null && (i.sort_index > SelectedQueue.current_index || i.media_item.ItemId == SelectedQueue.current_item.media_item.ItemId))
+                .Transform(i => GetOrCreateTrackViewModel(i))
                 .Bind(out currentQueue)
                 .Subscribe());
+
 
         _subscriptions.Add(QueuedItems
                 .Connect()
                 .Sort(SortExpressionComparer<QueuedItem>.Descending(t => t.sort_index))
-                .Filter(i => SelectedQueue != null && i.sort_index <= SelectedQueue.current_index)
+                .Filter(i => SelectedQueue != null && i.sort_index < SelectedQueue.current_index)
+                .Transform(i => GetOrCreateTrackViewModel(i))
                 .Bind(out playedQueue)
                 .Subscribe());
 
@@ -150,9 +156,8 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
 
             case EventType.PlayerAdded:
                 playerEvent = (PlayerEventResponse)e;
-                if (!Players.Contains((playerEvent.data)) && playerEvent.data != null) //Any?
+                if (!Players.Contains((playerEvent.data)) && playerEvent.data != null)
                     Players.Add(playerEvent.data);
-
                 break;
 
             case EventType.PlayerUpdated:
@@ -162,9 +167,8 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
                 if (player != null)
                 {
                     player.PlaybackState = playerEvent.data.PlaybackState;
-                    player.CurrentMedia = playerEvent.data.CurrentMedia; // this should probably be more of a clone
+                    player.CurrentMedia = playerEvent.data.CurrentMedia;
                     player.VolumeLevel = playerEvent.data.VolumeLevel;
-
                 }
                 break;
 
@@ -173,13 +177,8 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
                 Players.RemoveAll(p => p.PlayerId == playerEvent.data.PlayerId);
                 break;
 
-            case EventType.QueueAdded:
-                break;
-
-            case EventType.QueueUpdated: //replacing a queue is just 'updated'
-
+            case EventType.QueueUpdated:
                 queueEvent = (PlayerQueueEventResponse)e;
-                //It seems like when a queue is updated, the best thing is to clear/refetch
                 if (SelectedQueue != null && queueEvent.data.queue_id == SelectedQueue.queue_id)
                 {
                     SelectedQueue.current_index = queueEvent.data.current_index;
@@ -204,6 +203,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
                 break;
         }
     }
+
     public async Task GetPlayers()
     {
         try
@@ -219,7 +219,6 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
             foreach (var y in queuesResponse.Result)
             {
                 Queues.Add(y);
-
             }
 
             if (!string.IsNullOrEmpty(_settings.LastSelectedPlayerId))
@@ -309,7 +308,9 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         p ??= SelectedPlayer;
         try
         {
-            await _massClient.PlayerNextAsync(p.PlayerId);
+#pragma warning disable CS4014
+            _ = _massClient.PlayerNextAsync(p.PlayerId);
+#pragma warning restore CS4014
         }
         catch (Exception ex)
         {
@@ -322,7 +323,9 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         p ??= SelectedPlayer;
         try
         {
-            await _massClient.PlayerPreviousAsync(p.PlayerId);
+#pragma warning disable CS4014
+            _ = _massClient.PlayerPreviousAsync(p.PlayerId);
+#pragma warning restore CS4014
         }
         catch (Exception ex)
         {
@@ -341,6 +344,14 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         _timer = null;
         QueuedItems?.Dispose();
         _subscriptions?.Dispose();
+        
+        // Clean up cached ViewModels
+        foreach (var vm in _trackViewModelCache.Values)
+        {
+            vm.Dispose();
+        }
+        _trackViewModelCache.Clear();
+        
         try
         {
             await _massClient.DisconnectAsync();
@@ -358,9 +369,15 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         QueuedItems?.Dispose();
         _subscriptions?.Dispose();
 
+        // Clean up cached ViewModels
+        foreach (var vm in _trackViewModelCache.Values)
+        {
+            vm.Dispose();
+        }
+        _trackViewModelCache.Clear();
+
         try
         {
-            // Synchronously wait for the disconnect to complete
             var disconnectTask = _massClient.DisconnectAsync();
             disconnectTask.Wait(TimeSpan.FromSeconds(10));
         }
@@ -368,5 +385,22 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         {
             Debug.WriteLine($"Error during disconnect: {ex}");
         }
+    }
+
+    private TrackViewModel GetOrCreateTrackViewModel(QueuedItem queuedItem)
+    {
+        if (queuedItem == null)
+            return null;
+
+        var cacheKey = queuedItem.queue_item_id;
+        
+        if (_trackViewModelCache.TryGetValue(cacheKey, out var cachedViewModel))
+        {
+            return cachedViewModel;
+        }
+
+        var trackViewModel = new TrackViewModel(_massClient, null, this, queuedItem.media_item);
+        _trackViewModelCache[cacheKey] = trackViewModel;
+        return trackViewModel;
     }
 }

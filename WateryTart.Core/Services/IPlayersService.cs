@@ -1,6 +1,7 @@
 ﻿using DynamicData;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using WateryTart.Core.ViewModels;
 using WateryTart.Service.MassClient.Models;
 
 namespace WateryTart.Core.Services;
@@ -10,8 +11,8 @@ public interface IPlayersService
     double Progress { get; }
     PlayerQueue SelectedQueue { get; set; }
     ObservableCollection<Player> Players { get; }
-    ReadOnlyObservableCollection<QueuedItem> CurrentQueue { get; }
-    ReadOnlyObservableCollection<QueuedItem> PlayedQueue { get; }
+    ReadOnlyObservableCollection<TrackViewModel> CurrentQueue { get; }
+    ReadOnlyObservableCollection<TrackViewModel> PlayedQueue { get; }
     SourceList<QueuedItem> QueuedItems { get; set; }
     Player SelectedPlayer { get; set; }
     Task GetPlayers();

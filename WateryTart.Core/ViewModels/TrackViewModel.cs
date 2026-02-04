@@ -1,6 +1,7 @@
 using ReactiveUI;
 using System;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls.Primitives;
@@ -10,11 +11,12 @@ using WateryTart.Service.MassClient.Models;
 
 namespace WateryTart.Core.ViewModels;
 
-public class TrackViewModel : ReactiveObject, IViewModelBase
+public class TrackViewModel : ReactiveObject, IViewModelBase, IDisposable
 {
     private readonly IMassWsClient _massClient;
     private readonly IScreen _screen;
     private readonly IPlayersService _playersService;
+    private CompositeDisposable _disposables = new CompositeDisposable();
 
     private Item _track;
     public Item Track
@@ -49,25 +51,26 @@ public class TrackViewModel : ReactiveObject, IViewModelBase
         Track = t;
 
         // Monitor for changes to the currently playing track
-        this.WhenAnyValue(
-            x => x._playersService.SelectedPlayer,
-            x => x._playersService.SelectedPlayer.CurrentMedia,
-            x => x._playersService.SelectedPlayer.CurrentMedia.uri,
-            x => x.Track.Uri)
-            .Select(_ => _playersService.SelectedPlayer?.CurrentMedia?.uri == Track?.Uri)
-            .DistinctUntilChanged()
-            .Subscribe(isPlaying => IsNowPlaying = isPlaying);
+        _disposables.Add(
+            this.WhenAnyValue(
+                x => x._playersService.SelectedPlayer,
+                x => x._playersService.SelectedPlayer.CurrentMedia,
+                x => x._playersService.SelectedPlayer.CurrentMedia.uri,
+                x => x.Track.Uri)
+                .Select(_ => _playersService.SelectedPlayer?.CurrentMedia?.uri == Track?.Uri)
+                .DistinctUntilChanged()
+                .Subscribe(isPlaying => IsNowPlaying = isPlaying)
+        );
 
-        TrackFullViewCommand = ReactiveCommand.Create(() =>
+        _disposables.Add(TrackFullViewCommand = ReactiveCommand.Create(() =>
         {
             MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(_playersService, Track));
-        });
+        }));
 
-        TrackAltMenuCommand = ReactiveCommand.Create(() =>
+        _disposables.Add(TrackAltMenuCommand = ReactiveCommand.Create(() =>
         {
             MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(_playersService, Track));
-        });
-
+        }));
     }
 
     public async Task LoadFromId(string itemId, string provider)
@@ -85,5 +88,10 @@ public class TrackViewModel : ReactiveObject, IViewModelBase
         {
             System.Diagnostics.Debug.WriteLine($"Error loading track: {ex.Message}");
         }*/
+    }
+
+    public void Dispose()
+    {
+        _disposables?.Dispose();
     }
 }
