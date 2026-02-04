@@ -41,7 +41,19 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         HostScreen = screen;
         Album = a;
 
-        PlayAlbumCommand = ReactiveCommand.CreateFromTask(() => _playersService.PlayItem(Album, mode: PlayMode.Replace));
+        PlayAlbumCommand = ReactiveCommand.CreateFromTask(async () =>
+        {
+            if (_playersService.SelectedPlayer == null)
+            {
+                MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(_playersService, Album));
+                await Task.CompletedTask;
+            }
+            else
+            {
+                await _playersService.PlayItem(Album, mode: PlayMode.Replace);
+            }
+        });
+
         TrackTappedCommand = ReactiveCommand.CreateFromTask<Item>((t) => _playersService.PlayItem(t, mode: PlayMode.Replace));
         AlbumFullViewCommand = ReactiveCommand.Create(() =>
         {
