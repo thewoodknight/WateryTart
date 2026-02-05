@@ -101,21 +101,19 @@
 							</Interaction.Behaviors>
 						</asyncImageLoader:AdvancedImage>
 					</Border>
-					<StackPanel Orientation="Horizontal" Background="Transparent" Grid.Column="1" Margin="10,0,0,0">
-						<Interaction.Behaviors>
-							<EventTriggerBehavior EventName="Tapped">
-								<InvokeCommandAction Command="{Binding TrackFullViewCommand}" />
-							</EventTriggerBehavior>
-						</Interaction.Behaviors>
-						<materialIcons:MaterialIcon
-							VerticalAlignment="Top"
-						    Kind="VolumeHigh"
-						    Width="20"
-						    Height="20"
-						    Margin="5,0,5,0"
-						    IsVisible="{Binding IsNowPlaying}" />
-						<TextBlock Text="{Binding Track.Name}"></TextBlock>
-					</StackPanel>
+					<Grid Grid.Column="1" Margin="0,0,0,0"  ColumnDefinitions="Auto,*">
+                        <materialIcons:MaterialIcon
+                            VerticalAlignment="Top"
+                            Kind="VolumeHigh"
+                            Width="20"
+                            Height="20"
+                            Margin="5,0,0,0"
+							Grid.Column="0"
+                            IsVisible="{Binding IsNowPlaying}" />
+
+                            <TextBlock Margin="10,0,0,0" Grid.Column="1" TextTrimming="CharacterEllipsis" Text="{Binding Track.Name}" />
+                    </Grid>
+
 
 					<Button Grid.Column="2"
 							Classes="iconButton navButton"
