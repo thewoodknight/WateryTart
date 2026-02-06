@@ -1,6 +1,8 @@
-﻿using WateryTart.Core;
+﻿using System.Linq;
+using WateryTart.Core;
 using WateryTart.Core.ViewModels;
 using WateryTart.Service.MassClient.Models;
+using WateryTart.Service.MassClient.Models.Enums;
 
 public static class ItemExtensions
 {
@@ -37,21 +39,21 @@ public static class ItemExtensions
     {
         var vm = App.Container.GetRequiredService<AlbumViewModel>();
         vm.Album = item.album;
-        vm.LoadFromId(item.ItemId, item.Provider);
+        vm.LoadFromId(item.ItemId, item.GetProviderInstance());
         return vm;
     }
 
     private static PlaylistViewModel CreatePlaylistViewModel(Item item)
     {
         var vm = App.Container.GetRequiredService<PlaylistViewModel>();
-        vm.LoadFromId(item.ItemId, item.Provider);
+        vm.LoadFromId(item.ItemId, item.GetProviderInstance());
         return vm;
     }
 
     private static ArtistViewModel CreateArtistViewModel(Item item)
     {
-        var vm = App.Container.GetRequiredService<ArtistViewModel>();
-        vm.LoadFromId(item.ItemId, item.Provider);
+            var vm = App.Container.GetRequiredService<ArtistViewModel>();
+        vm.LoadFromId(item.ItemId, item.GetProviderInstance());
         return vm;
     }
 }

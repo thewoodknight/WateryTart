@@ -2,41 +2,73 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using WateryTart.Core.ViewModels;
+using WateryTart.Core.ViewModels.Players;
+using WateryTart.Core.ViewModels.Menus;
+using WateryTart.Core.Views;
+using WateryTart.Core.Views.Players;
+using WateryTart.Core.Views.Menus;
 
 namespace WateryTart.Core;
 
+/// <summary>
+/// NativeAOT-compatible ViewLocator using static view registration.
+/// No reflection, assembly scanning, or Activator.CreateInstance calls.
+/// </summary>
 public class ViewLocator : IDataTemplate
 {
-    private static readonly Dictionary<string, Type?> TypeCache = new();
-    private static IEnumerable<Assembly>? _searchAssemblies;
-
-    public ViewLocator()
+    // Static dictionary mapping ViewModel types to View factory functions
+    public static readonly Dictionary<Type, Func<Control>> _viewFactories = new()
     {
-        // Cache assemblies to search on first instantiation
-        _searchAssemblies ??= GetSearchAssemblies();
-    }
+        // Main navigation views
+        [typeof(HomeViewModel)] = () => new HomeView(),
+        [typeof(LibraryViewModel)] = () => new LibraryView(),
+        [typeof(SearchViewModel)] = () => new SearchView(),
+        [typeof(SettingsViewModel)] = () => new SettingsView(),
+        [typeof(PlayersViewModel)] = () => new PlayersView(),
+        [typeof(LoginViewModel)] = () => new LoginView(),
+        
+        // Content views
+        [typeof(AlbumViewModel)] = () => new AlbumView(),
+        [typeof(AlbumsListViewModel)] = () => new AlbumsListView(),
+        [typeof(ArtistViewModel)] = () => new ArtistView(),
+        [typeof(ArtistsViewModel)] = () => new ArtistsView(),
+        [typeof(PlaylistViewModel)] = () => new PlaylistView(),
+        [typeof(PlaylistsViewModel)] = () => new PlaylistsView(),
+        [typeof(TracksViewModel)] = () => new TracksView(),
+        [typeof(RecommendationViewModel)] = () => new RecommendationView(),
+        [typeof(SearchResultsViewModel)] = () => new SearchResultsView(),
+        
+        // Player views
+        [typeof(MiniPlayerViewModel)] = () => new MiniPlayerView(),
+        [typeof(BigPlayerViewModel)] = () => new BigPlayerView(),
+        
+        [typeof(MenuViewModel)] = () => new MenuView(),
+        
+        // Settings views
+        [typeof(ServerSettingsViewModel)] = () => new ServerSettingsView(),
+        [typeof(KeyboardVolumeKeyBindingsViewModel)] = () => new KeyboardVolumeKeyBindingsView(),
+    };
 
     public Control Build(object? data)
     {
         if (data is null)
         {
-            return new TextBlock { Text = "data was null" };
+            return new TextBlock { Text = "Data was null" };
         }
 
-        var name = data.GetType().FullName!.Replace("ViewModel", "View");
-        var type = FindType(name);
+        var viewModelType = data.GetType();
+        
+        if (_viewFactories.TryGetValue(viewModelType, out var factory))
+        {
+            return factory();
+        }
 
-        if (type != null)
-        {
-            return (Control)Activator.CreateInstance(type)!;
-        }
-        else
-        {
-            return new TextBlock { Text = "Not Found: " + name };
-        }
+        // Fallback for unmapped ViewModels
+        return new TextBlock 
+        { 
+            Text = $"No view registered for: {viewModelType.Name}"
+        };
     }
 
     public bool Match(object? data)
@@ -44,82 +76,23 @@ public class ViewLocator : IDataTemplate
         return data is IViewModelBase;
     }
 
-    private static Type? FindType(string fullTypeName)
+    /// <summary>
+    /// Register a custom ViewModel-to-View mapping at runtime.
+    /// Useful for platform-specific views or plugin scenarios.
+    /// </summary>
+    public static void RegisterView<TViewModel, TView>() 
+        where TViewModel : class
+        where TView : Control, new()
     {
-        // Check cache first
-        if (TypeCache.TryGetValue(fullTypeName, out var cachedType))
-        {
-            return cachedType;
-        }
-
-        // Try direct lookup (same assembly)
-        var type = Type.GetType(fullTypeName);
-        if (type != null)
-        {
-            TypeCache[fullTypeName] = type;
-            return type;
-        }
-
-        // Search through other assemblies
-        if (_searchAssemblies != null)
-        {
-            foreach (var assembly in _searchAssemblies)
-            {
-                try
-                {
-                    type = assembly.GetType(fullTypeName, false);
-                    if (type != null)
-                    {
-                        TypeCache[fullTypeName] = type;
-                        return type;
-                    }
-                }
-                catch
-                {
-                    // Continue searching if this assembly fails
-                }
-            }
-        }
-
-        // Cache miss
-        TypeCache[fullTypeName] = null;
-        return null;
-    }
-
-    private static IEnumerable<Assembly> GetSearchAssemblies()
-    {
-        var assemblies = new HashSet<Assembly>();
-
-        // Add all currently loaded assemblies
-        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-        {
-            // Filter to your project assemblies to avoid searching everything
-            if (assembly.GetName().Name?.StartsWith("WateryTart") == true)
-            {
-                assemblies.Add(assembly);
-            }
-        }
-
-        return assemblies;
+        _viewFactories[typeof(TViewModel)] = () => new TView();
     }
 
     /// <summary>
-    /// Register additional assemblies to search for views.
-    /// Call this during application startup if needed.
+    /// Register a custom ViewModel-to-View mapping with a factory function.
     /// </summary>
-    public static void RegisterAssembly(Assembly assembly)
+    public static void RegisterView<TViewModel>(Func<Control> factory) 
+        where TViewModel : class
     {
-        if (_searchAssemblies is HashSet<Assembly> set)
-        {
-            set.Add(assembly);
-        }
-    }
-
-    /// <summary>
-    /// Clear the type cache. Useful for testing or dynamic reloading.
-    /// </summary>
-    public static void ClearCache()
-    {
-        TypeCache.Clear();
+        _viewFactories[typeof(TViewModel)] = factory;
     }
 }

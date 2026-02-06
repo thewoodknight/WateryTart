@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using WateryTart.Core.ViewModels;
 using WateryTart.Service.MassClient.Models;
+using WateryTart.Service.MassClient.Models.Enums;
 
 namespace WateryTart.Core.Services;
 

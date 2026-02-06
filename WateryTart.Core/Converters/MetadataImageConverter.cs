@@ -32,13 +32,13 @@ public class MetadataImageConverter : IValueConverter
                     : ProxyString(item.image.path, item.image.provider);
 
             //If there is no image field set, use metadata, make sure its not null
-            if (item.Metadata.images == null)
+            if (item.Metadata.Images == null)
                 return null;
 
             //Try a locally accessible source first
-            var result = item.Metadata.images.FirstOrDefault(i => i.remotely_accessible == false);
+            var result = item.Metadata.Images.FirstOrDefault(i => i.remotely_accessible == false);
             if (result == null)
-                result = item.Metadata.images.FirstOrDefault(i => i.remotely_accessible);
+                result = item.Metadata.Images.FirstOrDefault(i => i.remotely_accessible);
 
             return result.path.StartsWith("http") ? result.path : ProxyString(result.path, result.provider);
         }

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Reactive;
 using System.Threading.Tasks;
 using WateryTart.Core.Services;
+using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Service.MassClient;
 using WateryTart.Service.MassClient.Models;
 

@@ -1,7 +1,6 @@
 ﻿using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
-using System.Buffers.Text;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -12,37 +11,33 @@ using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Core.ViewModels.Players;
 using WateryTart.Service.MassClient;
+using Xaml.Behaviors.SourceGenerators;
 
 namespace WateryTart.Core.ViewModels;
 
 public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatableViewModel
 {
     private readonly IMassWsClient _massClient;
-    private readonly ISettings _settings;
     private readonly SendSpinClient _sendSpinClient;
-    public ISettings Settings { get { return _settings; } }
-    public RoutingState Router { get; } = new();
+    private readonly ISettings _settings;
+    public ViewModelActivator Activator { get; }
+    [Reactive] public partial ReactiveCommand<Unit, Unit> CloseSlideupCommand { get; set; }
+    public IColourService ColourService { get; }
+    [Reactive] public partial IViewModelBase CurrentViewModel { get; set; }
     public ReactiveCommand<Unit, IRoutableViewModel> GoBack => Router.NavigateBack;
     public ReactiveCommand<Unit, IRoutableViewModel> GoHome { get; }
     public ReactiveCommand<Unit, IRoutableViewModel> GoMusic { get; }
+    public ReactiveCommand<Unit, IRoutableViewModel> GoPlayers { get; }
     public ReactiveCommand<Unit, IRoutableViewModel> GoSearch { get; }
     public ReactiveCommand<Unit, IRoutableViewModel> GoSettings { get; }
-    public ReactiveCommand<Unit, IRoutableViewModel> GoPlayers { get; }
-
     [Reactive] public partial bool IsMiniPlayerVisible { get; set; }
-
-    [Reactive] public partial string Title { get; set; }
-    [Reactive] public partial IPlayersService PlayersService { get; set; }
-    public IColourService ColourService { get; }
-    [Reactive] public partial ReactiveObject SlideupMenu { get; set; }
-    [Reactive] public partial ReactiveCommand<Unit, Unit> CloseSlideupCommand { get; set; }
-
-    [Reactive] public partial bool ShowSlideupMenu { get; set; }
-
     [Reactive] public partial MiniPlayerViewModel MiniPlayer { get; set; }
-
-    [Reactive]
-    public partial IViewModelBase CurrentViewModel { get; set; }
+    [Reactive] public partial IPlayersService PlayersService { get; set; }
+    public RoutingState Router { get; } = new();
+    public ISettings Settings => _settings;
+    [Reactive] public partial bool ShowSlideupMenu { get; set; }
+    [Reactive] public partial ReactiveObject SlideupMenu { get; set; }
+    [Reactive] public partial string Title { get; set; }
 
     public MainWindowViewModel(IMassWsClient massClient, IPlayersService playersService, ISettings settings, IColourService colourService, SendSpinClient sendSpinClient)
     {
@@ -70,13 +65,16 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
             .Select(vm => vm is not PlayersViewModel);
 
         GoHome = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<HomeViewModel>()), canNavigateToHome);
-        GoMusic = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<LibraryViewModel>()), canNavigateToMusic);
-        GoSearch = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SearchViewModel>()), canNavigateToSearch);
-        GoSettings = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SettingsViewModel>()), canNavigateToSettings);
-        GoPlayers = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<PlayersViewModel>()), canNavigateToPlayers);
-        CloseSlideupCommand = ReactiveCommand.Create<Unit>(_ => ShowSlideupMenu = false);
 
-        Router.CurrentViewModel.Subscribe((vm) =>
+        GoMusic = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<LibraryViewModel>()), canNavigateToMusic);
+
+        GoSearch = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SearchViewModel>()), canNavigateToSearch);
+
+        GoSettings = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<SettingsViewModel>()), canNavigateToSettings);
+
+        GoPlayers = ReactiveCommand.CreateFromObservable(() => Router.Navigate.Execute(App.Container.GetRequiredService<PlayersViewModel>()), canNavigateToPlayers);
+
+        Router.CurrentViewModel.Subscribe(vm =>
         {
             if (vm is IViewModelBase ivmb)
             {
@@ -84,7 +82,6 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
                     .BindTo(this, v => v.Title);
 
                 CurrentViewModel = ivmb;
-
                 MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
             }
         });
@@ -96,45 +93,52 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
             (showMiniPlayer, selectedPlayer) => showMiniPlayer && selectedPlayer != null)
             .Subscribe(isVisible => IsMiniPlayerVisible = isVisible);
 
-        MessageBus.Current.Listen<FromLoginMessage>()
-            .Subscribe(x =>
-            {
-                Connect();
-            });
+        MessageBus.Current.Listen<FromLoginMessage>().Subscribe(x => { Connect(); });
 
         MessageBus.Current.Listen<MenuViewModel>()
-            .Subscribe(x =>
-            {
-                SlideupMenu = x;
-                ShowSlideupMenu = true;
-            });
+            .Subscribe(
+                x =>
+                {
+                    SlideupMenu = x;
+                    ShowSlideupMenu = true;
+                }
+            );
 
         MessageBus.Current.Listen<CloseMenuMessage>()
-            .Subscribe(x =>
-            {
-                ShowSlideupMenu = false;
-            });
+            .Subscribe(
+                x =>
+                {
+                    ShowSlideupMenu = false;
+                    SlideupMenu = null; //
+                });
+    }
+
+    [GenerateTypedAction]
+    public void CloseMenuClicked()
+    {
+        Console.WriteLine("The menu should close");
+        ShowSlideupMenu = false;
     }
 
     public async Task Connect()
     {
-        if (string.IsNullOrEmpty(_settings.Credentials.Token))
+        if (string.IsNullOrEmpty(_settings.Credentials?.Token))
         {
             Router.Navigate.Execute(App.Container.GetRequiredService<LoginViewModel>());
             return;
         }
 
-        _massClient.Connect(_settings.Credentials);
+        var connected = await _massClient.Connect(_settings.Credentials);
 
-        while (_massClient.IsConnected == false)
-            await Task.Delay(1000);
+        if (!connected)
+        {
+            return;
+        }
 
-        PlayersService.GetPlayers();
+        await PlayersService.GetPlayers();
 
         GoHome.Execute();
 
         _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
     }
-
-    public ViewModelActivator Activator { get; }
 }

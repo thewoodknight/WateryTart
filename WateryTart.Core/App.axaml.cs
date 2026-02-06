@@ -1,4 +1,4 @@
-using AsyncImageLoader.Loaders;
+﻿using AsyncImageLoader.Loaders;
 using Autofac;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -6,7 +6,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using ReactiveUI;
-using Splat;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -67,12 +66,9 @@ public partial class App : Application
 
     private IEnumerable<IPlatformSpecificRegistration> PlatformSpecificRegistrations { get; }
 
-    public App(IEnumerable<IPlatformSpecificRegistration> platformSpecificRegistrations, Assembly AssemblyToLoad = null)
+    public App(IEnumerable<IPlatformSpecificRegistration> platformSpecificRegistrations)
     {
         PlatformSpecificRegistrations = platformSpecificRegistrations;
-
-        if (AssemblyToLoad != null)
-            ViewLocator.RegisterAssembly(AssemblyToLoad);
     }
     public override void Initialize()
     {
@@ -84,9 +80,16 @@ public partial class App : Application
         var builder = new ContainerBuilder();
 
         //Services
-        builder.RegisterType<MainWindowViewModel>().AsImplementedInterfaces().SingleInstance();
-        builder.RegisterType<MassWsClient>().As<IMassWsClient>().AsImplementedInterfaces().SingleInstance();
-        builder.RegisterType<PlayersService>().AsImplementedInterfaces().SingleInstance();
+        /* Explicit interface definitions so .AsImplemented() isn't call, which isn't AOT compatible */
+        builder.Register(c => new MainWindowViewModel(
+            c.Resolve<IMassWsClient>(),
+            c.Resolve<IPlayersService>(),
+            c.Resolve<ISettings>(),
+            c.Resolve<IColourService>(),
+            c.Resolve<SendSpinClient>()
+        )).As<IScreen>().As<IActivatableViewModel>().SingleInstance();
+        builder.RegisterType<MassWsClient>().As<IMassWsClient>().SingleInstance();
+        builder.RegisterType<PlayersService>().As<IPlayersService>().As<IAsyncReaper>().SingleInstance();
         builder.RegisterType<ColourService>().As<IColourService>().SingleInstance();
 
         //Settings
@@ -98,11 +101,11 @@ public partial class App : Application
         builder.RegisterType<SettingsViewModel>().SingleInstance();
         builder.RegisterType<ServerSettingsViewModel>().As<IHaveSettings>().SingleInstance();
         builder.RegisterType<PlayersViewModel>().SingleInstance();
-        builder.RegisterType<MiniPlayerViewModel>().AsSelf().AsImplementedInterfaces().SingleInstance();
-        builder.RegisterType<BigPlayerViewModel>().AsSelf().AsImplementedInterfaces().SingleInstance();
+        builder.RegisterType<MiniPlayerViewModel>().AsSelf().SingleInstance();
+        builder.RegisterType<BigPlayerViewModel>().AsSelf().SingleInstance();
         builder.RegisterType<HomeViewModel>().SingleInstance();
-        builder.RegisterType<KeyboardVolumeKeyBindingsViewModel>().AsImplementedInterfaces().SingleInstance();
-        builder.RegisterType<SearchResultsViewModel>().AsSelf().AsImplementedInterfaces().SingleInstance();
+        builder.RegisterType<KeyboardVolumeKeyBindingsViewModel>().As<IHaveSettings>().SingleInstance();
+        builder.RegisterType<SearchResultsViewModel>().AsSelf().SingleInstance();
 
         //Platform specific registrations from Platform.Linux, Platform.Windows projects
         foreach (var platformSpecificRegistration in PlatformSpecificRegistrations)
@@ -110,10 +113,10 @@ public partial class App : Application
             platformSpecificRegistration.Register(builder);
         }
 
-        builder.RegisterType<SendSpinClient>().AsSelf().SingleInstance();
+        builder.RegisterType<SendSpinClient>().SingleInstance();
 
         //Volume controllers
-        builder.RegisterType<WindowsVolumeService>().AsImplementedInterfaces().SingleInstance();
+        builder.RegisterType<WindowsVolumeService>().As<IVolumeService>().As<IReaper>().SingleInstance();
 
         //Transient viewmodels
         builder.RegisterType<AlbumsListViewModel>();

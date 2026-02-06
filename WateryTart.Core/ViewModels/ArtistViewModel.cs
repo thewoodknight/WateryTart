@@ -9,6 +9,7 @@ using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Service.MassClient;
 using WateryTart.Service.MassClient.Models;
+using WateryTart.Service.MassClient.Models.Enums;
 
 namespace WateryTart.Core.ViewModels
 {
@@ -24,9 +25,9 @@ namespace WateryTart.Core.ViewModels
         [Reactive] public partial Artist Artist { get; set; }
         [Reactive] public partial ObservableCollection<AlbumViewModel> Albums { get; set; } = new();
         [Reactive] public partial bool IsBioExpanded { get; set; } = false;
-        public Image ArtistLogo { get { return Artist?.Metadata?.images?.FirstOrDefault(i => i.type == "logo"); } }
+        public Image ArtistLogo { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.type == ImageType.Logo); } }
 
-        public Image ArtistThumb { get { return Artist?.Metadata?.images?.FirstOrDefault(i => i.type == "thumb"); } }
+        public Image ArtistThumb { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.type == ImageType.Thumb); } }
 
         public ReactiveCommand<Artist, Unit> AltMenuCommand { get; }
         public ReactiveCommand<Unit, Unit> ArtistFullViewCommand { get; }
@@ -95,8 +96,9 @@ namespace WateryTart.Core.ViewModels
         {
             Albums.Clear();
             var albumArtistResponse = await _massClient.ArtistAlbumsAsync(id, provider);
-            foreach (var r in albumArtistResponse.Result.OrderByDescending(a => a.Year).ThenBy(a => a.Name))
-                Albums.Add(new AlbumViewModel(_massClient, HostScreen, _playersService, r));
+            if (albumArtistResponse.Result != null)
+                foreach (var r in albumArtistResponse.Result.OrderByDescending(a => a.Year ?? 0).ThenBy(a => a.Name))
+                    Albums.Add(new AlbumViewModel(_massClient, HostScreen, _playersService, r));
         }
     }
 }

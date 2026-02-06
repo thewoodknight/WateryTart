@@ -2,7 +2,7 @@ using Avalonia.Data.Converters;
 using Material.Icons;
 using System;
 using System.Globalization;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.Service.MassClient.Models.Enums;
 
 namespace WateryTart.Core.Converters;
 
@@ -15,9 +15,9 @@ public class PlaybackStateToIconConverter : IValueConverter
         {
             return playbackState switch
             {
-                PlaybackState.playing => MaterialIconKind.Pause,
-                PlaybackState.paused => MaterialIconKind.Play,
-                PlaybackState.idle => MaterialIconKind.Play,
+                PlaybackState.Playing => MaterialIconKind.Pause,
+                PlaybackState.Paused => MaterialIconKind.Play,
+                PlaybackState.Idle => MaterialIconKind.Play,
                 _ => MaterialIconKind.Play
             };
         }

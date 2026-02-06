@@ -1,80 +1,81 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <Configurations>Debug;Release;X64Debug;ARMRELEASE</Configurations>
-    <Platforms>AnyCPU;ARM64</Platforms>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <AvaloniaXaml Remove="NewFolder\**" />
-    <Compile Remove="NewFolder\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
-    <None Remove="NewFolder\**" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <AvaloniaResource Include="..\Assets\logo.png" Link="Assets\logo.png" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <AvaloniaResource Include="..\Assets\logo.ico" Link="Assets\logo.ico" />
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<Configurations>Debug;Release;X64Debug;ARMRELEASE</Configurations>
+		<Platforms>AnyCPU;ARM64</Platforms>
+		<EnableXamlCompilation>true</EnableXamlCompilation>
+		<PublishAot>true</PublishAot>
+		<IsAotCompatible>true</IsAotCompatible>
+		<EnableXamlBehaviorsSourceGenerator>true</EnableXamlBehaviorsSourceGenerator>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AsyncImageLoader.Avalonia" />
-    <PackageReference Include="Autofac" />
-    <PackageReference Include="Avalonia" />
-    <PackageReference Include="Avalonia.Themes.Fluent" />
-    <PackageReference Include="Avalonia.Fonts.Inter" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Include="Avalonia.Diagnostics">
-      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
-      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
-    <PackageReference Include="Iot.Device.Bindings" />
-    <PackageReference Include="Material.Icons.Avalonia" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
-    <PackageReference Include="ReactiveUI.Avalonia" />
-    <PackageReference Include="ReactiveUI.SourceGenerators">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Sendspin.SDK" />
-    <PackageReference Include="SharpHook" />
-    <PackageReference Include="SkiaSharp" />
-    <PackageReference Include="System.Device.Gpio" />
-    <PackageReference Include="Xaml.Behaviors.Avalonia" />
-    <PackageReference Include="Xaml.Behaviors.Interactivity" />
-    <PackageReference Include="Zeroconf" />
-  </ItemGroup>
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WateryTart.Service.MassClient\WateryTart.Service.MassClient.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<AvaloniaResource Include="..\Assets\logo.png" Link="Assets\logo.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Controls\ResponsiveColumnPanel.axaml.cs">
-      <DependentUpon>ResponsiveColumnPanel.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\KeyboardVolumeKeyBindingsView.axaml.cs">
-      <DependentUpon>KeyboardVolumeKeyBindingsView.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SearchResultsView.axaml.cs">
-      <DependentUpon>SearchResultsView.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<AvaloniaResource Include="..\Assets\logo.ico" Link="Assets\logo.ico" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="settings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Autofac" />
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Themes.Fluent" />
+		<PackageReference Include="Avalonia.Fonts.Inter" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Include="Avalonia.Diagnostics">
+			<IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
+		<PackageReference Include="Iot.Device.Bindings" />
+		<PackageReference Include="Material.Icons.Avalonia" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
+		<PackageReference Include="ReactiveUI.Avalonia" />
+		<PackageReference Include="ReactiveUI.SourceGenerators">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Sendspin.SDK" />
+		<PackageReference Include="SharpHook" />
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="System.Device.Gpio" />
+		<PackageReference Include="Xaml.Behaviors.Avalonia" />
+		<PackageReference Include="Xaml.Behaviors.Interactivity" />
+		<PackageReference Include="Xaml.Behaviors.SourceGenerators">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Zeroconf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\AsyncImageLoader.Avalonia\AsyncImageLoader.Avalonia\AsyncImageLoader.Avalonia.csproj" />
+		<ProjectReference Include="..\WateryTart.Service.MassClient\WateryTart.Service.MassClient.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Controls\ResponsiveColumnPanel.axaml.cs">
+			<DependentUpon>ResponsiveColumnPanel.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\KeyboardVolumeKeyBindingsView.axaml.cs">
+			<DependentUpon>KeyboardVolumeKeyBindingsView.axaml</DependentUpon>
+		</Compile>
+		<Compile Update="Views\SearchResultsView.axaml.cs">
+			<DependentUpon>SearchResultsView.axaml</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="settings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>

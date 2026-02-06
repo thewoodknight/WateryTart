@@ -40,7 +40,7 @@ public class SendSpinClient : IDisposable, IReaper
         }
     }
 
-    public SendSpinClient(IPlayerFactory player, ILoggerFactory loggerFactory = null)
+    public SendSpinClient(IPlayerFactory? player = null, ILoggerFactory? loggerFactory = null)
     {
         try
         {

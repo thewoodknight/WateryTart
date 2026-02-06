@@ -12,9 +12,9 @@ public class AudioFormatCodecConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is AudioFormat audioFormat && !string.IsNullOrEmpty(audioFormat.content_type))
+        if (value is AudioFormat audioFormat && !string.IsNullOrEmpty(audioFormat.ContentType))
         {
-            var contentType = audioFormat.content_type.ToUpper();
+            var contentType = audioFormat.ContentType.ToUpper();
             
             // Extract codec from content_type (e.g., "audio/flac" -> "FLAC")
             if (contentType.Contains("FLAC"))
@@ -33,7 +33,7 @@ public class AudioFormatCodecConverter : IValueConverter
                 return "ALAC";
             
             // Fallback: try to extract after slash
-            var parts = audioFormat.content_type.Split('/');
+            var parts = audioFormat.ContentType.Split('/');
             return parts.Length > 1 ? parts[1].ToUpper() : null;
         }
         
@@ -53,9 +53,9 @@ public class AudioFormatSampleRateConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is AudioFormat audioFormat && audioFormat.sample_rate > 0)
+        if (value is AudioFormat audioFormat && audioFormat.SampleRate > 0)
         {
-            double sampleRateKhz = audioFormat.sample_rate / 1000.0;
+            double sampleRateKhz = audioFormat.SampleRate / 1000.0;
             return $"{sampleRateKhz:F1}kHz";
         }
         
@@ -75,9 +75,9 @@ public class AudioFormatBitDepthConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is AudioFormat audioFormat && audioFormat.bit_depth > 0)
+        if (value is AudioFormat audioFormat && audioFormat.BitDepth > 0)
         {
-            return $"{audioFormat.bit_depth}bit";
+            return $"{audioFormat.BitDepth}bit";
         }
         
         return null;

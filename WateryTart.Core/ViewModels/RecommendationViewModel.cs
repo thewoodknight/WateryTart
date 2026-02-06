@@ -6,6 +6,7 @@ using System.Reactive;
 using WateryTart.Core.Settings;
 using WateryTart.Service.MassClient;
 using WateryTart.Service.MassClient.Models;
+using WateryTart.Service.MassClient.Models.Enums;
 
 namespace WateryTart.Core.ViewModels;
 

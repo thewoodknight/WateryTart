@@ -10,6 +10,8 @@
 		xmlns:converters="clr-namespace:WateryTart.Core.Converters"
 		xmlns:players1="clr-namespace:WateryTart.Core.Views.Players"
 		xmlns:core="clr-namespace:WateryTart.Core"
+		xmlns:menus="clr-namespace:WateryTart.Core.Views.Menus"
+		xmlns:vm1="clr-namespace:WateryTart.Core.ViewModels.Menus"
 		mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
 		ExtendClientAreaChromeHints="NoChrome"
 		ExtendClientAreaToDecorationsHint="True"
@@ -119,13 +121,12 @@
 		</StackPanel>
 
 		<Grid IsVisible="{Binding ShowSlideupMenu}" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#72000000">
-			<Interaction.Behaviors>
-				<EventTriggerBehavior EventName="Tapped">
-					<InvokeCommandAction
-					Command="{Binding CloseSlideupCommand}"/>
-				</EventTriggerBehavior>
-			</Interaction.Behaviors>
-
+            <Interaction.Behaviors>
+                <!-- https://github.com/wieslawsoltes/Xaml.Behaviors/blob/master/docfx/articles/source-generators/index.md -->
+                <EventTriggerBehavior EventName="Tapped">
+                    <vm:CloseMenuClickedAction TargetObject="{Binding}" />
+                </EventTriggerBehavior>
+            </Interaction.Behaviors>
 		</Grid>
 		<Grid
 		x:Name="gridSlideup"
@@ -134,31 +135,16 @@
 		Grid.RowSpan="3"
 		VerticalAlignment="Bottom"
 		MaxHeight="500"
-		Classes.show="{Binding ShowSlideupMenu}"
-		Classes.hide="{Binding !ShowSlideupMenu}">
-			<!--
-			<Grid.Transitions>
-			<Transitions>
-			<DoubleTransition Property="Opacity" Duration="0:0:.2" Easing="SineEaseInOut"/>
-			<TransformOperationsTransition Property="RenderTransform"
-			Easing="SineEaseInOut"
-			Duration="0:0:.2" />
-			</Transitions>
-			</Grid.Transitions>-->
-			<Grid.Styles>
-				<Style Selector="Grid.show">
-					<Setter Property="IsVisible" Value="True" />
-					<Setter Property="ZIndex" Value="1" />
-					<Setter Property="RenderTransform" Value="translateY(0px)" />
-				</Style>
-				<Style Selector="Grid.hide">
-					<Setter Property="IsVisible" Value="False" />
-					<Setter Property="RenderTransform" Value="translateY(175px)" />
-				</Style>
-			</Grid.Styles>
-
+		IsVisible="{Binding ShowSlideupMenu}">
+			
 			<ScrollViewer>
-				<ContentControl Content="{Binding SlideupMenu}" Margin="20" />
+				<ContentControl Content="{Binding SlideupMenu}">
+					<ContentControl.ContentTemplate>
+						<DataTemplate x:DataType="vm1:MenuViewModel">
+							<menus:MenuView DataContext="{Binding}" />
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
 			</ScrollViewer>
 		</Grid>
 	</Grid>

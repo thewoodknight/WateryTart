@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using WateryTart.Service.MassClient.Models;
+using WateryTart.Service.MassClient.Models.Enums;
 
 namespace WateryTart.Core.ViewModels
 {

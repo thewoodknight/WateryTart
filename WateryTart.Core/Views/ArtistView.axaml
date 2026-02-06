@@ -51,7 +51,7 @@
 		</ListBox>
 		<TextBlock>Bio</TextBlock>
 		<StackPanel Margin="10">
-			<TextBlock Text="{Binding Artist.Metadata.description}"
+			<TextBlock Text="{Binding Artist.Metadata.Description}"
 					   TextWrapping="Wrap"
 					   MaxLines="{Binding IsBioExpanded, Converter={x:Static converters:BoolToMaxLinesConverter.Instance}}"
 					   TextTrimming="CharacterEllipsis">

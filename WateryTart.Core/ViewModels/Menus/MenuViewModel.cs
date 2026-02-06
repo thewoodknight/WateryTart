@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using System.Collections.Generic;
+using System.Linq;
 using WateryTart.Core.Services;
 using WateryTart.Service.MassClient;
 
@@ -8,20 +9,18 @@ namespace WateryTart.Core.ViewModels.Menus;
 public partial class MenuViewModel : ReactiveObject, IViewModelBase
 {
     private readonly IMassWsClient _massClient;
-    private readonly IScreen _screen;
     private readonly IPlayersService _playersService;
-    public string? UrlPathSegment { get; }
+    private readonly IScreen _screen;
     public IScreen HostScreen { get; }
-    public string Title { get; set; }
+    public List<MenuItemViewModel> MenuItems { get; set; } = new List<MenuItemViewModel>();
     public bool ShowMiniPlayer => false;
     public bool ShowNavigation => false;
-    public List<MenuItemViewModel> MenuItems { get; set; }
+    public string Title { get; set; }
+    public string? UrlPathSegment { get; }
 
     public MenuViewModel(IEnumerable<MenuItemViewModel> menuItems = null)
     {
-        MenuItems = [];
-        if (menuItems != null)
-            MenuItems.AddRange(menuItems);
+        MenuItems = menuItems?.ToList() ?? [];
     }
 
     public void AddMenuItem(MenuItemViewModel menuItem)
@@ -31,6 +30,10 @@ public partial class MenuViewModel : ReactiveObject, IViewModelBase
 
     public void AddMenuItem(IEnumerable<MenuItemViewModel> menuItems)
     {
-        MenuItems.AddRange(menuItems);
+        foreach (var item in menuItems)
+        {
+            if (item != null)
+                MenuItems.Add(item);
+        }
     }
 }

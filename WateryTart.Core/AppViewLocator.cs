@@ -1,6 +1,4 @@
 ﻿using ReactiveUI;
-using Splat;
-using System;
 
 namespace WateryTart.Core
 {
@@ -8,24 +6,12 @@ namespace WateryTart.Core
     {
         public IViewFor? ResolveView<T>(T? viewModel, string? contract = null)
         {
-            var viewModelName = viewModel.GetType().FullName;
-            var viewTypeName = viewModelName.Replace("ViewModel", "View");
+            if (ViewLocator._viewFactories.TryGetValue(viewModel.GetType(), out var factory))
+            {
+                return (IViewFor)factory();
+            }
 
-            try
-            {
-                var viewType = Type.GetType(viewTypeName);
-                if (viewType == null)
-                {
-                    this.Log().Error($"Could not find the view {viewTypeName} for view model {viewModelName}.");
-                    return null;
-                }
-                return Activator.CreateInstance(viewType) as IViewFor;
-            }
-            catch (Exception)
-            {
-                this.Log().Error($"Could not instantiate view {viewTypeName}.");
-                throw;
-            }
+            return null;
         }
     }
 }

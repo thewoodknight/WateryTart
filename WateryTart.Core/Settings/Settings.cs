@@ -1,17 +1,19 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using WateryTart.Service.MassClient.Models.Auth;
 
 namespace WateryTart.Core.Settings;
 
 public partial class Settings : INotifyPropertyChanged, ISettings
 {
+    [JsonConverter(typeof(MassCredentialsConverter))]
     public IMassCredentials Credentials
     {
-        get => field;
+        get => field ?? new MassCredentials();
         set
         {
             field = value;
@@ -22,7 +24,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
 
     public string LastSelectedPlayerId
     {
-        get => field;
+        get => field ?? string.Empty;
         set
         {
             field = value;
@@ -33,7 +35,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
 
     public string LastSearchTerm
     {
-        get => field;
+        get => field ?? string.Empty;
         set
         {
             field = value;
@@ -89,62 +91,93 @@ public partial class Settings : INotifyPropertyChanged, ISettings
     [JsonIgnore]
     public string Path
     {
-        get => field;
+        get => field ?? string.Empty;
         set
         {
             field = value;
             NotifyPropertyChanged();
-            Save();
         }
     }
 
-    private bool suppressSave = true;
+    private bool _suppressSave = true;
 
     public Settings(string path)
     {
         Credentials = new MassCredentials();
         Path = path;
-        Load();
+        if (!string.IsNullOrEmpty(path))
+            Load(path);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    private void Load()
+    private void Load(string path)
     {
-        if (File.Exists(Path))
+        if (File.Exists(path))
         {
-            var fileData = File.ReadAllText(Path);
             try
             {
-                JsonConvert.PopulateObject(fileData, this);
+                var fileData = File.ReadAllText(path);
+                
+                var loaded = JsonSerializer.Deserialize<Settings>(fileData, SettingsJsonContext.Default.Settings);
+
+                if (loaded != null)
+                {
+                    Credentials = loaded.Credentials ?? new MassCredentials();
+                    LastSelectedPlayerId = loaded.LastSelectedPlayerId ?? string.Empty;
+                    LastSearchTerm = loaded.LastSearchTerm ?? string.Empty;
+                    WindowWidth = loaded.WindowWidth;
+                    WindowHeight = loaded.WindowHeight;
+                    WindowPosX = loaded.WindowPosX;
+                    WindowPosY = loaded.WindowPosY;
+                }
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"Error loading settings: {ex.Message}");
             }
         }
         else
         {
-            var fi = new FileInfo(Path);
-            if (!fi.Directory.Exists)
-                fi.Directory.Create();
-            var x = fi.Create();
-            x.Close();
+            var fi = new FileInfo(path);
+            if (!fi.Directory?.Exists ?? false)
+                fi.Directory?.Create();
         }
 
-        suppressSave = false;
+        _suppressSave = false;
     }
 
     private void Save()
     {
-        if (!suppressSave)
-            File.WriteAllText(Path, JsonConvert.SerializeObject(this));
-    }
-
-    private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-    {
-        if (PropertyChanged != null)
+        if (!_suppressSave && !string.IsNullOrEmpty(Path))
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            try
+            {
+                var json = JsonSerializer.Serialize(this, SettingsJsonContext.Default.Settings);
+                File.WriteAllText(Path, json);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error saving settings: {ex.Message}");
+            }
         }
     }
+
+    private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
+
+/// <summary>
+/// AOT-compatible JSON source generator context for Settings serialization.
+/// </summary>
+[JsonSourceGenerationOptions(
+    WriteIndented = true,
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.Never)]
+[JsonSerializable(typeof(Settings))]
+[JsonSerializable(typeof(MassCredentials))]
+internal partial class SettingsJsonContext : JsonSerializerContext
+{
 }

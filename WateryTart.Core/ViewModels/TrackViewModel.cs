@@ -8,6 +8,7 @@ using Avalonia.Controls.Primitives;
 using WateryTart.Core.Services;
 using WateryTart.Service.MassClient;
 using WateryTart.Service.MassClient.Models;
+using WateryTart.Core.ViewModels.Menus;
 
 namespace WateryTart.Core.ViewModels;
 

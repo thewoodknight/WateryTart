@@ -1,4 +1,4 @@
-using ReactiveUI.Avalonia;
+﻿using ReactiveUI.Avalonia;
 using WateryTart.Core.ViewModels.Menus;
 
 namespace WateryTart.Core.Views.Menus;

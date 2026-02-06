@@ -7,7 +7,6 @@ using System.Reactive;
 using System.Threading.Tasks;
 using WateryTart.Core.Services;
 using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models;
 
 namespace WateryTart.Core.ViewModels;
 

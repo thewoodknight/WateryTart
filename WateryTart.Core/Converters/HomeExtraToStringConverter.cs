@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using WateryTart.Service.MassClient.Models;
+using WateryTart.Service.MassClient.Models.Enums;
 
 namespace WateryTart.Core.Converters;
 

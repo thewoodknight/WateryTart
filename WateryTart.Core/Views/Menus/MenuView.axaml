@@ -1,18 +1,19 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+        xmlns:vm="using:WateryTart.Core.ViewModels.Menus"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="WateryTart.Core.Views.Menus.MenuView"
-        x:DataType="vm:Menus.MenuViewModel">
+        x:DataType="vm:MenuViewModel"
+        x:CompileBindings="True">
   <ListBox ItemsSource="{Binding MenuItems}" Background="{x:Null}">
       <ListBox.ItemTemplate>
-          <DataTemplate>
+          <DataTemplate x:DataType="vm:MenuItemViewModel">
               <Grid Background="Transparent">
                   <Interaction.Behaviors>
                       <EventTriggerBehavior EventName="Tapped">
-                          <InvokeCommandAction Command="{Binding ClickedCommand}"/>
+                          <vm:SubmitAction Command="{Binding CoolDudeCommand}" />
                       </EventTriggerBehavior>
                   </Interaction.Behaviors>
 

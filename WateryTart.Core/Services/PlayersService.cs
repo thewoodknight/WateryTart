@@ -15,9 +15,11 @@ using System.Threading.Tasks;
 using WateryTart.Core.Extensions;
 using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels;
+using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Service.MassClient;
 using WateryTart.Service.MassClient.Events;
 using WateryTart.Service.MassClient.Models;
+using WateryTart.Service.MassClient.Models.Enums;
 using static Microsoft.IO.RecyclableMemoryStreamManager;
 
 namespace WateryTart.Core.Services;
@@ -123,7 +125,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
 
     private void T_Tick(object? sender, EventArgs e)
     {
-        if (SelectedPlayer?.PlaybackState != PlaybackState.playing)
+        if (SelectedPlayer?.PlaybackState != PlaybackState.Playing)
             return;
 
         if (SelectedQueue?.current_item?.media_item != null)

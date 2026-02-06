@@ -1,37 +1,38 @@
-﻿using Avalonia.Input;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
-using System.Reflection;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Autofac;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Service.MassClient;
 using WateryTart.Service.MassClient.Models;
+using WateryTart.Service.MassClient.Models.Enums;
 
 namespace WateryTart.Core.ViewModels
 {
-    public class HomeViewModel : ReactiveObject, IViewModelBase //, IActivatableViewModel
+    public class HomeViewModel : ReactiveObject, IViewModelBase
     {
+        private readonly ObservableCollection<RecommendationDisplayModel> _displayRecommendations;
         private readonly IMassWsClient _massClient;
-        private readonly ISettings _settings;
         private readonly IPlayersService _playersService;
         private readonly IScreen _screen;
-        private readonly ObservableCollection<RecommendationDisplayModel> _displayRecommendations;
+        private readonly ISettings _settings;
 
+        public ReactiveCommand<Item, Unit> AltMenuCommand { get; }
+        public ReactiveCommand<Item, Unit> ClickedCommand { get; }
+        public IScreen HostScreen { get; }
+        public ReactiveCommand<RecommendationDisplayModel, Unit> RecommendationListCommand { get; }
         public ObservableCollection<RecommendationDisplayModel> Recommendations => _displayRecommendations;
-        private List<Recommendation> SourceRecommendations { get; set; }
         public bool ShowMiniPlayer => true;
         public bool ShowNavigation => true;
-        public ReactiveCommand<Item, Unit> ClickedCommand { get; }
-        public ReactiveCommand<Item, Unit> AltMenuCommand { get; }
-        public ReactiveCommand<RecommendationDisplayModel, Unit> RecommendationListCommand { get; }
+        public string Title { get; set; }
+        public string? UrlPathSegment { get; }
+
+        private List<Recommendation> SourceRecommendations { get; set; }
 
         public HomeViewModel(IScreen screen, IMassWsClient massClient, ISettings settings, IPlayersService playersService)
         {
@@ -46,27 +47,46 @@ namespace WateryTart.Core.ViewModels
 
             RecommendationListCommand = ReactiveCommand.Create<RecommendationDisplayModel>(r =>
             {
+                Console.WriteLine($"Navigating to recommendation: {r?.ItemId}");
                 var vm = App.Container.GetRequiredService<RecommendationViewModel>();
                 vm.SetRecommendation(SourceRecommendations.SingleOrDefault(x => x.ItemId == r.ItemId));
-                screen.Router.Navigate.Execute(vm);
+                screen.Router.Navigate.Execute(vm).Subscribe();
             });
 
             AltMenuCommand = ReactiveCommand.Create<Item>(i =>
             {
+                Console.WriteLine($"Creating menu for item: {i?.Name}");
+
+                var playCommand = ReactiveCommand.Create<Unit>(_ =>
+                {
+                    Console.WriteLine("Play command executed");
+                });
+                playCommand.ThrownExceptions.Subscribe(ex =>
+                    Console.WriteLine($"Play command error: {ex.Message}"));
+
                 var menu = new MenuViewModel(
-                    [
-                    new MenuItemViewModel("Add to library", string.Empty, ReactiveCommand.Create<Unit>(r => {})),
-                    new MenuItemViewModel("Add to favourites", string.Empty, ReactiveCommand.Create<Unit>(r => { })),
-                    new MenuItemViewModel("Add to playlist", string.Empty, ReactiveCommand.Create<Unit>(r => { })),
-                    new MenuItemViewModel("Play", string.Empty, ReactiveCommand.Create<Unit>(r => { }))
-                    ]);
+                [
+                    new MenuItemViewModel("Add to library", string.Empty,
+                            ReactiveCommand.Create<Unit>(_ => Console.WriteLine("Add to library"))),
+                        new MenuItemViewModel("Add to favourites", string.Empty,
+                            ReactiveCommand.Create<Unit>(_ => Console.WriteLine("Add to favourites"))),
+                        new MenuItemViewModel("Add to playlist", string.Empty,
+                            ReactiveCommand.Create<Unit>(_ => Console.WriteLine("Add to playlist"))),
+                        new MenuItemViewModel("Play", string.Empty, playCommand)
+                ]);
 
                 foreach (var p in _playersService.Players)
                 {
-                    menu.AddMenuItem(new Menus.MenuItemViewModel($"\tPlay on {p.DisplayName}", string.Empty, ReactiveCommand.Create<Unit>(r =>
+                    var player = p; // Capture for closure
+                    var playerCommand = ReactiveCommand.CreateFromTask(async () =>
                     {
-                        _playersService.PlayItem(i, p);
-                    })));
+                        Console.WriteLine($"Playing on {player.DisplayName}");
+                        await _playersService.PlayItem(i, player);
+                    });
+                    playerCommand.ThrownExceptions.Subscribe(ex =>
+                        Console.WriteLine($"Player command error: {ex.Message}"));
+
+                    menu.AddMenuItem(new MenuItemViewModel($"\tPlay on {player.DisplayName}", string.Empty, playerCommand));
                 }
 
                 MessageBus.Current.SendMessage(menu);
@@ -74,40 +94,31 @@ namespace WateryTart.Core.ViewModels
 
             ClickedCommand = ReactiveCommand.Create<Item>(item =>
             {
-                var i = item; //navigate to whatever
-
-                switch (i.MediaType)
+                switch (item.MediaType)
                 {
                     case MediaType.Album:
-
-                        var vm = App.Container.GetRequiredService<AlbumViewModel>();
-                        vm.Album = item.album;
-                        vm.LoadFromId(item.ItemId, item.Provider);
-                        screen.Router.Navigate.Execute(vm);
+                        var albumVm = App.Container.GetRequiredService<AlbumViewModel>();
+                        albumVm.Album = item.album;
+                        albumVm.LoadFromId(item.ItemId, item.Provider);
+                        // ✅ Don't call .Subscribe() here - let the command handle it
+                        _screen.Router.Navigate.Execute(albumVm);
                         break;
-                            
+
                     case MediaType.Playlist:
-                        var playlistViewModel = App.Container.GetRequiredService<PlaylistViewModel>();
-                        playlistViewModel.LoadFromId(item.ItemId, item.Provider);
-                        screen.Router.Navigate.Execute(playlistViewModel);
+                        var playlistVm = App.Container.GetRequiredService<PlaylistViewModel>();
+                        playlistVm.LoadFromId(item.ItemId, item.Provider);
+                        _screen.Router.Navigate.Execute(playlistVm);
                         break;
 
                     case MediaType.Artist:
-                        var artistViewModel = App.Container.GetRequiredService<ArtistViewModel>();
-                        artistViewModel.LoadFromId(item.ItemId, item.Provider);
-                        screen.Router.Navigate.Execute(artistViewModel);
+                        var artistVm = App.Container.GetRequiredService<ArtistViewModel>();
+                        artistVm.LoadFromId(item.ItemId, item.Provider);
+                        _screen.Router.Navigate.Execute(artistVm);
                         break;
 
-                    case MediaType.Genre:
+                    default:
+                        Console.WriteLine($"Unhandled media type: {item.MediaType}");
                         break;
-
-                    case MediaType.Radio: break;
-                    case MediaType.Track: break;
-
-                    case MediaType.Audiobook: break;
-                    case MediaType.Folder: break;
-                    case MediaType.Podcast: break;
-                    case MediaType.PodcastEpisode: break;
                 }
             });
 
@@ -117,18 +128,28 @@ namespace WateryTart.Core.ViewModels
         private async Task Load()
         {
             var recommendationResponse = await _massClient.MusicRecommendationsAsync();
+            if (recommendationResponse?.Result == null)
+            {
+                return;
+            }
 
-            var nonEmptyRecommendations = recommendationResponse
-                .Result
-                .Where(r => r.items.Any());
+            var nonEmptyRecommendations = recommendationResponse.Result
+                .Where(r => r?.items != null && r.items.Any())
+                .ToList();
 
             foreach (var n in nonEmptyRecommendations)
             {
                 SourceRecommendations.Add(n);
-                Recommendation x = (Recommendation)CustomMemberwiseClone(n);
 
-                if (x.items.Count > 4)
-                    x.items = x.items.GetRange(0, 4);
+                var x = new Recommendation
+                {
+                    ItemId = n.ItemId,
+                    Name = n.Name,
+                    MediaType = n.MediaType,
+                    items = n.items.Count > 4
+                        ? n.items.Take(4).ToList()
+                        : new List<Item>(n.items) // Create new list
+                };
 
                 // Convert items to appropriate view models based on MediaType
                 var viewModels = new List<object>();
@@ -143,24 +164,5 @@ namespace WateryTart.Core.ViewModels
                 _displayRecommendations.Add(displayModel);
             }
         }
-
-
-        public string? UrlPathSegment { get; }
-        public IScreen HostScreen { get; }
-        public string Title { get; set; }
-
-        public static object CustomMemberwiseClone(object source)
-        {
-            var clone = FormatterServices.GetUninitializedObject(source.GetType());
-            for (var type = source.GetType(); type != null; type = type.BaseType)
-            {
-                var fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-                foreach (var field in fields)
-                    field.SetValue(clone, field.GetValue(source));
-            }
-            return clone;
-        }
-
-        public ViewModelActivator Activator { get; }
     }
 }
