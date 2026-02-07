@@ -185,6 +185,11 @@
         "resolved": "3.4.1",
         "contentHash": "wLHldZHvxsSD6Ahonfj00/SkfHfKqO+YT6jsUwVm8Rch1REL9IArHAcSLXxYxYfu5/4ydGtmXvOtaH3AkVPu0A=="
       },
+      "Concentus": {
+        "type": "Transitive",
+        "resolved": "2.2.2",
+        "contentHash": "2B9YmHPKO+k7YpAAnqmiXwiMJnfjfj1C868RszOll2iZWLnGTAiC1q21L/d7CvTan7T+hyqU8dR0Dcy3cpjVfQ=="
+      },
       "DynamicData": {
         "type": "Transitive",
         "resolved": "9.4.1",
@@ -585,10 +590,16 @@
           "Xaml.Behaviors.Interactivity": "11.3.9.4"
         }
       },
+      "asyncimageloader.avalonia": {
+        "type": "Project",
+        "dependencies": {
+          "Avalonia": "[11.3.11, )"
+        }
+      },
       "waterytart.core": {
         "type": "Project",
         "dependencies": {
-          "AsyncImageLoader.Avalonia": "[3.6.0, )",
+          "AsyncImageLoader.Avalonia": "[1.0.0, )",
           "Autofac": "[9.0.0, )",
           "Avalonia": "[11.3.11, )",
           "Avalonia.Diagnostics": "[11.3.11, )",
@@ -617,15 +628,6 @@
           "Microsoft.Extensions.Logging": "[10.0.2, )",
           "Microsoft.Extensions.Logging.Console": "[10.0.2, )",
           "Websocket.Client": "[5.3.0, )"
-        }
-      },
-      "AsyncImageLoader.Avalonia": {
-        "type": "CentralTransitive",
-        "requested": "[3.6.0, )",
-        "resolved": "3.6.0",
-        "contentHash": "MXZjvfVM1RGFisN6HkVZqpA9qXI1NBszwZ68TGrJY0dZB/zYCqlo8lbkIYj6LU3eRHHPt4IHJbWoKIFTqSINIw==",
-        "dependencies": {
-          "Avalonia": "11.1.0"
         }
       },
       "Autofac": {
@@ -668,12 +670,6 @@
         "requested": "[8.4.0, )",
         "resolved": "8.4.0",
         "contentHash": "tqVU8yc/ADO9oiTRyTnwhFN68hCwvkliMierptWOudIAvWY1mWCh5VFh+guwHJmpMwfg0J0rY+yyd5Oy7ty9Uw=="
-      },
-      "Concentus": {
-        "type": "CentralTransitive",
-        "requested": "[2.2.2, )",
-        "resolved": "2.2.2",
-        "contentHash": "2B9YmHPKO+k7YpAAnqmiXwiMJnfjfj1C868RszOll2iZWLnGTAiC1q21L/d7CvTan7T+hyqU8dR0Dcy3cpjVfQ=="
       },
       "Iot.Device.Bindings": {
         "type": "CentralTransitive",

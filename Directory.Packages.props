@@ -59,5 +59,9 @@
     <PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.1" />
     <PackageVersion Include="Xaml.Behaviors.Avalonia" Version="11.3.9.4" />
     <PackageVersion Include="Xaml.Behaviors.Interactivity" Version="11.3.9.4" />
+    <PackageVersion Include="Xaml.Behaviors.SourceGenerators" Version="11.3.9.3" />
+
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageVersion Include="Karambolo.Extensions.Logging.File" Version="4.1.0"/>
   </ItemGroup>
 </Project>
