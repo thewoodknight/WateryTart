@@ -9,7 +9,7 @@ using WateryTart.Service.MassClient;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class LibraryViewModel : ReactiveObject, IViewModelBase
+public partial class LibraryViewModel : ReactiveObject, IViewModelBase, IActivatableViewModel
 {
     private ILogger<LibraryViewModel> _logger;
     private readonly IMassWsClient _massClient;
@@ -19,6 +19,9 @@ public partial class LibraryViewModel : ReactiveObject, IViewModelBase
     [Reactive] public partial ObservableCollection<LibraryItem> Items { get; set; }
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
+    // CORRECT:
+    public ViewModelActivator Activator { get; } = new();
+
     public LibraryViewModel(IMassWsClient massClient, IScreen screen, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;

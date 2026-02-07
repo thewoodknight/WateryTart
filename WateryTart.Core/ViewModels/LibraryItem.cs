@@ -1,9 +1,21 @@
+using Avalonia.Xaml.Interactivity;
 using ReactiveUI;
 using System.Reactive;
 using System.Windows.Input;
+using Xaml.Behaviors.SourceGenerators;
 
 
 namespace WateryTart.Core.ViewModels;
+
+[GenerateTypedInvokeCommandAction]
+public partial class ClickAction : StyledElementAction
+{
+    [ActionCommand]
+    private ICommand? _command;
+
+    [ActionParameter]
+    private string? _commandParameter;
+}
 
 public class LibraryItem : ReactiveObject
 {

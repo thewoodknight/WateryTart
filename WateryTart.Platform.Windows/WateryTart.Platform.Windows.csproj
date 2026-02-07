@@ -7,17 +7,18 @@
 		<Nullable>enable</Nullable>
 		<Configurations>Debug;Release;X64Debug;ARMRELEASE</Configurations>
 		<Platforms>AnyCPU;ARM64</Platforms>
-		<!--<PublishReadyToRun>true</PublishReadyToRun>
-		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>-->
+		<PublishReadyToRun>true</PublishReadyToRun>
+		<!--<BuiltInComInteropSupport>true</BuiltInComInteropSupport>-->
 		<EventSourceSupport>true</EventSourceSupport>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<StripSymbols>false</StripSymbols>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<EnableXamlCompilation>true</EnableXamlCompilation>
+
 	</PropertyGroup>
-	
-	
+
+
 	<PropertyGroup>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<AssemblyName>WateryTartDesktop</AssemblyName>
@@ -34,26 +35,67 @@
 		<PackageReference Include="NAudio.Core" />
 		<PackageReference Include="NAudio.Wasapi" />
 		<PackageReference Include="ReactiveUI.SourceGenerators">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Sendspin.SDK" />
 		<PackageReference Include="Xaml.Behaviors.Avalonia" />
 
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\WateryTart.Core\WateryTart.Core.csproj" />
+		<ProjectReference Include="..\WateryTart.Core\WateryTart.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\SimpleWasapiPlayerSettingsView.axaml.cs">
-	    <DependentUpon>SimpleWasapiPlayerSettingsView.axaml</DependentUpon>
-	  </Compile>
+		<Compile Update="Views\SimpleWasapiPlayerSettingsView.axaml.cs">
+			<DependentUpon>SimpleWasapiPlayerSettingsView.axaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
+	<ItemGroup>
+		<TrimmerRootAssembly Include="Avalonia.Controls" />
+		<!--<TrimmerRootAssembly Include="Xaml.Behaviors.Avalonia" />-->
+		<TrimmerRootAssembly Include="ReactiveUI" />
+		<TrimmerRootAssembly Include="WateryTart.Core" />
+	</ItemGroup>
+
+	<!--<ItemGroup>
+		<RdXmlFile Include="rd.xml" />
+	</ItemGroup>-->
 
 	<PropertyGroup>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+		<Optimize>True</Optimize>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<Optimize>False</Optimize>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+		<Optimize>False</Optimize>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ARMRELEASE|AnyCPU'">
+		<Optimize>True</Optimize>
+	</PropertyGroup>
+
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ARMRELEASE|ARM64'">
+		<Optimize>False</Optimize>
 	</PropertyGroup>
 
 </Project>

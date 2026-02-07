@@ -7,8 +7,8 @@
 		<Configurations>Debug;Release;X64Debug;ARMRELEASE</Configurations>
 		<Platforms>AnyCPU;ARM64</Platforms>
 		<EnableXamlCompilation>true</EnableXamlCompilation>
-		<PublishAot>true</PublishAot>
-		<IsAotCompatible>true</IsAotCompatible>
+		<!--<PublishAot>true</PublishAot>
+		<IsAotCompatible>true</IsAotCompatible>-->
 		<EnableXamlBehaviorsSourceGenerator>true</EnableXamlBehaviorsSourceGenerator>
 	</PropertyGroup>
 
