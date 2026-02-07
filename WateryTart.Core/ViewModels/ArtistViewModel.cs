@@ -63,7 +63,7 @@ namespace WateryTart.Core.ViewModels
                     new MenuItemViewModel("Play", string.Empty, new RelayCommand(() => { }))
                 ]);
 
-                menu.AddMenuItem(MenuHelper.AddPlayers(_playersService, i));
+                menu.AddMenuItem(MenuHelper.AddPlayers(_playersService, Artist));
 
                 MessageBus.Current.SendMessage(menu);
             });

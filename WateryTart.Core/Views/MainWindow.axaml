@@ -24,7 +24,8 @@
 		Title="Watery Tart">
 
 	<Window.Resources>
-		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+		<converters:MeasureControlConverter x:Key="MeasureControlConverter"></converters:MeasureControlConverter>
+        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
 		<x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
 		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
 		<converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
@@ -128,16 +129,30 @@
             </Interaction.Behaviors>
 		</Grid>
 		<Grid
-		x:Name="gridSlideup"
-		Grid.Row="0"
-		Background="#CC000000"
-		Grid.RowSpan="3"
-		VerticalAlignment="Bottom"
-		MaxHeight="500"
-		IsVisible="{Binding ShowSlideupMenu}">
-			
-			<ScrollViewer>
-				<ContentControl Content="{Binding SlideupMenu}">
+		    x:Name="gridSlideup"
+		    Grid.Row="0"
+		    Background="#CC000000"
+		    Grid.RowSpan="3"
+		    VerticalAlignment="Bottom"
+		    MaxHeight="500"
+            Classes.triggered="{Binding ShowSlideupMenu}"
+		    IsVisible="{Binding ShowSlideupMenu}">
+            <Grid.Styles>
+                <Style Selector="Grid.triggered">
+                    <Style.Animations>
+                        <Animation Duration="0:0:0.3" Easing="QuarticEaseInOut" IterationCount="1">
+                            <KeyFrame Cue="0%">
+                                <Setter Property="TranslateTransform.Y" Value="250"/><!-- Value="{Binding ElementName=grd, Converter={StaticResource MeasureControlConverter}}"/>--> <!-- {Binding #gridSlideup.Height} Need to measure the element-->
+                            </KeyFrame>
+                            <KeyFrame Cue="100%">
+                                <Setter Property="TranslateTransform.Y" Value="0"/>
+                            </KeyFrame>
+                        </Animation>
+                    </Style.Animations>
+                </Style>
+            </Grid.Styles>
+            <ScrollViewer>
+				<ContentControl x:Name="ccMenu" Content="{Binding SlideupMenu}">
 					<ContentControl.ContentTemplate>
 						<DataTemplate x:DataType="vm1:MenuViewModel">
 							<menus:MenuView DataContext="{Binding}" />
