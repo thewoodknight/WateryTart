@@ -58,6 +58,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
         ColourService = colourService;
         _logger = loggerFactory.CreateLogger<MainWindowViewModel>();
         ShowSlideupMenu = false;
+        Activator = new ViewModelActivator();
 
         // Create the commands first
         GoBack = new RelayCommand(() => Router.NavigateBack.Execute(Unit.Default), () => _canNavigateBack);
