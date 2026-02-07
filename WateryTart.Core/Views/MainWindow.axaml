@@ -24,7 +24,6 @@
 		Title="Watery Tart">
 
 	<Window.Resources>
-		<converters:MeasureControlConverter x:Key="MeasureControlConverter"></converters:MeasureControlConverter>
         <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
 		<x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
 		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
