@@ -50,8 +50,7 @@ namespace WateryTart.Service.MassClient
         public MassWsClient()
         {
             using ILoggerFactory factory = LoggerFactory.Create(builder => builder.AddConsole());
-            logger = factory.CreateLogger("Program");
-            logger.LogInformation("Hello World! Logging is {Description}.", "fun");
+            logger = factory.CreateLogger("MassWsClient");
         }
 
         public async Task<LoginResults> Login(string username, string password, string baseurl)
@@ -143,6 +142,12 @@ namespace WateryTart.Service.MassClient
             {
                 Options = { KeepAliveInterval = TimeSpan.FromSeconds(1) }
             });
+
+            if (credentials.BaseUrl == null)
+            {
+                logger.LogError("No credential base url found");
+                return false;
+            }
 
             var wsUrl = GetWebSocketUrl(credentials.BaseUrl);
             _client = new WebsocketClient(new Uri(wsUrl), factory);
@@ -257,7 +262,8 @@ namespace WateryTart.Service.MassClient
             logger.LogDebug("WS Connecting");
             try
             {
-                await Connect(creds);
+                if (creds != null) 
+                    await Connect(creds);
             }
             catch (Exception ex)
             {
@@ -290,14 +296,13 @@ namespace WateryTart.Service.MassClient
             try
             {
                 var e = JsonSerializer.Deserialize<BaseEventResponse>(response.Text, SerializerOptions);
-                if (e == null) 
+                if (e == null)
                     return;
 
                 switch (e.EventName)
                 {
                     case EventType.MediaItemPlayed:
-                        subject.OnNext(JsonSerializer.Deserialize<MediaItemEventResponse>(response.Text,
-                            MassClientJsonContext.Default.MediaItemEventResponse));
+                        subject.OnNext(JsonSerializer.Deserialize(response.Text, MassClientJsonContext.Default.MediaItemEventResponse));
                         break;
                     case EventType.PlayerAdded:
                     case EventType.PlayerUpdated:
@@ -305,8 +310,7 @@ namespace WateryTart.Service.MassClient
                     case EventType.PlayerConfigUpdated:
                         try
                         {
-                            var x = JsonSerializer.Deserialize<PlayerEventResponse>(response.Text,
-                                MassClientJsonContext.Default.PlayerEventResponse);
+                            var x = JsonSerializer.Deserialize(response.Text, MassClientJsonContext.Default.PlayerEventResponse);
                             subject.OnNext(x);
                         }
                         catch (Exception ex)
@@ -318,14 +322,12 @@ namespace WateryTart.Service.MassClient
 
                     case EventType.QueueAdded:
                     case EventType.QueueUpdated:
-                        subject.OnNext(JsonSerializer.Deserialize<PlayerQueueEventResponse>(response.Text,
-                            MassClientJsonContext.Default.PlayerQueueEventResponse));
+                        subject.OnNext(JsonSerializer.Deserialize(response.Text, MassClientJsonContext.Default.PlayerQueueEventResponse));
                         break;
                     case EventType.QueueItemsUpdated:
                         break;
                     case EventType.QueueTimeUpdated:
-                        subject.OnNext(JsonSerializer.Deserialize<PlayerQueueTimeUpdatedEventResponse>(
-                            response.Text, MassClientJsonContext.Default.PlayerQueueTimeUpdatedEventResponse));
+                        subject.OnNext(JsonSerializer.Deserialize(response.Text, MassClientJsonContext.Default.PlayerQueueTimeUpdatedEventResponse));
                         break;
 
                     default:

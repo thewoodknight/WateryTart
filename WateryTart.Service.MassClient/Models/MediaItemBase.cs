@@ -7,14 +7,13 @@ public static partial class MediaItemBaseExtensions
 {
     extension(MediaItemBase i)
     {
-        public string GetProviderInstance()
+        public string? GetProviderInstance()
         {
-            string provider = string.Empty;
+            string? provider = string.Empty;
             if (!string.IsNullOrEmpty(i.Provider))
                 provider = i.Provider;
             else if (i.ProviderMappings != null)
-                provider = i.ProviderMappings.FirstOrDefault().ProviderInstance;
-
+                provider = i.ProviderMappings.FirstOrDefault()?.ProviderInstance;
 
             return provider;
         }

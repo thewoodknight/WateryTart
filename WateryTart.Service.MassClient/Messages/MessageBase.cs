@@ -14,7 +14,7 @@ public abstract class MessageBase(string command)
         {
             Message msg => JsonSerializer.Serialize(msg, MassClientJsonContext.Default.Message),
             Auth auth => JsonSerializer.Serialize(auth, MassClientJsonContext.Default.Auth),
-            _ => JsonSerializer.Serialize(this, MassWsClient.SerializerOptions)
+            _ => JsonSerializer.Serialize(this, MassClientJsonContext.Default.GetTypeInfo(this.GetType())!)
         };
     }
 }

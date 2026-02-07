@@ -43,7 +43,7 @@ public partial class CurrentMedia : INotifyPropertyChanged
             {
                 field = value.Value;
                 NotifyPropertyChanged();
-                NotifyPropertyChanged("progress");
+                NotifyPropertyChanged("Progress");
             }
         }
     }
@@ -52,7 +52,7 @@ public partial class CurrentMedia : INotifyPropertyChanged
     {
         get
         {
-            if (duration == null || duration == 0)
+            if (duration == null || duration == 0 || elapsed_time == null)
                 return 0;
             
             return ((double)elapsed_time / (double)duration) * 100;

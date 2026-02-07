@@ -12,14 +12,17 @@ public class WateryTartSmallViewSelector : IDataTemplate
     [Content]
     public Dictionary<string, IDataTemplate> Templates { get; } = new Dictionary<string, IDataTemplate>();
 
-    public Control Build(object data)
+    public Control? Build(object? data)
     {
-        if (Templates.ContainsKey(data.GetType().Name))
-            return Templates[data.GetType().Name].Build(data);
+        var type = data?.GetType();
+        var name = data?.GetType().Name;
+        if (name != null && type != null && Templates.ContainsKey(name))
+            return Templates[type.Name].Build(data);
+
         return null;
     }
 
-    public bool Match(object data)
+    public bool Match(object? data)
     {
         return data is IViewModelBase;
     }

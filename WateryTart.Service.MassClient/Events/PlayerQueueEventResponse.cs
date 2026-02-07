@@ -6,5 +6,5 @@ namespace WateryTart.Service.MassClient.Events;
 public class PlayerQueueEventResponse : BaseEventResponse
 {
     [JsonPropertyName("data")]
-    public new PlayerQueue data { get; set; }
+    public new PlayerQueue? data { get; set; }
 }

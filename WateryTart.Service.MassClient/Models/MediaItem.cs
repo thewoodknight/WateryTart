@@ -14,7 +14,15 @@ public class MediaItem : Item, INotifyPropertyChanged
             NotifyPropertyChanged();
         }
     } = 0;
-    public double progress => (elapsed_time / duration.Value) * 100;
+    public double Progress
+    {
+        get
+        {
+            if (duration == null || duration == 0)
+                    return 0;
+            return (elapsed_time / duration.Value) * 100;
+        }
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

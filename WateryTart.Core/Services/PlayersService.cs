@@ -133,7 +133,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
 
         if (SelectedQueue?.current_item?.media_item != null)
         {
-            Progress = SelectedQueue.current_item.media_item.progress;
+            Progress = SelectedQueue.current_item.media_item.Progress;
             SelectedQueue.current_item.media_item.elapsed_time += 1;
         }
     }

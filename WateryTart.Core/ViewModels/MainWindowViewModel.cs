@@ -22,18 +22,19 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     private readonly SendSpinClient _sendSpinClient;
     private readonly ISettings _settings;
     private readonly ILogger<MainWindowViewModel> _logger;
-    
+
     private bool _canNavigateToHome = true;
     private bool _canNavigateToMusic = true;
     private bool _canNavigateToSearch = true;
     private bool _canNavigateToSettings = true;
     private bool _canNavigateToPlayers = true;
+    private bool _canNavigateBack = true;
 
     public ViewModelActivator? Activator { get; }
     public RelayCommand CloseSlideupCommand { get; }
     public IColourService ColourService { get; }
     [Reactive] public partial IViewModelBase CurrentViewModel { get; set; }
-    public ReactiveCommand<Unit, IRoutableViewModel> GoBack => Router.NavigateBack;
+    public RelayCommand GoBack { get; }
     public RelayCommand GoHome { get; }
     public RelayCommand GoMusic { get; }
     public RelayCommand GoPlayers { get; }
@@ -45,8 +46,8 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     public RoutingState Router { get; } = new();
     public ISettings Settings => _settings;
     [Reactive] public partial bool ShowSlideupMenu { get; set; }
-    [Reactive] public partial ReactiveObject SlideupMenu { get; set; } = new();
-    [Reactive] public partial string Title { get; set; }
+    [Reactive] public partial ReactiveObject? SlideupMenu { get; set; } = new();
+    [Reactive] public partial string Title { get; set; } = string.Empty;
 
     public MainWindowViewModel(IMassWsClient massClient, IPlayersService playersService, ISettings settings, IColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory)
     {
@@ -59,6 +60,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
         ShowSlideupMenu = false;
 
         // Create the commands first
+        GoBack = new RelayCommand(() => Router.NavigateBack.Execute(Unit.Default), () => _canNavigateBack);
         GoHome = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<HomeViewModel>()), () => _canNavigateToHome);
         GoMusic = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<LibraryViewModel>()), () => _canNavigateToMusic);
         GoSearch = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<SearchViewModel>()), () => _canNavigateToSearch);
@@ -74,14 +76,18 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
             _canNavigateToSearch = vm is not SearchViewModel;
             _canNavigateToSettings = vm is not SettingsViewModel;
             _canNavigateToPlayers = vm is not PlayersViewModel;
+            _canNavigateBack = Router.NavigationStack.Count > 1;
 
             // Notify commands to re-evaluate their canExecute predicates
+            GoBack.NotifyCanExecuteChanged();
             GoHome.NotifyCanExecuteChanged();
             GoMusic.NotifyCanExecuteChanged();
             GoSearch.NotifyCanExecuteChanged();
             GoSettings.NotifyCanExecuteChanged();
             GoPlayers.NotifyCanExecuteChanged();
         });
+
+        MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
 
         Router.CurrentViewModel.Subscribe(vm =>
         {
@@ -91,7 +97,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
                     .BindTo(this, v => v.Title);
 
                 CurrentViewModel = ivmb;
-                MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
+
             }
         });
 
@@ -165,8 +171,9 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
         _logger.LogInformation("Successfully connected to MassClient");
         await PlayersService.GetPlayers();
 
-        GoHome.Execute(null);
+        Router.NavigateAndReset.Execute(App.Container.GetRequiredService<HomeViewModel>());
 
-        _ = _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
+        if (_settings.Credentials.BaseUrl != null) 
+            _ = _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
     }
 }

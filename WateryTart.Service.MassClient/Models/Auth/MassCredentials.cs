@@ -11,5 +11,5 @@ public class MassCredentials : IMassCredentials
     public string? BaseUrl { get; set; }
     
     [JsonPropertyName("Username")] 
-    public string Username { get; set; }
+    public string? Username { get; set; } = string.Empty;
 }
