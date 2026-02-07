@@ -8,17 +8,13 @@
 		<Configurations>Debug;Release;X64Debug;ARMRELEASE</Configurations>
 		<Platforms>AnyCPU;ARM64</Platforms>
 		<PublishReadyToRun>true</PublishReadyToRun>
-		<!--<BuiltInComInteropSupport>true</BuiltInComInteropSupport>-->
 		<EventSourceSupport>true</EventSourceSupport>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<StripSymbols>false</StripSymbols>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<EnableXamlCompilation>true</EnableXamlCompilation>
-
 	</PropertyGroup>
-
-
 	<PropertyGroup>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<AssemblyName>WateryTartDesktop</AssemblyName>
@@ -55,14 +51,9 @@
 
 	<ItemGroup>
 		<TrimmerRootAssembly Include="Avalonia.Controls" />
-		<!--<TrimmerRootAssembly Include="Xaml.Behaviors.Avalonia" />-->
 		<TrimmerRootAssembly Include="ReactiveUI" />
 		<TrimmerRootAssembly Include="WateryTart.Core" />
 	</ItemGroup>
-
-	<!--<ItemGroup>
-		<RdXmlFile Include="rd.xml" />
-	</ItemGroup>-->
 
 	<PropertyGroup>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>

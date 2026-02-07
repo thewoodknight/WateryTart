@@ -11,18 +11,6 @@
     <File Path="Directory.Packages.props" />
     <File Path="README.md" />
   </Folder>
-  <Project Path="WateryTart.Platform.Windows/WateryTart.Platform.Windows.csproj">
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
-  </Project>
-  <Project Path="WateryTart.Platform.Linux/WateryTart.Platform.Linux.csproj">
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
-  </Project>
-  <Project Path="WateryTart.Service.MassClient/WateryTart.Service.MassClient.csproj">
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
-  </Project>
   <Folder Name="/Solution Items/Assets/">
     <File Path="Assets/logo.ico" />
     <File Path="Assets/logo.png" />
@@ -31,7 +19,19 @@
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
   </Project>
+  <Project Path="WateryTart.Platform.Linux/WateryTart.Platform.Linux.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
+  </Project>
   <Project Path="WateryTart.Platform.macOS/WateryTart.Platform.macOS.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
+  </Project>
+  <Project Path="WateryTart.Platform.Windows/WateryTart.Platform.Windows.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
+  </Project>
+  <Project Path="WateryTart.Service.MassClient/WateryTart.Service.MassClient.csproj">
+    <Platform Solution="*|ARM64" Project="ARM64" />
+    <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
   </Project>
 </Solution>
