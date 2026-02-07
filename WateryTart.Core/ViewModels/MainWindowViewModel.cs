@@ -22,7 +22,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     private readonly SendSpinClient _sendSpinClient;
     private readonly ISettings _settings;
     private readonly ILogger<MainWindowViewModel> _logger;
-
+    
     private bool _canNavigateToHome = true;
     private bool _canNavigateToMusic = true;
     private bool _canNavigateToSearch = true;
@@ -47,7 +47,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     public ISettings Settings => _settings;
     [Reactive] public partial bool ShowSlideupMenu { get; set; }
     [Reactive] public partial ReactiveObject? SlideupMenu { get; set; } = new();
-    [Reactive] public partial string Title { get; set; } = string.Empty;
+    [Reactive] public partial string Title { get; set; }
 
     public MainWindowViewModel(IMassWsClient massClient, IPlayersService playersService, ISettings settings, IColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory)
     {
@@ -87,8 +87,6 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
             GoPlayers.NotifyCanExecuteChanged();
         });
 
-        MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
-
         Router.CurrentViewModel.Subscribe(vm =>
         {
             if (vm is IViewModelBase ivmb)
@@ -97,7 +95,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
                     .BindTo(this, v => v.Title);
 
                 CurrentViewModel = ivmb;
-
+                MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
             }
         });
 
@@ -172,8 +170,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
         await PlayersService.GetPlayers();
 
         Router.NavigateAndReset.Execute(App.Container.GetRequiredService<HomeViewModel>());
-
-        if (_settings.Credentials.BaseUrl != null) 
-            _ = _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
+        
+        _ = _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
     }
 }
