@@ -3,7 +3,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant.Models;
 
 namespace WateryTart.Core.Converters;
 

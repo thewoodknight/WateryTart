@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 using Avalonia.Data.Converters;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant.Models;
 
 namespace WateryTart.Core.Converters;
 

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant.Models;
 
 namespace WateryTart.Core.ViewModels;
 

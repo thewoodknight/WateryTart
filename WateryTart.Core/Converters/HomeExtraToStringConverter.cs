@@ -1,8 +1,8 @@
 ﻿using Avalonia.Data.Converters;
 using System;
 using System.Globalization;
-using WateryTart.Service.MassClient.Models;
-using WateryTart.Service.MassClient.Models.Enums;
+using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.Models.Enums;
 
 namespace WateryTart.Core.Converters;
 

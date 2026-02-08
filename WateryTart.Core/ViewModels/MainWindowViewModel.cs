@@ -11,14 +11,14 @@ using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Core.ViewModels.Players;
-using WateryTart.Service.MassClient;
+using WateryTart.MusicAssistant;
 using Xaml.Behaviors.SourceGenerators;
 
 namespace WateryTart.Core.ViewModels;
 
 public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatableViewModel
 {
-    private readonly IMassWsClient _massClient;
+    private readonly IWsClient _massClient;
     private readonly SendSpinClient _sendSpinClient;
     private readonly ISettings _settings;
     private readonly ILogger<MainWindowViewModel> _logger;
@@ -49,7 +49,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     [Reactive] public partial ReactiveObject? SlideupMenu { get; set; } = new();
     [Reactive] public partial string Title { get; set; }
 
-    public MainWindowViewModel(IMassWsClient massClient, IPlayersService playersService, ISettings settings, IColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory)
+    public MainWindowViewModel(IWsClient massClient, IPlayersService playersService, ISettings settings, IColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;
         PlayersService = playersService;

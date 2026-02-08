@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.Text;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant.Models;
 
 namespace WateryTart.Core.Converters;
 

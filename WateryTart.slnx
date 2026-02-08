@@ -30,8 +30,4 @@
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
   </Project>
-  <Project Path="WateryTart.Service.MassClient/WateryTart.Service.MassClient.csproj">
-    <Platform Solution="*|ARM64" Project="ARM64" />
-    <Platform Solution="ARMRELEASE|Any CPU" Project="ARM64" />
-  </Project>
 </Solution>

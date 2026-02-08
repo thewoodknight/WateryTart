@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reactive;
 using System.Windows.Input;
 using WateryTart.Core.Services;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant.Models;
 
 namespace WateryTart.Core.ViewModels.Menus;
 

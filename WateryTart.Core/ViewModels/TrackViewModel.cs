@@ -5,15 +5,15 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.Services;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models;
 using WateryTart.Core.ViewModels.Menus;
 
 namespace WateryTart.Core.ViewModels;
 
 public class TrackViewModel : ReactiveObject, IViewModelBase, IDisposable
 {
-    private readonly IMassWsClient _massClient;
+    private readonly IWsClient _massClient;
     private readonly IPlayersService _playersService;
     private readonly IScreen _screen;
     private readonly CompositeDisposable _disposables = new CompositeDisposable();
@@ -44,7 +44,7 @@ public class TrackViewModel : ReactiveObject, IViewModelBase, IDisposable
     public RelayCommand TrackFullViewCommand { get; }
     public string? UrlPathSegment { get; } = "Track/ID";
 
-    public TrackViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService, Item? t = null)
+    public TrackViewModel(IWsClient massClient, IScreen screen, IPlayersService playersService, Item? t = null)
     {
         _massClient = massClient;
         _screen = screen;

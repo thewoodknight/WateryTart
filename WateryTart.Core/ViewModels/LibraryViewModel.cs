@@ -5,14 +5,15 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
-using WateryTart.Service.MassClient;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.WebSocketExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
 public partial class LibraryViewModel : ReactiveObject, IViewModelBase, IActivatableViewModel
 {
     private ILogger<LibraryViewModel> _logger;
-    private readonly IMassWsClient _massClient;
+    private readonly IWsClient _massClient;
     public string? UrlPathSegment { get; } = "library";
     public IScreen HostScreen { get; }
     public string Title { get; set; }
@@ -22,7 +23,7 @@ public partial class LibraryViewModel : ReactiveObject, IViewModelBase, IActivat
     // CORRECT:
     public ViewModelActivator Activator { get; } = new();
 
-    public LibraryViewModel(IMassWsClient massClient, IScreen screen, ILoggerFactory loggerFactory)
+    public LibraryViewModel(IWsClient massClient, IScreen screen, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;
         HostScreen = screen;

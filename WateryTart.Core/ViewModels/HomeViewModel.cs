@@ -10,16 +10,17 @@ using Microsoft.Extensions.Logging;
 using WateryTart.Core.Extensions;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models;
-using WateryTart.Service.MassClient.Models.Enums;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.Models.Enums;
+using WateryTart.MusicAssistant.WebSocketExtensions;
 
 namespace WateryTart.Core.ViewModels
 {
     public class HomeViewModel : ReactiveObject, IViewModelBase
     {
         private readonly ObservableCollection<RecommendationDisplayModel> _displayRecommendations;
-        private readonly IMassWsClient _massClient;
+        private readonly IWsClient _massClient;
         private readonly IPlayersService _playersService;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ISettings _settings;
@@ -37,7 +38,7 @@ namespace WateryTart.Core.ViewModels
 
         private List<Recommendation> SourceRecommendations { get; set; }
 
-        public HomeViewModel(IScreen screen, IMassWsClient massClient, ISettings settings, IPlayersService playersService, ILoggerFactory loggerFactory)
+        public HomeViewModel(IScreen screen, IWsClient massClient, ISettings settings, IPlayersService playersService, ILoggerFactory loggerFactory)
         {
             Title = "Home";
             _massClient = massClient;

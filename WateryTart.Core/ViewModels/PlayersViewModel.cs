@@ -3,8 +3,8 @@ using ReactiveUI.SourceGenerators;
 using System.Collections.ObjectModel;
 using WateryTart.Core.Services;
 
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models;
 
 namespace WateryTart.Core.ViewModels;
 
@@ -27,7 +27,7 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
         }
     }
 
-    public PlayersViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService)
+    public PlayersViewModel(IWsClient massClient, IScreen screen, IPlayersService playersService)
     {
         _playersService = playersService;
         HostScreen = screen;

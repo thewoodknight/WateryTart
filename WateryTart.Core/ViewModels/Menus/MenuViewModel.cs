@@ -3,7 +3,7 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
 using ReactiveUI.SourceGenerators;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant.Models;
 
 namespace WateryTart.Core.ViewModels.Menus;
 

@@ -5,16 +5,16 @@ using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Avalonia.Logging;
-using WateryTart.Service.MassClient.Models.Auth;
+using WateryTart.MusicAssistant.Models.Auth;
 
 namespace WateryTart.Core.Settings;
 
 public partial class Settings : INotifyPropertyChanged, ISettings
 {
-    [JsonConverter(typeof(MassCredentialsConverter))]
-    public IMassCredentials Credentials
+    [JsonConverter(typeof(MusicAssistantCredentialsConverter))]
+    public IMusicAssistantCredentials Credentials
     {
-        get => field ?? new MassCredentials();
+        get => field ?? new MusicAssistantCredentials();
         set
         {
             field = value;
@@ -115,7 +115,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
 
     public Settings(string path)
     {
-        Credentials = new MassCredentials();
+        Credentials = new MusicAssistantCredentials();
         Path = path;
         if (!string.IsNullOrEmpty(path))
             Load(path);
@@ -135,7 +135,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
 
                 if (loaded != null)
                 {
-                    Credentials = loaded.Credentials ?? new MassCredentials();
+                    Credentials = loaded.Credentials ?? new MusicAssistantCredentials();
                     LastSelectedPlayerId = loaded.LastSelectedPlayerId ?? string.Empty;
                     LastSearchTerm = loaded.LastSearchTerm ?? string.Empty;
                     WindowWidth = loaded.WindowWidth;
@@ -195,7 +195,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.Never)]
 [JsonSerializable(typeof(Settings))]
-[JsonSerializable(typeof(MassCredentials))]
+[JsonSerializable(typeof(MusicAssistantCredentials))]
 [JsonSerializable(typeof(LoggerSettings))]
 internal partial class SettingsJsonContext : JsonSerializerContext
 {

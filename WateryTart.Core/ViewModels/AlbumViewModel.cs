@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models;
-using WateryTart.Service.MassClient.Models.Enums;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.Models.Enums;
+using WateryTart.MusicAssistant.WebSocketExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
 public partial class AlbumViewModel : ReactiveObject, IViewModelBase
 {
-    private readonly IMassWsClient _massClient;
+    private readonly IWsClient _massClient;
     private readonly IPlayersService _playersService;
     public string? UrlPathSegment { get; } = "Album/ID";
     public IScreen HostScreen { get; }
@@ -30,7 +31,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     public RelayCommand AlbumAltMenuCommand { get; }
 
     public RelayCommand AlbumFullViewCommand { get; }
-    public AlbumViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService, Album? a = null)
+    public AlbumViewModel(IWsClient massClient, IScreen screen, IPlayersService playersService, Album? a = null)
     {
         _massClient = massClient;
         _playersService = playersService;

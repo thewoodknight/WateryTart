@@ -50,6 +50,7 @@
 		<PackageReference Include="SharpHook" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="System.Device.Gpio" />
+		<PackageReference Include="WateryTart.MusicAssistant" />
 		<PackageReference Include="Xaml.Behaviors.Avalonia" />
 		<PackageReference Include="Xaml.Behaviors.Interactivity" />
 		<PackageReference Include="Xaml.Behaviors.SourceGenerators">
@@ -57,10 +58,6 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Zeroconf" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\WateryTart.Service.MassClient\WateryTart.Service.MassClient.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

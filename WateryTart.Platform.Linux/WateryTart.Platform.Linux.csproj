@@ -42,7 +42,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\WateryTart.Core\WateryTart.Core.csproj" />
-		<ProjectReference Include="..\WateryTart.Service.MassClient\WateryTart.Service.MassClient.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

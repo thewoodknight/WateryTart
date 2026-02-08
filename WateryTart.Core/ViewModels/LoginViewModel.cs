@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using WateryTart.Core.Services.Discovery;
 using WateryTart.Core.Settings;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models.Auth;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models.Auth;
 using CommunityToolkit.Mvvm.Input;
 
 namespace WateryTart.Core.ViewModels;
@@ -18,7 +18,7 @@ public class FromLoginMessage()
 }
 public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposable
 {
-    private readonly IMassWsClient _massClient;
+    private readonly IWsClient _massClient;
     private readonly ISettings _settings;
     private readonly IMassServerDiscovery _discovery;
     private bool _disposed;
@@ -53,7 +53,7 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
     public AsyncRelayCommand LoginCommand { get; }
     public AsyncRelayCommand RefreshServersCommand { get; }
 
-    public LoginViewModel(IScreen screen, IMassWsClient massClient, ISettings settings, IMassServerDiscovery? discovery = null)
+    public LoginViewModel(IScreen screen, IWsClient massClient, ISettings settings, IMassServerDiscovery? discovery = null)
     {
         _massClient = massClient;
         _settings = settings;
@@ -195,7 +195,7 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
 
         if (x.Success)
         {
-            _settings.Credentials = new MassCredentials()
+            _settings.Credentials = new MusicAssistantCredentials()
             {
                 BaseUrl = x.Credentials.BaseUrl,
                 Token = x.Credentials.Token,

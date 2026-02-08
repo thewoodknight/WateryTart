@@ -17,7 +17,7 @@ using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels;
 using WateryTart.Core.ViewModels.Players;
 using WateryTart.Core.Views;
-using WateryTart.Service.MassClient;
+using WateryTart.MusicAssistant;
 using ColourService = WateryTart.Core.Services.ColourService;
 using PlayersService = WateryTart.Core.Services.PlayersService;
 
@@ -132,14 +132,14 @@ public partial class App : Application
         //Services
         /* Explicit interface definitions so .AsImplemented() isn't call, which isn't AOT compatible */
         builder.Register(c => new MainWindowViewModel(
-            c.Resolve<IMassWsClient>(),
+            c.Resolve<IWsClient>(),
             c.Resolve<IPlayersService>(),
             c.Resolve<ISettings>(),
             c.Resolve<IColourService>(),
             c.Resolve<SendSpinClient>(),
             c.Resolve<ILoggerFactory>()
         )).As<IScreen>().As<IActivatableViewModel>().SingleInstance();
-        builder.RegisterType<MassWsClient>().As<IMassWsClient>().SingleInstance();
+        builder.RegisterType<WsClient>().As<IWsClient>().SingleInstance();
         builder.RegisterType<PlayersService>().As<IPlayersService>().As<IAsyncReaper>().SingleInstance();
         builder.RegisterType<ColourService>().As<IColourService>().SingleInstance();
 

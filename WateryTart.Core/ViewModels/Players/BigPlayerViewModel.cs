@@ -7,7 +7,7 @@ using System.Windows.Input;
 using Material.Icons;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant.Models;
 
 namespace WateryTart.Core.ViewModels.Players;
 

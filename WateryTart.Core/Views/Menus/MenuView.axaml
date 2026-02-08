@@ -6,7 +6,7 @@
 			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
 			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
 			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-			 xmlns:models="clr-namespace:WateryTart.Service.MassClient.Models;assembly=WateryTart.Service.MassClient"
+			 xmlns:models="clr-namespace:WateryTart.MusicAssistant.Models;assembly=WateryTart.MusicAssistant"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="WateryTart.Core.Views.Menus.MenuView"
 			 x:DataType="vm:MenuViewModel"

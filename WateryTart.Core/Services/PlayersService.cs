@@ -16,16 +16,17 @@ using WateryTart.Core.Extensions;
 using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels;
 using WateryTart.Core.ViewModels.Menus;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Events;
-using WateryTart.Service.MassClient.Models;
-using WateryTart.Service.MassClient.Models.Enums;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Events;
+using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.Models.Enums;
+using WateryTart.MusicAssistant.WebSocketExtensions;
 
 namespace WateryTart.Core.Services;
 
 public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncReaper
 {
-    private readonly IMassWsClient _massClient;
+    private readonly IWsClient _massClient;
     private readonly ISettings _settings;
     private readonly IColourService _colourService;
     private readonly ILoggerFactory _loggerFactory;
@@ -88,7 +89,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
 
     private DispatcherTimer _timer;
 
-    public PlayersService(IMassWsClient massClient, ISettings settings, IColourService colourService, ILoggerFactory loggerFactory)
+    public PlayersService(IWsClient massClient, ISettings settings, IColourService colourService, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;
         _settings = settings;

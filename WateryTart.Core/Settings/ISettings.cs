@@ -1,11 +1,11 @@
-﻿using WateryTart.Service.MassClient.Models.Auth;
+﻿using WateryTart.MusicAssistant.Models.Auth;
 
 namespace WateryTart.Core.Settings;
 
 public interface ISettings
 {
     public string Path { get; set; }
-    public IMassCredentials Credentials { get; set; }
+    public IMusicAssistantCredentials Credentials { get; set; }
 
     public string LastSelectedPlayerId { get; set; }
 

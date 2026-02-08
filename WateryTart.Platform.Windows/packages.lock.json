@@ -610,18 +610,10 @@
           "SharpHook": "[7.1.1, )",
           "SkiaSharp": "[2.88.9, )",
           "System.Device.Gpio": "[4.1.0, )",
-          "WateryTart.Service.MassClient": "[1.0.0, )",
+          "WateryTart.MusicAssistant": "[1.0.2, )",
           "Xaml.Behaviors.Avalonia": "[11.3.9.4, )",
           "Xaml.Behaviors.Interactivity": "[11.3.9.4, )",
           "Zeroconf": "[3.7.16, )"
-        }
-      },
-      "waterytart.service.massclient": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.Logging": "[10.0.2, )",
-          "Microsoft.Extensions.Logging.Console": "[10.0.2, )",
-          "Websocket.Client": "[5.3.0, )"
         }
       },
       "AsyncImageLoader.Avalonia": {
@@ -791,6 +783,17 @@
         "requested": "[6.1.0, )",
         "resolved": "6.1.0",
         "contentHash": "M5cCC1ZMkZr9jbSQGTHnVkb5TDN67qWCV7AP8TAHdGkvDlu0puT5NzemESNn9+HkYIDpWpocP68/i+/ame2/2w=="
+      },
+      "WateryTart.MusicAssistant": {
+        "type": "CentralTransitive",
+        "requested": "[1.0.2, )",
+        "resolved": "1.0.2",
+        "contentHash": "YKuswyJecAMzgD5MQTmk/oL9pfZSijERs3mjm0uZvJmdmpDfyMBMUFjBArXPUyETqgk0rVxdvxkc1a3JUvPCzQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "10.0.2",
+          "Microsoft.Extensions.Logging.Console": "10.0.2",
+          "Websocket.Client": "5.3.0"
+        }
       },
       "Websocket.Client": {
         "type": "CentralTransitive",

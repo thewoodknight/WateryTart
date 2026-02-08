@@ -5,14 +5,15 @@ using System.Collections.ObjectModel;
 using System.Text;
 using System.Threading.Tasks;
 using WateryTart.Core.Extensions;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.WebSocketExtensions;
 
 namespace WateryTart.Core.ViewModels
 {
     public class SimilarTracksViewModel : ReactiveObject, IViewModelBase
     {
-        private readonly IMassWsClient _client;
+        private readonly IWsClient _client;
         public string? UrlPathSegment { get; } = "SimilarTracks/ID";
         public IScreen HostScreen { get; }
         public string Title { get; } = string.Empty;
@@ -20,7 +21,7 @@ namespace WateryTart.Core.ViewModels
         public bool ShowNavigation { get; } = true;
 
         public ObservableCollection<IViewModelBase> Tracks { get; set; } = new ObservableCollection<IViewModelBase>();
-        public SimilarTracksViewModel(IScreen screen, IMassWsClient client)
+        public SimilarTracksViewModel(IScreen screen, IWsClient client)
         {
             _client = client;
             HostScreen = screen;

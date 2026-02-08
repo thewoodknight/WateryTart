@@ -1,6 +1,6 @@
 ﻿using WateryTart.Core.ViewModels;
-using WateryTart.Service.MassClient.Models;
-using WateryTart.Service.MassClient.Models.Enums;
+using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.Models.Enums;
 
 namespace WateryTart.Core.Extensions;
 

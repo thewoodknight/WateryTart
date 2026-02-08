@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.Services.Discovery;
 using WateryTart.Core.Settings;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models.Auth;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models.Auth;
 
 namespace WateryTart.Core.ViewModels;
 
 public partial class ServerSettingsViewModel : ReactiveObject, IHaveSettings, IDisposable
 {
-    private readonly IMassWsClient _massClient;
+    private readonly IWsClient _massClient;
     private readonly ISettings _settings;
     private readonly IMassServerDiscovery _discovery;
     private bool _disposed;
@@ -44,7 +44,7 @@ public partial class ServerSettingsViewModel : ReactiveObject, IHaveSettings, ID
     public AsyncRelayCommand SaveCommand { get; }
     public AsyncRelayCommand RefreshServersCommand { get; }
 
-    public ServerSettingsViewModel(IMassWsClient massClient, ISettings settings, IMassServerDiscovery? discovery = null)
+    public ServerSettingsViewModel(IWsClient massClient, ISettings settings, IMassServerDiscovery? discovery = null)
     {
         _massClient = massClient;
         _settings = settings;
@@ -205,7 +205,7 @@ public partial class ServerSettingsViewModel : ReactiveObject, IHaveSettings, ID
 
             if (result.Success)
             {
-                _settings.Credentials = new MassCredentials()
+                _settings.Credentials = new MusicAssistantCredentials()
                 {
                     BaseUrl = result.Credentials.BaseUrl,
                     Token = result.Credentials.Token,

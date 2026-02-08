@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.WebSocketExtensions;
+using WateryTart.MusicAssistant.Models;
 using CommunityToolkit.Mvvm.Input;
 
 namespace WateryTart.Core.ViewModels
@@ -16,7 +17,7 @@ namespace WateryTart.Core.ViewModels
     {
         public string? UrlPathSegment => "playlist";
         public IScreen HostScreen { get; }
-        private readonly IMassWsClient _massClient;
+        private readonly IWsClient _massClient;
         private readonly IPlayersService _playersService;
         public bool ShowMiniPlayer => true; 
         public bool ShowNavigation => true;
@@ -27,7 +28,7 @@ namespace WateryTart.Core.ViewModels
         public RelayCommand<Item> PlayCommand { get; }
         public RelayCommand PlaylistAltMenuCommand { get; }
         public RelayCommand PlaylistFullViewCommand { get; }
-        public PlaylistViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService, Playlist? playlist = null)
+        public PlaylistViewModel(IWsClient massClient, IScreen screen, IPlayersService playersService, Playlist? playlist = null)
         {
             _massClient = massClient;
             _playersService = playersService;

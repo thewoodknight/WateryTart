@@ -7,16 +7,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models;
-using WateryTart.Service.MassClient.Models.Enums;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.WebSocketExtensions;
+using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.Models.Enums;
 using Xaml.Behaviors.SourceGenerators;
 
 namespace WateryTart.Core.ViewModels
 {
     public partial class ArtistViewModel : ReactiveObject, IViewModelBase
     {
-        private readonly IMassWsClient _massClient;
+        private readonly IWsClient _massClient;
         private readonly IPlayersService _playersService;
         [Reactive] public partial ObservableCollection<AlbumViewModel> Albums { get; set; } = new();
         public RelayCommand<Artist> AltMenuCommand { get; }
@@ -34,7 +35,7 @@ namespace WateryTart.Core.ViewModels
         public ObservableCollection<Item>? Tracks { get; set; }
         public string? UrlPathSegment { get; } = "Artist/ID";
 
-        public ArtistViewModel(IMassWsClient massClient, IScreen screen, IPlayersService playersService, Artist? artist = null)
+        public ArtistViewModel(IWsClient massClient, IScreen screen, IPlayersService playersService, Artist? artist = null)
         {
             _massClient = massClient;
             _playersService = playersService;

@@ -5,15 +5,15 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.Extensions;
 using WateryTart.Core.Settings;
-using WateryTart.Service.MassClient;
-using WateryTart.Service.MassClient.Models;
-using WateryTart.Service.MassClient.Models.Enums;
+using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.Models.Enums;
 
 namespace WateryTart.Core.ViewModels;
 
 public partial class RecommendationViewModel : ReactiveObject, IViewModelBase
 {
-    private readonly IMassWsClient _massClient;
+    private readonly IWsClient _massClient;
     private readonly ISettings _settings;
     public string? UrlPathSegment { get; } = "recommendation";
     public IScreen HostScreen { get; }
@@ -25,7 +25,7 @@ public partial class RecommendationViewModel : ReactiveObject, IViewModelBase
 
     [Reactive] public partial ObservableCollection<IViewModelBase> Items { get; set; } = new ObservableCollection<IViewModelBase>();
 
-    public RecommendationViewModel(IScreen screen, IMassWsClient massClient, ISettings settings)
+    public RecommendationViewModel(IScreen screen, IWsClient massClient, ISettings settings)
     {
         _massClient = massClient;
         _settings = settings;
