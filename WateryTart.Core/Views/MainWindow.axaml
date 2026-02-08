@@ -78,8 +78,8 @@
 				<ColumnDefinition Width="50" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<Button Grid.Column="0"  Classes="iconButton" Command="{Binding GoBack}">
-				<materialIcons:MaterialIcon Kind="ArrowBack" Width="25" Height="25" />
+			<Button Grid.Column="0" Padding="0"  Classes="iconButton" Command="{Binding GoBack}">
+				<materialIcons:MaterialIcon Kind="ChevronLeft" Width="30" Height="30" />
 			</Button>
 			<TextBlock Grid.Column="1" Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" TextTrimming="CharacterEllipsis" FontWeight="Bold" FontSize="18"/>
 		</Grid>

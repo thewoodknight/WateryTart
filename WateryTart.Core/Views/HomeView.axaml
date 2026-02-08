@@ -40,20 +40,17 @@
 		</ListBox.GestureRecognizers>
 		<ListBox.ItemTemplate>
 			<DataTemplate>
-				<StackPanel>
-					<Border
-					BorderThickness="0,0,0,1"
-					BorderBrush="#66FFFFFF">
-						<Interaction.Behaviors>
-							<EventTriggerBehavior EventName="Tapped">
-								<InvokeCommandAction
-								Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).RecommendationListCommand }"
-								CommandParameter="{Binding Path=.}"/>
-							</EventTriggerBehavior>
-						</Interaction.Behaviors>
+				<StackPanel Background="Transparent">
+                    <Interaction.Behaviors>
+                        <EventTriggerBehavior EventName="Tapped">
+                            <InvokeCommandAction
+                                Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).RecommendationListCommand }"
+                                CommandParameter="{Binding Path=.}"/>
+                        </EventTriggerBehavior>
+                    </Interaction.Behaviors>
+                    <Border BorderThickness="0,0,0,1" BorderBrush="#66FFFFFF">
 						<Grid>
-							<TextBlock Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" FontWeight="Bold" FontSize="16"  />
-
+							<TextBlock VerticalAlignment="Center" Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" FontWeight="Bold" FontSize="16"  />
 							<materialIcons:MaterialIcon HorizontalAlignment="Right"  Kind="ChevronRight" Width="25" Height="25" />
 						</Grid>
 					</Border>

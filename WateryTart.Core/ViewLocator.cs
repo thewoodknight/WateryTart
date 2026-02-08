@@ -38,7 +38,8 @@ public class ViewLocator : IDataTemplate
         [typeof(TracksViewModel)] = () => new TracksView(),
         [typeof(RecommendationViewModel)] = () => new RecommendationView(),
         [typeof(SearchResultsViewModel)] = () => new SearchResultsView(),
-        
+        [typeof(SimilarTracksViewModel)] = () => new SimilarTracksView(),
+
         // Player views
         [typeof(MiniPlayerViewModel)] = () => new MiniPlayerView(),
         [typeof(BigPlayerViewModel)] = () => new BigPlayerView(),

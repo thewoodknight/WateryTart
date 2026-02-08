@@ -1,14 +1,13 @@
 ﻿using System.Linq;
-using Avalonia.Controls.Primitives;
 using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using Material.Icons;
-using Material.Icons.Avalonia;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
+using WateryTart.Service.MassClient.Models;
 
 namespace WateryTart.Core.ViewModels.Players;
 
@@ -49,16 +48,47 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         PlayerPlayPauseCommand = new RelayCommand(() => PlayersService.PlayerPlayPause());
         PlayingAltMenuCommand = new RelayCommand(() =>
         {
-            var GoToAlbum = new RelayCommand(() => {});
-            var GoToArtist = new RelayCommand(() => { });
-            var item = PlayersService.SelectedQueue.CurrentItem.MediaItem;
-            
+            var item = PlayersService?.SelectedQueue?.CurrentItem?.MediaItem;
+
+            var GoToAlbum = new RelayCommand(() =>
+            {
+                if (item == null || HostScreen == null)
+                    return;
+
+                var albumVm = App.Container.GetRequiredService<AlbumViewModel>();
+                albumVm.Album = item.Album;
+                albumVm.LoadFromId(item.Album.ItemId, item.Provider);
+                HostScreen.Router.Navigate.Execute(albumVm);
+
+            });
+
+            var GoToArtist = new RelayCommand(() =>
+            {
+                if (item == null || HostScreen == null)
+                    return;
+                var artistVm = App.Container.GetRequiredService<ArtistViewModel>();
+                artistVm.LoadFromId(item.Artists[0].ItemId, item.Provider);
+                HostScreen.Router.Navigate.Execute(artistVm);
+            });
+
+            var GoToSimilarTracks = new RelayCommand(() =>
+            {
+
+                if (item == null || HostScreen == null)
+                    return;
+                var SimilarTracksViewModel = App.Container.GetRequiredService<SimilarTracksViewModel>();
+                SimilarTracksViewModel.LoadFromId(item.ItemId, item.GetProviderInstance());
+                HostScreen.Router.Navigate.Execute(SimilarTracksViewModel);
+            });
+
+
             var menu = new MenuViewModel(
             [
-                new MenuItemViewModel("Go to Album", MaterialIconKind.Album, GoToAlbum),
+                new TwoLineMenuItemViewModel("Go to Album", item.Album.Name, MaterialIconKind.Album, GoToAlbum),
                 new TwoLineMenuItemViewModel("Go to Artist", item.Artists.FirstOrDefault().Name, MaterialIconKind.Artist, GoToArtist),
+                new MenuItemViewModel("Similar tracks", MaterialIconKind.MusicClefTreble, GoToSimilarTracks),
 
-            ]);
+            ], PlayersService.SelectedQueue.CurrentItem);
             MessageBus.Current.SendMessage(menu);
         });
         _playersService = playersService;

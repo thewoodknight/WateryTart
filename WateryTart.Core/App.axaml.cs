@@ -178,7 +178,7 @@ public partial class App : Application
         builder.RegisterType<RecommendationViewModel>();
         builder.RegisterType<PlaylistsViewModel>();
         builder.RegisterType<TracksViewModel>();
-
+        builder.RegisterType<SimilarTracksViewModel>();
         Container = builder.Build();
 
         // Cache BaseUrl immediately after container is built

@@ -41,11 +41,15 @@
 										   Width="{Binding CachedImageWidth}"
 										   Height="{Binding CachedImageHeight}" />
 
-								<!-- Album art image -->
-								<asyncImageLoader:AdvancedImage
-								Name="imgAlbumArt"
-								Loader="{x:Static app:App.ImageLoaderInstance}"
-								Source="{Binding Path=PlayersService.SelectedQueue.CurrentItem.Image, Converter={StaticResource MassImageImageConverter}}" />
+								<Grid>
+									<Image Source="../../Assets/cover_dark.png"></Image>
+
+									<!-- Album art image -->
+									<asyncImageLoader:AdvancedImage
+									Name="imgAlbumArt"
+									Loader="{x:Static app:App.ImageLoaderInstance}"
+									Source="{Binding Path=PlayersService.SelectedQueue.CurrentItem.Image, Converter={StaticResource MassImageImageConverter}}" />
+								</Grid>
 
 								<!-- Loading indicator -->
 								<StackPanel HorizontalAlignment="Center"
@@ -77,12 +81,12 @@
 						<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Duration, Converter={StaticResource FriendlyTimeConverter}}" />
 					</Grid>
 
-					<StackPanel Margin="0,5,0,5">
-                        <Interaction.Behaviors>
-                            <EventTriggerBehavior EventName="Tapped">
-                                <vm:ClickAction  Command="{Binding PlayingAltMenuCommand }" />
-                            </EventTriggerBehavior>
-                        </Interaction.Behaviors>
+					<StackPanel Margin="0,5,0,5" Background="Transparent">
+						<Interaction.Behaviors>
+							<EventTriggerBehavior EventName="Tapped">
+								<vm:ClickAction  Command="{Binding PlayingAltMenuCommand }" />
+							</EventTriggerBehavior>
+						</Interaction.Behaviors>
 
 						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Artists[0].Name}" FontSize="18"/>
 						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Name}" FontSize="20" FontWeight="Bold" />
@@ -187,12 +191,12 @@
 							<Setter Property="IsVisible" Value="True"/>
 						</Style>
 					</TabControl.Styles>
-					<!--<TabItem Header="Queue">
-					<ItemsControl ItemsSource="{Binding PlayersService.CurrentQueue}" Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" />
+					<TabItem Header="Queue">
+						<ItemsControl ItemsSource="{Binding PlayersService.CurrentQueue}" Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" />
 					</TabItem>
 					<TabItem Header="Played">
-					<ItemsControl ItemsSource="{Binding PlayersService.PlayedQueue}"  Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" />
-					</TabItem>-->
+						<ItemsControl ItemsSource="{Binding PlayersService.PlayedQueue}"  Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" />
+					</TabItem>
 				</TabControl>
 			</controls:ResponsiveColumnPanel.SecondColumn>
 		</controls:ResponsiveColumnPanel>
