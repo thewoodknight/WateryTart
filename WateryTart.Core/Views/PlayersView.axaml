@@ -6,6 +6,7 @@
 			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
 			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
 			 xmlns:app="clr-namespace:WateryTart.Core"
+			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:DataType="vm:PlayersViewModel"
 			 x:Class="WateryTart.Core.Views.PlayersView">
@@ -24,21 +25,27 @@
 
 		<ListBox.ItemTemplate>
 			<DataTemplate>
-				<StackPanel Orientation="Horizontal">
-					<Border ClipToBounds ="True"
-							CornerRadius="5">
-						<asyncImageLoader:AdvancedImage
-						Loader="{x:Static app:App.ImageLoaderInstance}"
-						Height="50" Width="50" Source="{Binding CurrentMedia.ImageUrl}">
-						</asyncImageLoader:AdvancedImage>
-					</Border>
-					<StackPanel Margin="10,0,0,0">
-						<TextBlock Text="{Binding DisplayName}" FontWeight="Bold" />
-						<TextBlock Text="{Binding CurrentMedia.Title}" />
-						<TextBlock Text="{Binding CurrentMedia.Artist}" Opacity="0.7" />
-					</StackPanel>
-				</StackPanel>
+				<StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Border ClipToBounds ="True"
+								CornerRadius="5">
+							<Grid>
+								<avalonia:MaterialIcon Kind="Speaker" Height="50" Width="50" Opacity="0.7" />
+								<asyncImageLoader:AdvancedImage
+								Loader="{x:Static app:App.ImageLoaderInstance}"
+								Height="50" Width="50" Source="{Binding CurrentMedia.ImageUrl}">
+								</asyncImageLoader:AdvancedImage>
+							</Grid>
+						</Border>
+						<StackPanel Margin="10,0,0,0">
+							<TextBlock Text="{Binding DisplayName}" FontWeight="Bold" />
+							<TextBlock Text="{Binding CurrentMedia.Title}" />
+							<TextBlock Text="{Binding CurrentMedia.Artist}" Opacity="0.7" />
+						</StackPanel>
 
+					</StackPanel>
+					<ProgressBar Value="{Binding VolumeLevel}" />
+				</StackPanel>
 			</DataTemplate>
 		</ListBox.ItemTemplate>
 	</ListBox>
