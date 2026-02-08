@@ -11,7 +11,8 @@
 			 xmlns:players="clr-namespace:WateryTart.Core.ViewModels.Players"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="WateryTart.Core.Views.Players.BigPlayerView"
-			 x:DataType="players:BigPlayerViewModel">
+			 x:DataType="players:BigPlayerViewModel"
+			 Margin="0,20,0,0">
 	<UserControl.Resources>
 		<converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter" />
 		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
@@ -72,11 +73,17 @@
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 						<TextBlock Grid.Column="0" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.elapsed_time, Converter={StaticResource FriendlyTimeConverter}}" />
-						<ProgressBar Grid.Column="1" Margin="10,0,10,0" Foreground="Red" Height="15" Value="{Binding PlayersService.Progress}" Minimum="0" Maximum="100" />
+						<ProgressBar Grid.Column="1" Margin="10,0,10,0"  Foreground="{Binding ColourService.ColourAccent}" Height="15" Value="{Binding PlayersService.Progress}" Minimum="0" Maximum="100" />
 						<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.duration, Converter={StaticResource FriendlyTimeConverter}}" />
 					</Grid>
 
 					<StackPanel Margin="0,5,0,5">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="Tapped">
+                                <vm:ClickAction  Command="{Binding PlayingAltMenuCommand }" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+
 						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.artists[0].Name}" FontSize="18"/>
 						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.Name}" FontSize="20" FontWeight="Bold" />
 						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.album.Name}" />
@@ -139,7 +146,7 @@
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 						<TextBlock Grid.Column="0" Text="0" />
-						<ProgressBar Grid.Column="1" Margin="10,0,10,0" Foreground="Red" Height="5" Value="{Binding PlayersService.SelectedPlayer.VolumeLevel}" Minimum="0" Maximum="100" />
+						<ProgressBar Grid.Column="1" Margin="10,0,10,0"  Foreground="{Binding ColourService.ColourAccent}" Height="5" Value="{Binding PlayersService.SelectedPlayer.VolumeLevel}" Minimum="0" Maximum="100" />
 						<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedPlayer.VolumeLevel}" />
 					</Grid>
 				</StackPanel>
@@ -168,24 +175,24 @@
 						</Style>
 
 						<Style Selector="TabItem">
-                            <Setter Property="Padding" Value="0"/>
-                        </Style>
+							<Setter Property="Padding" Value="0"/>
+						</Style>
 
-                        <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
-                            <Setter Property="Background" Value="White"/>
-                        </Style>
+						<Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
+							<Setter Property="Background" Value="White"/>
+						</Style>
 
-                        <Style Selector="TabItem:not(:selected) /template/ Border#PART_SelectedPipe">
-                            <Setter Property="Background" Value="#70FFFFFF"/>
-                            <Setter Property="IsVisible" Value="True"/>
-                        </Style>
+						<Style Selector="TabItem:not(:selected) /template/ Border#PART_SelectedPipe">
+							<Setter Property="Background" Value="#70FFFFFF"/>
+							<Setter Property="IsVisible" Value="True"/>
+						</Style>
 					</TabControl.Styles>
-					<TabItem Header="Queue">
-						<ItemsControl ItemsSource="{Binding PlayersService.CurrentQueue}" Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" />
+					<!--<TabItem Header="Queue">
+					<ItemsControl ItemsSource="{Binding PlayersService.CurrentQueue}" Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" />
 					</TabItem>
 					<TabItem Header="Played">
-						<ItemsControl ItemsSource="{Binding PlayersService.PlayedQueue}"  Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" />
-					</TabItem>
+					<ItemsControl ItemsSource="{Binding PlayersService.PlayedQueue}"  Background="Transparent" ItemTemplate="{StaticResource trackSmallReusableTemplate}" />
+					</TabItem>-->
 				</TabControl>
 			</controls:ResponsiveColumnPanel.SecondColumn>
 		</controls:ResponsiveColumnPanel>
@@ -269,7 +276,7 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 					<TextBlock Grid.Column="0" Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.elapsed_time, Converter={StaticResource FriendlyTimeConverter}}" />
-					<ProgressBar Grid.Column="1" Margin="5,0" Foreground="Red" Height="10" Value="{Binding PlayersService.Progress}" Minimum="0" Maximum="100" />
+					<ProgressBar Grid.Column="1" Margin="5,0"  Foreground="{Binding ColourService.ColourAccent}" Height="10" Value="{Binding PlayersService.Progress}" Minimum="0" Maximum="100" />
 					<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.duration, Converter={StaticResource FriendlyTimeConverter}}"  />
 				</Grid>
 
@@ -289,7 +296,7 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 					<TextBlock Grid.Column="0" Text="0" />
-					<ProgressBar Grid.Column="1" Margin="10,0,10,0" Foreground="Red" Height="5" Value="{Binding PlayersService.SelectedPlayer.VolumeLevel}" Minimum="0" Maximum="100" />
+					<ProgressBar Grid.Column="1" Margin="10,0,10,0"  Foreground="{Binding ColourService.ColourAccent}" Height="5" Value="{Binding PlayersService.SelectedPlayer.VolumeLevel}" Minimum="0" Maximum="100" />
 					<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedPlayer.VolumeLevel}" />
 				</Grid>
 			</StackPanel>

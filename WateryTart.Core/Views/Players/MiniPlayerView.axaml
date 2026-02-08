@@ -21,7 +21,7 @@
 		<converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
 	</UserControl.Resources>
 	<StackPanel>
-		<ProgressBar Foreground="Red" Value="{Binding PlayersService.Progress}" Minimum="0" Maximum="100" />
+		<ProgressBar Foreground="{Binding ColourService.ColourAccent}" Value="{Binding PlayersService.Progress}" Minimum="0" Maximum="100" />
 		<Grid
 			x:Name="grdPlayer"
 			Background="Black" >

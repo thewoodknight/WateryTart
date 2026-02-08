@@ -19,6 +19,8 @@ namespace WateryTart.Core.Services
 
         ColourChosen LastPick { get; set; }
 
+        Color ColourAccent { get; set; }
+
         string LastId { get; set; }
 
         Task Update(string id, string url);
