@@ -53,6 +53,8 @@
 		<TrimmerRootAssembly Include="Avalonia.Controls" />
 		<TrimmerRootAssembly Include="ReactiveUI" />
 		<TrimmerRootAssembly Include="WateryTart.Core" />
+		<TrimmerRootAssembly Include="Sendspin.SDK" />
+		<TrimmerRootDescriptor Include="Properties\PublishProfiles\TrimmerRoots.xml" />
 	</ItemGroup>
 
 	<PropertyGroup>
