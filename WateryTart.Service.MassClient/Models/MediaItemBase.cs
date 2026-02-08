@@ -52,5 +52,5 @@ public abstract class MediaItemBase
     [JsonPropertyName("metadata")] public Metadata? Metadata { get; set; }
     public bool Favorite { get; set; }
     [JsonPropertyName("year")] public int? Year { get; set; }
-    public Image? image { get; set; }
+    [JsonPropertyName("image")] public Image? Image { get; set; }
 }

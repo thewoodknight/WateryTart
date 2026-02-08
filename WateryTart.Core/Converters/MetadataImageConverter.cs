@@ -18,12 +18,12 @@ public class MetadataImageConverter : IValueConverter
                 return null;
 
             //If it is an item, but has a "image" field set, use that
-            if (item.image != null && !string.IsNullOrEmpty(item.image.Path))
+            if (item.Image != null && !string.IsNullOrEmpty(item.Image.Path))
                 //If the image field starts with http, use that
-                if (item.image.Provider != null)
-                    return item.image.Path.StartsWith(("http"))
-                        ? item.image.Path
-                        : ProxyString(item.image.Path, item.image.Provider);
+                if (item.Image.Provider != null)
+                    return item.Image.Path.StartsWith(("http"))
+                        ? item.Image.Path
+                        : ProxyString(item.Image.Path, item.Image.Provider);
 
             //If there is no image field set, use metadata, make sure its not null
             if (item.Metadata?.Images == null)
