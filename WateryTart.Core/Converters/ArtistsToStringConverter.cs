@@ -1,6 +1,7 @@
 ﻿using Avalonia.Data.Converters;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Globalization;
 using System.Text;
 using WateryTart.Service.MassClient.Models;

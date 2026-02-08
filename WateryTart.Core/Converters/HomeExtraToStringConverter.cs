@@ -19,13 +19,13 @@ public class HomeExtraToStringConverter : IValueConverter
         {
             case MediaType.Artist:
             case MediaType.Playlist:
-                output = item.owner ?? string.Empty;
+                output = item.Owner ?? string.Empty;
                 break;
             case MediaType.Album:
             case MediaType.Track:
                 {
-                    if (item.artists != null && item.artists.Count > 0)
-                        output = item?.artists?[0].Name ?? string.Empty;
+                    if (item.Artists != null && item.Artists.Count > 0)
+                        output = item?.Artists?[0].Name ?? string.Empty;
                     break;
                 }
             default:

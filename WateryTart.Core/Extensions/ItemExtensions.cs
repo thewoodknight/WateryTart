@@ -38,7 +38,7 @@ public static class ItemExtensions
     private static AlbumViewModel CreateAlbumViewModel(Item item)
     {
         var vm = App.Container.GetRequiredService<AlbumViewModel>();
-        vm.Album = item.album;
+        vm.Album = item.Album;
         vm.LoadFromId(item.ItemId, item.GetProviderInstance());
         return vm;
     }

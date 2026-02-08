@@ -14,11 +14,11 @@ public class MassImageImageConverter : IValueConverter
         if (image == null)
             return string.Empty;
 
-        if (image.remotely_accessible)
-            return image.path;
-        else if (image.path != null)
-            if (image.provider != null)
-                return ProxyString(image.path, image.provider);
+        if (image.RemotelyAccessible)
+            return image.Path;
+        else if (image.Path != null)
+            if (image.Provider != null)
+                return ProxyString(image.Path, image.Provider);
 
         return string.Empty;
     }

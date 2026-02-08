@@ -18,27 +18,27 @@ public class MetadataImageConverter : IValueConverter
                 return null;
 
             //If it is an item, but has a "image" field set, use that
-            if (item.image != null && !string.IsNullOrEmpty(item.image.path))
+            if (item.image != null && !string.IsNullOrEmpty(item.image.Path))
                 //If the image field starts with http, use that
-                if (item.image.provider != null)
-                    return item.image.path.StartsWith(("http"))
-                        ? item.image.path
-                        : ProxyString(item.image.path, item.image.provider);
+                if (item.image.Provider != null)
+                    return item.image.Path.StartsWith(("http"))
+                        ? item.image.Path
+                        : ProxyString(item.image.Path, item.image.Provider);
 
             //If there is no image field set, use metadata, make sure its not null
             if (item.Metadata?.Images == null)
                 return null;
 
             //Try a locally accessible source first
-            var result = item.Metadata.Images.FirstOrDefault(i => !i.remotely_accessible);
+            var result = item.Metadata.Images.FirstOrDefault(i => !i.RemotelyAccessible);
             if (result == null)
-                result = item.Metadata.Images.FirstOrDefault(i => i.remotely_accessible);
+                result = item.Metadata.Images.FirstOrDefault(i => i.RemotelyAccessible);
 
-            if (result?.provider != null)
-                if (result.path != null)
-                    return result.path != null && result.path.StartsWith("http")
-                        ? result.path
-                        : ProxyString(result.path, result.provider);
+            if (result?.Provider != null)
+                if (result.Path != null)
+                    return result.Path != null && result.Path.StartsWith("http")
+                        ? result.Path
+                        : ProxyString(result.Path, result.Provider);
         }
         catch (Exception ex)
         {
