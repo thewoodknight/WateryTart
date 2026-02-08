@@ -1,11 +1,12 @@
-﻿using ReactiveUI;
+﻿using Material.Icons;
+using ReactiveUI;
 
 namespace WateryTart.Core.ViewModels;
 
 public interface ISmallViewModelBase
 {
     string Title { get;}
-    string Icon { get; }
+    MaterialIconKind Icon { get; }
 }
 public interface IViewModelBase : IRoutableViewModel
 {

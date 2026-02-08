@@ -596,6 +596,7 @@
           "AsyncImageLoader.Avalonia": "[3.6.0, )",
           "Autofac": "[9.0.0, )",
           "Avalonia": "[11.3.11, )",
+          "Avalonia.Diagnostics": "[11.3.11, )",
           "Avalonia.Fonts.Inter": "[11.3.11, )",
           "Avalonia.Themes.Fluent": "[11.3.11, )",
           "AvaloniaUI.DiagnosticsSupport": "[2.1.1, )",

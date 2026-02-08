@@ -45,7 +45,7 @@
 								<asyncImageLoader:AdvancedImage
 								Name="imgAlbumArt"
 								Loader="{x:Static app:App.ImageLoaderInstance}"
-								Source="{Binding Path=PlayersService.SelectedQueue.current_item.image, Converter={StaticResource MassImageImageConverter}}" />
+								Source="{Binding Path=PlayersService.SelectedQueue.CurrentItem.Image, Converter={StaticResource MassImageImageConverter}}" />
 
 								<!-- Loading indicator -->
 								<StackPanel HorizontalAlignment="Center"
@@ -72,9 +72,9 @@
 							<ColumnDefinition Width="*" />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<TextBlock Grid.Column="0" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.elapsed_time, Converter={StaticResource FriendlyTimeConverter}}" />
+						<TextBlock Grid.Column="0" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.ElapsedTime, Converter={StaticResource FriendlyTimeConverter}}" />
 						<ProgressBar Grid.Column="1" Margin="10,0,10,0"  Foreground="{Binding ColourService.ColourAccent}" Height="15" Value="{Binding PlayersService.Progress}" Minimum="0" Maximum="100" />
-						<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.duration, Converter={StaticResource FriendlyTimeConverter}}" />
+						<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Duration, Converter={StaticResource FriendlyTimeConverter}}" />
 					</Grid>
 
 					<StackPanel Margin="0,5,0,5">
@@ -84,9 +84,9 @@
                             </EventTriggerBehavior>
                         </Interaction.Behaviors>
 
-						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.artists[0].Name}" FontSize="18"/>
-						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.Name}" FontSize="20" FontWeight="Bold" />
-						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.album.Name}" />
+						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Artists[0].Name}" FontSize="18"/>
+						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Name}" FontSize="20" FontWeight="Bold" />
+						<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Album.Name}" />
 
 						<!-- Quality Badges - Each as separate tag -->
 						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6" Margin="0,10,0,0">
@@ -96,8 +96,8 @@
 									BorderThickness="1"
 									CornerRadius="4"
 									Padding="8,3"
-									IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
-								<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatCodecConverter}}"
+									IsVisible="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={x:Static ObjectConverters.IsNotNull}}">
+								<TextBlock Text="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={StaticResource AudioFormatCodecConverter}}"
 										   FontSize="11"
 										   FontWeight="Bold"
 										   Foreground="#1DB954" />
@@ -109,8 +109,8 @@
 									BorderThickness="1"
 									CornerRadius="4"
 									Padding="8,3"
-									IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
-								<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatSampleRateConverter}}"
+									IsVisible="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={x:Static ObjectConverters.IsNotNull}}">
+								<TextBlock Text="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={StaticResource AudioFormatSampleRateConverter}}"
 										   FontSize="11"
 										   FontWeight="Bold"
 										   Foreground="#64B5F6" />
@@ -122,8 +122,8 @@
 									BorderThickness="1"
 									CornerRadius="4"
 									Padding="8,3"
-									IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
-								<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatBitDepthConverter}}"
+									IsVisible="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={x:Static ObjectConverters.IsNotNull}}">
+								<TextBlock Text="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={StaticResource AudioFormatBitDepthConverter}}"
 										   FontSize="11"
 										   FontWeight="Bold"
 										   Foreground="#FFB74D" />
@@ -216,15 +216,15 @@
 						Stretch="Uniform"
 						MaxHeight="300"
 						MaxWidth="300"
-						Source="{Binding Path=PlayersService.SelectedQueue.current_item.image, Converter={StaticResource MassImageImageConverter}}" />
+						Source="{Binding Path=PlayersService.SelectedQueue.CurrentItem.Image, Converter={StaticResource MassImageImageConverter}}" />
 					</Panel>
 				</Border>
 			</Border>
 
 			<!-- Track Info -->
 			<StackPanel Grid.Column="1" Margin="10" Spacing="5"  VerticalAlignment="Top">
-				<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.Name}"  FontWeight="Bold" TextTrimming="CharacterEllipsis" />
-				<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.artists[0].Name}" TextTrimming="CharacterEllipsis"/>
+				<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Name}"  FontWeight="Bold" TextTrimming="CharacterEllipsis" />
+				<TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Artists[0].Name}" TextTrimming="CharacterEllipsis"/>
 
 				<!-- Quality Badges for Small Display - Each as separate tag -->
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4" Margin="0,5,0,0">
@@ -234,8 +234,8 @@
 							BorderThickness="1"
 							CornerRadius="3"
 							Padding="5,2"
-							IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
-						<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatCodecConverter}}"
+							IsVisible="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={x:Static ObjectConverters.IsNotNull}}">
+						<TextBlock Text="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={StaticResource AudioFormatCodecConverter}}"
 								   FontSize="9"
 								   FontWeight="Bold"
 								   Foreground="#1DB954" />
@@ -247,8 +247,8 @@
 							BorderThickness="1"
 							CornerRadius="3"
 							Padding="5,2"
-							IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
-						<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatSampleRateConverter}}"
+							IsVisible="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={x:Static ObjectConverters.IsNotNull}}">
+						<TextBlock Text="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={StaticResource AudioFormatSampleRateConverter}}"
 								   FontSize="9"
 								   FontWeight="Bold"
 								   Foreground="#64B5F6" />
@@ -260,8 +260,8 @@
 							BorderThickness="1"
 							CornerRadius="3"
 							Padding="5,2"
-							IsVisible="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={x:Static ObjectConverters.IsNotNull}}">
-						<TextBlock Text="{Binding PlayersService.SelectedQueue.current_item.streamdetails.audio_format, Converter={StaticResource AudioFormatBitDepthConverter}}"
+							IsVisible="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={x:Static ObjectConverters.IsNotNull}}">
+						<TextBlock Text="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={StaticResource AudioFormatBitDepthConverter}}"
 								   FontSize="9"
 								   FontWeight="Bold"
 								   Foreground="#FFB74D" />
@@ -275,9 +275,9 @@
 						<ColumnDefinition Width="*" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
-					<TextBlock Grid.Column="0" Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.elapsed_time, Converter={StaticResource FriendlyTimeConverter}}" />
+					<TextBlock Grid.Column="0" Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.ElapsedTime, Converter={StaticResource FriendlyTimeConverter}}" />
 					<ProgressBar Grid.Column="1" Margin="5,0"  Foreground="{Binding ColourService.ColourAccent}" Height="10" Value="{Binding PlayersService.Progress}" Minimum="0" Maximum="100" />
-					<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedQueue.current_item.media_item.duration, Converter={StaticResource FriendlyTimeConverter}}"  />
+					<TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Duration, Converter={StaticResource FriendlyTimeConverter}}"  />
 				</Grid>
 
 

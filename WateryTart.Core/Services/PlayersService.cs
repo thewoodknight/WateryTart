@@ -64,7 +64,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
     private async Task FetchPlayerQueueAsync(string id)
     {
         var pq = await _massClient.PlayerActiveQueueAsync(id);
-        SelectedPlayerQueueId = pq.Result.queue_id;
+        SelectedPlayerQueueId = pq.Result.QueueId;
         SelectedQueue = pq.Result;
         await FetchQueueContentsAsync();
     }
@@ -102,20 +102,20 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
             .SelectMany(e => Observable.FromAsync(() => OnEvents(e)))
             .Subscribe());
 
-        /* This takes care of filtering the two lists, though unsure on INPC */
+        /* This takes care of filtering the two lists */
         _subscriptions.Add(QueuedItems
                 .Connect()
-                .Sort(SortExpressionComparer<QueuedItem>.Ascending(t => t.sort_index))
-                .Filter(i => SelectedQueue != null && (i.sort_index > SelectedQueue.current_index || i.media_item?.ItemId == SelectedQueue.current_item?.media_item?.ItemId))
-                .Transform(i => GetOrCreateTrackViewModel(i))
+                .Sort(SortExpressionComparer<QueuedItem>.Ascending(t => t.SortIndex))
+                .Filter(i => SelectedQueue != null && (i.SortIndex > SelectedQueue.CurrentIndex || i.MediaItem?.ItemId == SelectedQueue.CurrentItem?.MediaItem?.ItemId))
+                .Transform(i => GetOrCreateTrackViewModel(i))   //transform is expensive since the list is reset to 0, and despite caching still means the visual tree is recreated
                 .Bind(out currentQueue)
                 .Subscribe());
 
 
         _subscriptions.Add(QueuedItems
                 .Connect()
-                .Sort(SortExpressionComparer<QueuedItem>.Descending(t => t.sort_index))
-                .Filter(i => SelectedQueue != null && i.sort_index < SelectedQueue.current_index)
+                .Sort(SortExpressionComparer<QueuedItem>.Descending(t => t.SortIndex))
+                .Filter(i => SelectedQueue != null && i.SortIndex < SelectedQueue.CurrentIndex)
                 .Transform(i => GetOrCreateTrackViewModel(i))
                 .Bind(out playedQueue)
                 .Subscribe());
@@ -131,10 +131,10 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         if (SelectedPlayer?.PlaybackState != PlaybackState.Playing)
             return;
 
-        if (SelectedQueue?.current_item?.media_item != null)
+        if (SelectedQueue?.CurrentItem?.MediaItem != null)
         {
-            Progress = SelectedQueue.current_item.media_item.Progress;
-            SelectedQueue.current_item.media_item.elapsed_time += 1;
+            Progress = SelectedQueue.CurrentItem.MediaItem.Progress;
+            SelectedQueue.CurrentItem.MediaItem.ElapsedTime += 1;
         }
     }
 
@@ -148,15 +148,15 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         {
             case EventType.MediaItemPlayed:
                 mediaEvent = (MediaItemEventResponse)e;
-                if (mediaEvent.object_id == SelectedQueue?.current_item?.media_item?.Uri)
+                if (mediaEvent.object_id == SelectedQueue?.CurrentItem?.MediaItem?.Uri)
                     if (mediaEvent.data.SecondsPlayed != null)
-                        SelectedQueue?.current_item?.media_item?.elapsed_time = mediaEvent.data.SecondsPlayed.Value;
+                        SelectedQueue?.CurrentItem?.MediaItem?.ElapsedTime = mediaEvent.data.SecondsPlayed.Value;
                 break;
             case EventType.QueueTimeUpdated:
                 timeEvent = (PlayerQueueTimeUpdatedEventResponse)e;
-                if (SelectedQueue != null && e.object_id == SelectedQueue.queue_id)
+                if (SelectedQueue != null && e.object_id == SelectedQueue.QueueId)
                 {
-                    SelectedQueue.current_item.media_item.elapsed_time = timeEvent.data;
+                    SelectedQueue.CurrentItem.MediaItem.ElapsedTime = timeEvent.data;
                 }
                 break;
 
@@ -185,20 +185,20 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
 
             case EventType.QueueUpdated:
                 queueEvent = (PlayerQueueEventResponse)e;
-                if (SelectedQueue != null && queueEvent.data.queue_id == SelectedQueue.queue_id)
+                if (SelectedQueue != null && queueEvent.data.QueueId == SelectedQueue.QueueId)
                 {
-                    SelectedQueue.current_index = queueEvent.data.current_index;
-                    SelectedQueue.current_item = queueEvent.data.current_item;
+                    SelectedQueue.CurrentIndex = queueEvent.data.CurrentIndex;
+                    SelectedQueue.CurrentItem = queueEvent.data.CurrentItem;
 
-                    var currentItem = SelectedQueue.current_item;
+                    var currentItem = SelectedQueue.CurrentItem;
                     if (currentItem == null)
                         break;
-                    if (currentItem.image != null && currentItem.image.remotely_accessible)
-                        _ = _colourService.Update(currentItem.media_item.ItemId, currentItem.image.path);
+                    if (currentItem.Image != null && currentItem.Image.RemotelyAccessible)
+                        _ = _colourService.Update(currentItem.MediaItem.ItemId, currentItem.Image.Path);
                     else
                     {
-                        var url = string.Format("http://{0}/imageproxy?path={1}&provider={2}&checksum=&size=256", App.BaseUrl, Uri.EscapeDataString(currentItem.image.path), currentItem.image.provider);
-                        _ = _colourService.Update(currentItem.media_item.ItemId, url);
+                        var url = string.Format("http://{0}/imageproxy?path={1}&provider={2}&checksum=&size=256", App.BaseUrl, Uri.EscapeDataString(currentItem.Image.Path), currentItem.Image.Provider);
+                        _ = _colourService.Update(currentItem.MediaItem.ItemId, url);
                     }
                 }
 
@@ -302,7 +302,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
             {
                 _logger.LogInformation($"Playing {t.Name}"); 
                 var pq = await _massClient.PlayerActiveQueueAsync(p.PlayerId);
-                await _massClient.PlayAsync(pq.Result.queue_id, t, mode, RadioMode);
+                await _massClient.PlayAsync(pq.Result.QueueId, t, mode, RadioMode);
             }
             catch (Exception ex)
             {
@@ -403,14 +403,14 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         if (queuedItem == null)
             return null;
 
-        var cacheKey = queuedItem.queue_item_id;
+        var cacheKey = queuedItem.QueueItemId;
         
         if (_trackViewModelCache.TryGetValue(cacheKey, out var cachedViewModel))
         {
             return cachedViewModel;
         }
 
-        var trackViewModel = new TrackViewModel(_massClient, null, this, queuedItem.media_item);
+        var trackViewModel = new TrackViewModel(_massClient, null, this, queuedItem.MediaItem);
         _trackViewModelCache[cacheKey] = trackViewModel;
         return trackViewModel;
     }

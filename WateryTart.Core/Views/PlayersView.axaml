@@ -29,13 +29,13 @@
 							CornerRadius="5">
 						<asyncImageLoader:AdvancedImage
 						Loader="{x:Static app:App.ImageLoaderInstance}"
-						Height="50" Width="50" Source="{Binding CurrentMedia.image_url}">
+						Height="50" Width="50" Source="{Binding CurrentMedia.ImageUrl}">
 						</asyncImageLoader:AdvancedImage>
 					</Border>
 					<StackPanel Margin="10,0,0,0">
 						<TextBlock Text="{Binding DisplayName}" FontWeight="Bold" />
-						<TextBlock Text="{Binding CurrentMedia.title}" />
-						<TextBlock Text="{Binding CurrentMedia.artist}" Opacity="0.7" />
+						<TextBlock Text="{Binding CurrentMedia.Title}" />
+						<TextBlock Text="{Binding CurrentMedia.Artist}" Opacity="0.7" />
 					</StackPanel>
 				</StackPanel>
 

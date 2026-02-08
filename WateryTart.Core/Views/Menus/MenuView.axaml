@@ -1,29 +1,63 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:WateryTart.Core.ViewModels.Menus"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="WateryTart.Core.Views.Menus.MenuView"
-        x:DataType="vm:MenuViewModel"
-        x:CompileBindings="True">
-  <ListBox ItemsSource="{Binding MenuItems}" Background="Transparent">
-      <ListBox.ItemTemplate>
-          <DataTemplate x:DataType="vm:MenuItemViewModel">
-              <Grid Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                  <Interaction.Behaviors>
-                      <EventTriggerBehavior EventName="Tapped">
-                          <vm:MenuItemClickedAction TargetObject="{Binding}"  />
-                      </EventTriggerBehavior>
-                  </Interaction.Behaviors>
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:WateryTart.Core.ViewModels.Menus"
+			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="WateryTart.Core.Views.Menus.MenuView"
+			 x:DataType="vm:MenuViewModel"
+			 x:CompileBindings="True">
+	<UserControl.Resources>
+		<converters:IndentedToMarginConverter x:Key="IndentedToMarginConverter"/>
+    </UserControl.Resources>
+    <UserControl.DataTemplates>
+		<DataTemplate x:DataType="vm:MenuItemViewModel">
+			<Grid Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				<Interaction.Behaviors>
+					<EventTriggerBehavior EventName="Tapped">
+						<vm:MenuItemClickedAction TargetObject="{Binding}"  />
+					</EventTriggerBehavior>
+				</Interaction.Behaviors>
 
-                  <Grid.ColumnDefinitions>
-                      <ColumnDefinition Width="50" />
-                      <ColumnDefinition Width="*"/>
-                  </Grid.ColumnDefinitions>
-                  <TextBlock Grid.Column="1" Text="{Binding Title}" />
-              </Grid>
-          </DataTemplate>
-      </ListBox.ItemTemplate>
-  </ListBox>
+                <Grid Margin="{Binding Indented, Converter={StaticResource IndentedToMarginConverter}}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="50" />
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<avalonia:MaterialIcon Kind="{Binding Icon}" Width="30" Height="30" />
+
+					<TextBlock Grid.Column="1" Text="{Binding Title}" />
+				</Grid>
+			</Grid>
+		</DataTemplate>
+
+		<DataTemplate x:DataType="vm:TwoLineMenuItemViewModel">
+			<Grid Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				<Interaction.Behaviors>
+					<EventTriggerBehavior EventName="Tapped">
+						<vm:TwoLineMenuItemClickedAction TargetObject="{Binding}"  />
+					</EventTriggerBehavior>
+				</Interaction.Behaviors>
+				<Grid Margin="{Binding Indented, Converter={StaticResource IndentedToMarginConverter}}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="50" />
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<avalonia:MaterialIcon Kind="{Binding Icon}" Width="30" Height="30" />
+					<StackPanel Grid.Column="1" >
+
+						<TextBlock Text="{Binding Title}" />
+						<TextBlock Text="{Binding SubTitle}" Opacity="0.7" />
+					</StackPanel>
+				</Grid>
+			</Grid>
+		</DataTemplate>
+
+	</UserControl.DataTemplates>
+	
+	<ListBox ItemsSource="{Binding MenuItems}" Background="Transparent">
+
+	</ListBox>
 </UserControl>

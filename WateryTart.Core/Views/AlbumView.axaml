@@ -63,7 +63,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding Track.track_number}" Opacity="0.7" />
+                        <TextBlock Text="{Binding Track.TrackNumber}" Opacity="0.7" />
 
                         <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
                             <!-- Now Playing Indicator -->
@@ -80,7 +80,7 @@
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding Track.Name}" 
                                            TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding Track.duration, Converter={StaticResource SecondsToMinutesConverter}}" 
+                                <TextBlock Text="{Binding Track.Duration, Converter={StaticResource SecondsToMinutesConverter}}" 
                                            Opacity="0.7" />
                             </StackPanel>
                         </Grid>

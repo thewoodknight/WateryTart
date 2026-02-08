@@ -58,9 +58,9 @@ public class TrackViewModel : ReactiveObject, IViewModelBase, IDisposable
             this.WhenAnyValue(
                 x => x._playersService.SelectedPlayer,
                 x => x._playersService.SelectedPlayer.CurrentMedia,
-                x => x._playersService.SelectedPlayer.CurrentMedia.uri,
+                x => x._playersService.SelectedPlayer.CurrentMedia.Uri,
                 x => x.Track.Uri)
-                .Select(_ => _playersService.SelectedPlayer?.CurrentMedia?.uri == Track?.Uri)
+                .Select(_ => _playersService.SelectedPlayer?.CurrentMedia?.Uri == Track?.Uri)
                 .DistinctUntilChanged()
                 .Subscribe(isPlaying => IsNowPlaying = isPlaying)
         );

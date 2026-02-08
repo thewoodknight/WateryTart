@@ -5,6 +5,8 @@ using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using Material.Icons;
+using Material.Icons.Avalonia;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
 
@@ -49,12 +51,12 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         {
             var GoToAlbum = new RelayCommand(() => {});
             var GoToArtist = new RelayCommand(() => { });
-            var item = PlayersService.SelectedQueue.current_item.media_item;
+            var item = PlayersService.SelectedQueue.CurrentItem.MediaItem;
             
             var menu = new MenuViewModel(
             [
-                new MenuItemViewModel("Go to Album", string.Empty, GoToAlbum),
-                new MenuItemViewModel("Go to Artist" + item.artists.FirstOrDefault(), string.Empty, GoToArtist),
+                new MenuItemViewModel("Go to Album", MaterialIconKind.Album, GoToAlbum),
+                new TwoLineMenuItemViewModel("Go to Artist", item.Artists.FirstOrDefault().Name, MaterialIconKind.Artist, GoToArtist),
 
             ]);
             MessageBus.Current.SendMessage(menu);

@@ -1,11 +1,12 @@
-﻿using ReactiveUI;
+﻿using CommunityToolkit.Mvvm.Input;
+using Material.Icons;
+using Microsoft.Extensions.Logging;
+using ReactiveUI;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using WateryTart.Core.Services;
 using WateryTart.Service.MassClient.Models;
 
@@ -45,7 +46,7 @@ public static class MenuHelper
 
             });
 
-            players.Add(new MenuItemViewModel($"\tPlay on {displayName}", string.Empty, playerCommand));
+            players.Add(new MenuItemViewModel($"Play on {displayName}", MaterialIconKind.Speaker, playerCommand, true));
         }
 
         return players;
@@ -78,10 +79,10 @@ public static class MenuHelper
 
         var menu = new MenuViewModel(
         [
-            new MenuItemViewModel("Add to library", string.Empty, addToLibraryCommand),
-            new MenuItemViewModel("Add to favourites", string.Empty, addToFavouritesCommand),
-            new MenuItemViewModel("Add to playlist", string.Empty, addToPlaylistCommand),
-            new MenuItemViewModel("Play", string.Empty, playCommand)
+            new MenuItemViewModel("Add to library", MaterialIconKind.LibraryAdd, addToLibraryCommand),
+            new MenuItemViewModel("Add to favourites", MaterialIconKind.FavoriteAdd, addToFavouritesCommand),
+            new MenuItemViewModel("Add to playlist",MaterialIconKind.PlaylistAdd, addToPlaylistCommand),
+            new MenuItemViewModel("Play", MaterialIconKind.Play, playCommand)
         ]);
 
         if (addPlayers)

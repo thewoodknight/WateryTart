@@ -1,9 +1,10 @@
-﻿using ReactiveUI;
+﻿using CommunityToolkit.Mvvm.Input;
+using Material.Icons;
+using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Service.MassClient;
@@ -21,8 +22,8 @@ namespace WateryTart.Core.ViewModels
         public RelayCommand<Artist> AltMenuCommand { get; }
         [Reactive] public partial Artist? Artist { get; set; }
         public RelayCommand ArtistFullViewCommand { get; }
-        public Image? ArtistLogo { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.type == ImageType.Logo); } }
-        public Image? ArtistThumb { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.type == ImageType.Thumb); } }
+        public Image? ArtistLogo { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.Type == ImageType.Logo); } }
+        public Image? ArtistThumb { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.Type == ImageType.Thumb); } }
         public IScreen HostScreen { get; }
         [Reactive] public partial bool IsBioExpanded { get; set; } = false;
         public RelayCommand PlayArtistRadioCommand { get; }
@@ -59,8 +60,8 @@ namespace WateryTart.Core.ViewModels
             {
                 var menu = new MenuViewModel(
                 [
-                    new MenuItemViewModel("Artist Radio", string.Empty, new RelayCommand(() => {})),
-                    new MenuItemViewModel("Play", string.Empty, new RelayCommand(() => { }))
+                    new MenuItemViewModel("Artist Radio", MaterialIconKind.Radio, new RelayCommand(() => {})),
+                    new MenuItemViewModel("Play", MaterialIconKind.Play, new RelayCommand(() => { }))
                 ]);
 
                 menu.AddMenuItem(MenuHelper.AddPlayers(_playersService, Artist));
@@ -83,8 +84,8 @@ namespace WateryTart.Core.ViewModels
 
             var menu = new MenuViewModel(
             [
-            new MenuItemViewModel("Artist Radio", string.Empty, new RelayCommand(() => {})),
-                new MenuItemViewModel("Play", string.Empty, new RelayCommand(() => { }))
+            new MenuItemViewModel("Artist Radio", MaterialIconKind.Radio, new RelayCommand(() => {})),
+                new MenuItemViewModel("Play", MaterialIconKind.Play, new RelayCommand(() => { }))
             ]);
 
 

@@ -80,8 +80,8 @@ public partial class RecommendationViewModel : ReactiveObject, IViewModelBase
         Recommendation = r;
 
         var viewModels = new List<IViewModelBase>();
-        if (r.items != null)
-            foreach (var item in r.items)
+        if (r.Items != null)
+            foreach (var item in r.Items)
             {
                 IViewModelBase? viewModel = item.CreateViewModelForItem();
                 if (viewModel != null)

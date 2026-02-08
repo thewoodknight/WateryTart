@@ -1,29 +1,34 @@
-﻿using ReactiveUI;
+﻿using Material.Icons;
+using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
+using ReactiveUI.SourceGenerators;
+using WateryTart.Service.MassClient.Models;
 
 namespace WateryTart.Core.ViewModels.Menus;
 
 public partial class MenuViewModel : ReactiveObject, ISmallViewModelBase
 {
-    public List<MenuItemViewModel> MenuItems { get; set; } = new List<MenuItemViewModel>();
+    [Reactive] public partial Item HeaderItem { get; set; }
+    public List<IMenuItemViewModel> MenuItems { get; set; } = new List<IMenuItemViewModel>();
     public bool ShowMiniPlayer => false;
     public bool ShowNavigation => false;
     public string Title { get; set; } = string.Empty;
-    public string Icon { get; } = string.Empty;
+    public MaterialIconKind Icon { get; } = MaterialIconKind.Sword;
     public string? UrlPathSegment { get; } = string.Empty;
 
-    public MenuViewModel(IEnumerable<MenuItemViewModel>? menuItems = null)
+    public MenuViewModel(IEnumerable<IMenuItemViewModel>? menuItems = null, Item headerItem = null)
     {
+        HeaderItem = headerItem;
         MenuItems = menuItems?.ToList() ?? [];
     }
 
-    public void AddMenuItem(MenuItemViewModel menuItem)
+    public void AddMenuItem(IMenuItemViewModel menuItem)
     {
         MenuItems.Add(menuItem);
     }
 
-    public void AddMenuItem(IEnumerable<MenuItemViewModel?> menuItems)
+    public void AddMenuItem(IEnumerable<IMenuItemViewModel?> menuItems)
     {
         foreach (var item in menuItems)
         {

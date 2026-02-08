@@ -72,7 +72,7 @@ namespace WateryTart.Core.ViewModels
                     {
                         case MediaType.Album:
                             var albumVm = App.Container.GetRequiredService<AlbumViewModel>();
-                            albumVm.Album = item.album;
+                            albumVm.Album = item.Album;
                             albumVm.LoadFromId(item.ItemId, item.Provider);
                             HostScreen.Router.Navigate.Execute(albumVm);
                             break;
@@ -107,14 +107,14 @@ namespace WateryTart.Core.ViewModels
             }
 
             var nonEmptyRecommendations = recommendationResponse.Result
-                .Where(r => r?.items != null && r.items.Any())
+                .Where(r => r?.Items != null && r.Items.Any())
                 .ToList();
 
             foreach (var n in nonEmptyRecommendations)
             {
                 SourceRecommendations.Add(n);
 
-                if (n.items == null)
+                if (n.Items == null)
                     continue;
 
                 var x = new Recommendation
@@ -122,14 +122,14 @@ namespace WateryTart.Core.ViewModels
                     ItemId = n.ItemId,
                     Name = n.Name,
                     MediaType = n.MediaType,
-                    items = n.items.Count > 4
-                        ? n.items.Take(4).ToList()
-                        : new List<Item>(n.items) // Create new list
+                    Items = n.Items.Count > 4
+                        ? n.Items.Take(4).ToList()
+                        : new List<Item>(n.Items) // Create new list
                 };
 
                 // Convert items to appropriate view models based on MediaType
                 var viewModels = new List<object>();
-                foreach (var item in x.items)
+                foreach (var item in x.Items)
                 {
                     IViewModelBase? viewModel = item.CreateViewModelForItem();
                     if (viewModel != null)
