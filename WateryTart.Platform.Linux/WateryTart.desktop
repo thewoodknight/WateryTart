@@ -1,11 +1,11 @@
 [Desktop Entry]
-Name=MyProgram
-Comment=MyProgram, great for doing X
-Icon=myprogram
-Exec=myprogram
-StartupWMClass=myprogram
+Name=WateryTart
+Comment=WateryTart, a Music Assistant client
+StartupWMClass=WateryTart
+Icon=/usr/share/pixmaps/WateryTart.png
+Exec=/usr/lib/WateryTart/WateryTartLinux
 Terminal=false
 Type=Application
-Categories=Development
-GenericName=MyProgram
-Keywords=keyword1; keyword2; keyword3
+Categories=AudioVideo
+GenericName=WateryTart
+Keywords=waterytart; music; music-assistant

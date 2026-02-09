@@ -35,15 +35,15 @@ cp ./WateryTart.desktop ./staging_folder/usr/share/applications/WateryTart.deskt
 
 # Desktop icon
 # A 1024px x 1024px PNG, like VS Code uses for its icon
-#mkdir ./staging_folder/usr/share/pixmaps
-#cp ./src/WateryTart.Linux/WateryTart_icon_1024px.png ./staging_folder/usr/share/pixmaps/WateryTart.png
+mkdir ./staging_folder/usr/share/pixmaps
+cp ../Assets/logo.png ./staging_folder/usr/share/pixmaps/WateryTart.png
 
 # Hicolor icons
-#mkdir ./staging_folder/usr/share/icons
-#mkdir ./staging_folder/usr/share/icons/hicolor
-#mkdir ./staging_folder/usr/share/icons/hicolor/scalable
-#mkdir ./staging_folder/usr/share/icons/hicolor/scalable/apps
-#cp ./misc/WateryTart_logo.svg ./staging_folder/usr/share/icons/hicolor/scalable/apps/WateryTart.svg
+mkdir ./staging_folder/usr/share/icons
+mkdir ./staging_folder/usr/share/icons/hicolor
+mkdir ./staging_folder/usr/share/icons/hicolor/scalable
+mkdir ./staging_folder/usr/share/icons/hicolor/scalable/apps
+cp ../Assets/logo.svg ./staging_folder/usr/share/icons/hicolor/scalable/apps/WateryTart.svg
 
 # Make x64 .deb file
 dpkg-deb --root-owner-group --build --nocheck ./staging_folder/ ./WateryTart_Linux_amd64.deb

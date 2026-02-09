@@ -1,5 +1,6 @@
 Package: WateryTart
 Version: 1.0.0
+Section: devel
 Priority: optional
 Architecture: all
 Multi-Arch: no
