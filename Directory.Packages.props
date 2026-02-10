@@ -37,7 +37,7 @@
     <PackageVersion Include="NAudio.Core" Version="2.2.1" />
     <PackageVersion Include="NAudio.Wasapi" Version="2.2.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageVersion Include="ReactiveUI" Version="22.2.1" />
+    <PackageVersion Include="ReactiveUI" Version="22.3.1" />
     <PackageVersion Include="ReactiveUI.AndroidSupport" Version="19.6.12" />
     <PackageVersion Include="ReactiveUI.AndroidX" Version="22.3.1" />
     <PackageVersion Include="ReactiveUI.Avalonia" Version="11.3.8" />
@@ -59,9 +59,9 @@
     <PackageVersion Include="Xaml.Behaviors.SourceGenerators" Version="11.3.9.4" />
     <PackageVersion Include="Zeroconf" Version="3.7.16" />
     <PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.1" />
-    <PackageVersion Include="Xaml.Behaviors.Avalonia" Version="11.3.9.4" />
-    <PackageVersion Include="Xaml.Behaviors.Interactivity" Version="11.3.9.4" />
-    <PackageVersion Include="Xaml.Behaviors.SourceGenerators" Version="11.3.9.3" />
+    <PackageVersion Include="Xaml.Behaviors.Avalonia" Version="11.3.9.5" />
+    <PackageVersion Include="Xaml.Behaviors.Interactivity" Version="11.3.9.5" />
+    <PackageVersion Include="Xaml.Behaviors.SourceGenerators" Version="11.3.9.5" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="Karambolo.Extensions.Logging.File" Version="4.1.0" />
   </ItemGroup>

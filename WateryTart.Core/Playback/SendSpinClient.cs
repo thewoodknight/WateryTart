@@ -41,6 +41,9 @@ public class SendSpinClient : IDisposable, IReaper
 
     public SendSpinClient(IPlayerFactory? player = null, ILoggerFactory? loggerFactory = null)
     {
+        if (OperatingSystem.IsAndroid())
+            return;
+
         try
         {
             loggerFactory ??= LoggerFactory.Create(b =>

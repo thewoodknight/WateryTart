@@ -2,16 +2,8 @@
 		xmlns:app="using:WateryTart"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		xmlns:materialIcons="using:Material.Icons.Avalonia"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:avalonia="http://reactiveui.net"
-		xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-		xmlns:converters="clr-namespace:WateryTart.Core.Converters"
-		xmlns:players1="clr-namespace:WateryTart.Core.Views.Players"
-		xmlns:core="clr-namespace:WateryTart.Core"
-		xmlns:menus="clr-namespace:WateryTart.Core.Views.Menus"
-		xmlns:vm1="clr-namespace:WateryTart.Core.ViewModels.Menus"
-		mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+		xmlns:WateryTart="using:WateryTart.Core.Views"
 		ExtendClientAreaChromeHints="NoChrome"
 		ExtendClientAreaToDecorationsHint="True"
 		x:Class="WateryTart.Core.Views.MainWindow"
@@ -20,145 +12,9 @@
 		Width="800"
 		Height="480"
 		x:Name="window"
-		x:DataType="vm:MainWindowViewModel"
 		Title="Watery Tart">
-
 	<Window.Resources>
-        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
 		<x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
-		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-		<converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
 	</Window.Resources>
-
-	<Grid x:Name="grd" Margin="0">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="50" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-
-		<Rectangle Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False"
-				   Classes="CD AB"
-				   Classes.CD="{Binding ColourService.LastPick, Converter={StaticResource ColourPickConverter}, ConverterParameter=CD}"
-				   Classes.AB="{Binding ColourService.LastPick, Converter={StaticResource ColourPickConverter}, ConverterParameter=AB}">
-
-			<Rectangle.Styles>
-				<Style Selector="Rectangle.CD">
-					<Setter Property="Fill">
-						<RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -15%" RadiusX="125%" RadiusY="125%">
-							<RadialGradientBrush.GradientStops>
-								<GradientStop Offset="0.142" Color="{Binding ColourService.ColourC}" />
-								<GradientStop Offset="1" Color="{Binding ColourService.ColourD}" />
-							</RadialGradientBrush.GradientStops>
-						</RadialGradientBrush>
-					</Setter>
-				</Style>
-				<Style Selector="Rectangle.AB">
-					<Setter Property="Fill"  >
-						<RadialGradientBrush Center="50%, 50%" GradientOrigin="100%, -15%" RadiusX="125%" RadiusY="125%">
-							<RadialGradientBrush.GradientStops>
-								<GradientStop Offset="0.142" Color="{Binding ColourService.ColourA}" />
-								<GradientStop Offset="1" Color="{Binding ColourService.ColourB}" />
-							</RadialGradientBrush.GradientStops>
-						</RadialGradientBrush>
-					</Setter>
-				</Style>
-			</Rectangle.Styles>
-
-			<Rectangle.Transitions>
-				<Transitions>
-					<BrushTransition Property="Fill" Duration="0:0:1"/>
-				</Transitions>
-			</Rectangle.Transitions>
-		</Rectangle>
-
-		<!-- Top Navigation -->
-		<Grid Background="{x:Null}" Grid.Row="0" Margin="15,10,10,0">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="50" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<Button Grid.Column="0" Padding="0"  Classes="iconButton" Command="{Binding GoBack}">
-				<materialIcons:MaterialIcon Kind="ChevronLeft" Width="30" Height="30" />
-			</Button>
-			<TextBlock Grid.Column="1" Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" TextTrimming="CharacterEllipsis" FontWeight="Bold" FontSize="18"/>
-		</Grid>
-
-		<!-- Content -->
-		<ScrollViewer x:Name="sv"  Background="Transparent" Grid.Row="1" Margin="10,0,10,0">
-			<ScrollViewer.GestureRecognizers>
-				<ScrollGestureRecognizer  CanVerticallyScroll="True"/>
-			</ScrollViewer.GestureRecognizers>
-			<avalonia:RoutedViewHost x:Name="Router" Router="{Binding Router}" Background="Transparent">
-				<avalonia:RoutedViewHost.ViewLocator>
-					<core:AppViewLocator />
-				</avalonia:RoutedViewHost.ViewLocator>
-			</avalonia:RoutedViewHost>
-		</ScrollViewer>
-
-		<StackPanel Grid.Row="2">
-			<!-- Player Nav -->
-			<players1:MiniPlayerView DataContext="{Binding MiniPlayer}" IsVisible="{Binding #window.((vm:MainWindowViewModel)DataContext).IsMiniPlayerVisible}" />
-
-			<!-- Bottom Nav -->
-			<Grid Background="#66000000" IsVisible="{Binding  #window.((vm:MainWindowViewModel)DataContext).CurrentViewModel.ShowNavigation}">
-				<Grid Margin="10,0,0,0">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-						<ColumnDefinition Width="*" />
-					</Grid.ColumnDefinitions>
-					<Button Grid.Column="0"  Height="45" Classes="iconButton navButton" Command="{Binding GoHome}"><materialIcons:MaterialIcon Kind="Home"			Width="25" Height="25" /></Button>
-					<Button Grid.Column="1"  Height="45" Classes="iconButton navButton" Command="{Binding GoMusic}"    ><materialIcons:MaterialIcon Kind="Music"    Width="25" Height="25" /></Button>
-					<Button Grid.Column="2"  Height="45" Classes="iconButton navButton" Command="{Binding GoSearch}"   ><materialIcons:MaterialIcon Kind="Search"   Width="25" Height="25" /></Button>
-					<Button Grid.Column="3"  Height="45" Classes="iconButton navButton" Command="{Binding GoPlayers}"  ><materialIcons:MaterialIcon Kind="Speaker"  Width="25" Height="25" /></Button>
-					<Button Grid.Column="4"  Height="45" Classes="iconButton navButton" Command="{Binding GoSettings}" ><materialIcons:MaterialIcon Kind="Settings" Width="25" Height="25" /></Button>
-				</Grid>
-			</Grid>
-		</StackPanel>
-
-		<Grid IsVisible="{Binding ShowSlideupMenu}" Grid.Row="0" Grid.RowSpan="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="#72000000">
-            <Interaction.Behaviors>
-                <!-- https://github.com/wieslawsoltes/Xaml.Behaviors/blob/master/docfx/articles/source-generators/index.md -->
-                <EventTriggerBehavior EventName="Tapped">
-                    <vm:CloseMenuClickedAction_08f865e7 TargetObject="{Binding}" />
-                </EventTriggerBehavior>
-            </Interaction.Behaviors>
-		</Grid>
-		<Grid
-		    x:Name="gridSlideup"
-		    Grid.Row="0"
-		    Background="#CC000000"
-		    Grid.RowSpan="3"
-		    VerticalAlignment="Bottom"
-		    MaxHeight="500"
-            Classes.triggered="{Binding ShowSlideupMenu}"
-		    IsVisible="{Binding ShowSlideupMenu}">
-            <Grid.Styles>
-                <Style Selector="Grid.triggered">
-                    <Style.Animations>
-                        <Animation Duration="0:0:0.3" Easing="QuarticEaseInOut" IterationCount="1">
-                            <KeyFrame Cue="0%">
-                                <Setter Property="TranslateTransform.Y" Value="250"/><!-- Value="{Binding ElementName=grd, Converter={StaticResource MeasureControlConverter}}"/>--> <!-- {Binding #gridSlideup.Height} Need to measure the element-->
-                            </KeyFrame>
-                            <KeyFrame Cue="100%">
-                                <Setter Property="TranslateTransform.Y" Value="0"/>
-                            </KeyFrame>
-                        </Animation>
-                    </Style.Animations>
-                </Style>
-            </Grid.Styles>
-            <ScrollViewer>
-				<ContentControl x:Name="ccMenu" Content="{Binding SlideupMenu}">
-					<ContentControl.ContentTemplate>
-						<DataTemplate x:DataType="vm1:MenuViewModel">
-							<menus:MenuView DataContext="{Binding}" />
-						</DataTemplate>
-					</ContentControl.ContentTemplate>
-				</ContentControl>
-			</ScrollViewer>
-		</Grid>
-	</Grid>
+	<WateryTart:MainView x:Name="Host" />
 </Window>

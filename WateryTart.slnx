@@ -21,6 +21,11 @@
     <Platform Solution="Debug|x64" Project="x64" />
     <Platform Solution="Release|x64" Project="x64" />
   </Project>
+  <Project Path="WateryTart.Platform.Android/WateryTart.Platform.Android.csproj">
+    <BuildType Solution="ARMRELEASE|*" Project="Release" />
+    <BuildType Solution="X64Debug|*" Project="Release" />
+    <Deploy />
+  </Project>
   <Project Path="WateryTart.Platform.Linux/WateryTart.Platform.Linux.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="ARMRELEASE|x64" Project="ARM64" />

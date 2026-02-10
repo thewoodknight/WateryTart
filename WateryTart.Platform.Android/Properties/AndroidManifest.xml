@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto" android:versionCode="1">
 	<uses-permission android:name="android.permission.INTERNET" />
-	<application android:label="WateryTart" android:icon="@drawable/Icon" />
+	<application android:label="WateryTart" 
+android:usesCleartextTraffic="true" android:icon="@drawable/icon" />
 </manifest>

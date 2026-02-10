@@ -12,7 +12,7 @@ namespace WateryTart.Android;
     Icon = "@drawable/icon",
     MainLauncher = true,
     ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode)]
-public class MainActivity : AvaloniaMainActivity<App>
+public class MainActivity : AvaloniaMainActivity<WateryTart.Core.App>
 {
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {

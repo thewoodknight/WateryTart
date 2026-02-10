@@ -44,7 +44,7 @@ public partial class App : Application
     private static ILogger? _logger;
 
     public static IContainer Container;
-    
+
     public static ILogger? Logger => _logger;
     public static string BaseUrl
     {
@@ -70,6 +70,10 @@ public partial class App : Application
 
     private IEnumerable<IPlatformSpecificRegistration> PlatformSpecificRegistrations { get; }
 
+    public App()
+    {
+
+    }
     public App(IEnumerable<IPlatformSpecificRegistration> platformSpecificRegistrations)
     {
         PlatformSpecificRegistrations = platformSpecificRegistrations;
@@ -90,11 +94,11 @@ public partial class App : Application
 
         // Initialize logger factory with settings
         var logLevel = settings.LoggerSettings?.LogLevel ?? LogLevel.Information;
-        
+
         _loggerFactory = LoggerFactory.Create(logBuilder =>
         {
             logBuilder.SetMinimumLevel(logLevel).AddConsole();
-            
+
             // Add file logging if enabled
             if (settings.LoggerSettings?.EnableFileLogging ?? false)
             {
@@ -110,9 +114,9 @@ public partial class App : Application
                     // Uncomment when you have file logging provider
                     logBuilder.AddFile(o =>
                     {
-                        
+
                         o.RootPath = logPath;
-                       // o.BasePath = "WateryTart.Logs";
+                        // o.BasePath = "WateryTart.Logs";
                         o.MaxFileSize = 10_000_000;
                         o.FileAccessMode = Karambolo.Extensions.Logging.File.LogFileAccessMode.KeepOpenAndAutoFlush;
                         o.Files = new[]
@@ -123,7 +127,7 @@ public partial class App : Application
                 }
             }
         });
-        
+
         _logger = _loggerFactory.CreateLogger("WateryTart.Core");
 
         // Register the logger factory for DI
@@ -156,15 +160,16 @@ public partial class App : Application
         builder.RegisterType<SearchViewModel>().SingleInstance();
 
         //Platform specific registrations from Platform.Linux, Platform.Windows projects
-        foreach (var platformSpecificRegistration in PlatformSpecificRegistrations)
-        {
-            platformSpecificRegistration.Register(builder);
-        }
+        if (PlatformSpecificRegistrations != null)
+            foreach (var platformSpecificRegistration in PlatformSpecificRegistrations)
+            {
+                platformSpecificRegistration.Register(builder);
+            }
 
         builder.RegisterType<SendSpinClient>().SingleInstance();
 
         //Volume controllers
-       // builder.RegisterType<WindowsVolumeService>().As<IVolumeService>().As<IReaper>().SingleInstance();
+        // builder.RegisterType<WindowsVolumeService>().As<IVolumeService>().As<IReaper>().SingleInstance();
 
         //Transient viewmodels
         builder.RegisterType<AlbumsListViewModel>();
@@ -191,10 +196,10 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new Views.MainWindow
-            {
-                DataContext = vm
-            };
+            var hostView = new Views.MainWindow();
+            hostView.Host.DataContext = vm;
+            desktop.MainWindow = hostView;
+
 
             desktop.ShutdownRequested += (s, e) =>
             {
@@ -257,10 +262,9 @@ public partial class App : Application
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new MainView
-            {
-                DataContext = vm
-            };
+            var hostView = new MainSingleView();
+            hostView.Host.DataContext = vm;
+            singleViewPlatform.MainView = hostView;
         }
 
         base.OnFrameworkInitializationCompleted();

@@ -9,24 +9,18 @@ using WateryTart.Core.ViewModels;
 
 namespace WateryTart.Core.Views;
 
-public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
+public partial class MainWindow : Window
 {
     private ISettings? _settings;
     private ITrayService? _trayService;
     public MainWindow()
     {
-        this.WhenActivated(disposables =>
+
+        this.Activated += (s, e) =>
         {
-            var vm = DataContext as MainWindowViewModel;
+            var vm = Host.DataContext as MainWindowViewModel;
             if (vm == null)
                 return;
-
-            _ = vm.Connect();
-            vm.Router.CurrentViewModel.Subscribe((_) =>
-            {
-                var sv = this.Find<ScrollViewer>("sv");
-                sv?.ScrollToHome();
-            });
 
             _settings = App.Container.GetRequiredService<ISettings>();
             if (_settings.WindowWidth != 0)
@@ -49,9 +43,8 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             {
                 System.Diagnostics.Debug.WriteLine($"Tray service initialization failed: {ex.Message}");
             }
-        });
-
-        AvaloniaXamlLoader.Load(this);
+        };
+        InitializeComponent();
     }
 
     protected override void OnClosed(EventArgs e)

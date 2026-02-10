@@ -22,7 +22,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     private readonly SendSpinClient _sendSpinClient;
     private readonly ISettings _settings;
     private readonly ILogger<MainWindowViewModel> _logger;
-    
+
     private bool _canNavigateToHome = true;
     private bool _canNavigateToMusic = true;
     private bool _canNavigateToSearch = true;
@@ -173,7 +173,8 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
         await PlayersService.GetPlayers();
 
         Router.NavigateAndReset.Execute(App.Container.GetRequiredService<HomeViewModel>());
-        
-        _ = _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
+
+        if (!OperatingSystem.IsAndroid())
+            _ = _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
     }
 }
