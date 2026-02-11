@@ -3,22 +3,33 @@ using Avalonia.Markup.Xaml;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 using System;
+using System.Diagnostics;
+using WateryTart.Core.Extensions;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels;
 
 namespace WateryTart.Core.Views;
-
 public partial class MainWindow : Window
 {
     private ISettings? _settings;
     private ITrayService? _trayService;
+    private MainWindowViewModel vm;
     public MainWindow()
     {
 
+        this.PointerPressed += (s, e) =>
+        {
+            if (e.Properties.IsXButton1Pressed)
+            {
+                vm?.GoBack.ExecuteIfCan(null); ;
+            }
+
+        };
+
         this.Activated += (s, e) =>
         {
-            var vm = Host.DataContext as MainWindowViewModel;
+            vm = Host.DataContext as MainWindowViewModel;
             if (vm == null)
                 return;
 
@@ -55,13 +66,13 @@ public partial class MainWindow : Window
 
     private void MainWindow_PositionChanged(object? sender, PixelPointEventArgs e)
     {
-        _settings.WindowPosX = e.Point.X;
-        _settings.WindowPosY = e.Point.Y;
+        _settings?.WindowPosX = e.Point.X;
+        _settings?.WindowPosY = e.Point.Y;
     }
 
     private void MainWindow_Resized(object? sender, WindowResizedEventArgs e)
     {
-        _settings.WindowWidth = e.ClientSize.Width;
-        _settings.WindowHeight = e.ClientSize.Height;
+        _settings?.WindowWidth = e.ClientSize.Width;
+        _settings?.WindowHeight = e.ClientSize.Height;
     }
 }
