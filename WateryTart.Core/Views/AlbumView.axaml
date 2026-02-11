@@ -1,60 +1,65 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-			 xmlns:app="clr-namespace:WateryTart.Core"
-			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
-			 xmlns:asyncImageLoader1="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-			 xmlns:wateryTart="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
-			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="WateryTart.Core.Views.AlbumView"
-			 x:DataType="vm:AlbumViewModel">
-	<UserControl.Resources>
-		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-		<converters:SecondsToMinutesConverter x:Key="SecondsToMinutesConverter" />
+﻿<UserControl
+    x:Class="WateryTart.Core.Views.AlbumView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="clr-namespace:WateryTart.Core"
+    xmlns:asyncImageLoader1="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+    xmlns:wateryTart="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:AlbumViewModel"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+        <converters:SecondsToMinutesConverter x:Key="SecondsToMinutesConverter" />
 
-	</UserControl.Resources>
-	<StackPanel>
-		<Border
-		Margin="0,0,10,20"
-		BorderThickness="0,0,0,1"
-		BorderBrush="#66FFFFFF">
-			<Grid Margin="0,0,0,20">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="200" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<Border BoxShadow="0 0 10 0 Black"
-						Grid.Column="0"
-						Width="200"
-						Height="200">
-					<Border ClipToBounds ="True"
-							CornerRadius="5">
-						<asyncImageLoader1:AdvancedImage
-						Loader="{x:Static app:App.ImageLoaderInstance}"
-						FallbackImage="{x:Static app:App.FallbackImage}"
-						Source="{Binding Album, Converter={StaticResource MetadataImageConverter}}"
-						/>
-					</Border>
-				</Border>
-				<StackPanel Grid.Column="1" Margin="10,0,0,0">
-					<TextBlock Text="{Binding Album.Artists[0].Name}"  />
-					<TextBlock Text="{Binding Album.Year}" Opacity="0.7" />
-					<Button Command="{Binding PlayAlbumCommand}">Play</Button>
-				</StackPanel>
-			</Grid>
-		</Border>
+    </UserControl.Resources>
+    <StackPanel>
+        <Border
+            Margin="0,0,10,20"
+            BorderBrush="#66FFFFFF"
+            BorderThickness="0,0,0,1">
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Grid.Column="0"
+                    Width="200"
+                    Height="200"
+                    BoxShadow="0 0 10 0 Black">
+                    <Border ClipToBounds="True" CornerRadius="5">
+                        <asyncImageLoader1:AdvancedImage
+                            FallbackImage="{x:Static app:App.FallbackImage}"
+                            Loader="{x:Static app:App.ImageLoaderInstance}"
+                            Source="{Binding Album, Converter={StaticResource MetadataImageConverter}}" />
+                    </Border>
+                </Border>
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock Text="{Binding Album.Artists[0].Name}" />
+                    <TextBlock Opacity="0.7" Text="{Binding Album.Year}" />
+                    <Button Command="{Binding PlayAlbumCommand}">Play</Button>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-		<!-- Tracks -->
-		<ListBox x:Name="lbTracks" ItemsSource="{Binding Tracks}" Background="Transparent" >
-			<ListBox.ItemTemplate>
-				<DataTemplate x:DataType="vm:TrackViewModel">
+        <!--  Tracks  -->
+        <ListBox
+            x:Name="lbTracks"
+            Background="Transparent"
+            ItemsSource="{Binding Tracks}">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:TrackViewModel">
                     <Grid Background="Transparent">
                         <Interaction.Behaviors>
                             <EventTriggerBehavior EventName="DoubleTapped">
-                                <InvokeCommandAction Command="{Binding TrackFullViewCommand }" />
+                                <InvokeCommandAction Command="{Binding TrackFullViewCommand}" />
                             </EventTriggerBehavior>
                         </Interaction.Behaviors>
                         <Grid.ColumnDefinitions>
@@ -63,34 +68,38 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{Binding Track.TrackNumber}" Opacity="0.7" />
+                        <TextBlock Opacity="0.7" Text="{Binding Track.TrackNumber}" />
 
                         <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
-                            <!-- Now Playing Indicator -->
+                            <!--  Now Playing Indicator  -->
                             <avalonia:MaterialIcon
-                                Kind="VolumeHigh"
                                 Width="24"
                                 Height="24"
+                                Margin="5,0,5,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Margin="5,0,5,0"
-                                IsVisible="{Binding IsNowPlaying}" />
-							
-                            <!-- Track Info -->
+                                IsVisible="{Binding IsNowPlaying}"
+                                Kind="VolumeHigh" />
+
+                            <!--  Track Info  -->
                             <StackPanel Grid.Column="1">
-                                <TextBlock Text="{Binding Track.Name}" 
-                                           TextTrimming="CharacterEllipsis" />
-                                <TextBlock Text="{Binding Track.Duration, Converter={StaticResource SecondsToMinutesConverter}}" 
-                                           Opacity="0.7" />
+                                <TextBlock Text="{Binding Track.Name}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Opacity="0.7" Text="{Binding Track.Duration, Converter={StaticResource SecondsToMinutesConverter}}" />
                             </StackPanel>
                         </Grid>
 
-                        <Button Grid.Column="2" Command="{Binding TrackAltMenuCommand }" Classes="iconButton navButton">
-                            <avalonia:MaterialIcon Kind="MoreVert" Width="25" Height="25" />
+                        <Button
+                            Grid.Column="2"
+                            Classes="iconButton navButton"
+                            Command="{Binding TrackAltMenuCommand}">
+                            <avalonia:MaterialIcon
+                                Width="25"
+                                Height="25"
+                                Kind="MoreVert" />
                         </Button>
                     </Grid>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
-	</StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
 </UserControl>

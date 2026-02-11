@@ -1,21 +1,22 @@
-<ResourceDictionary xmlns="https://github.com/avaloniaui"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:local="using:WateryTart.Core.Controls">
+﻿<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:WateryTart.Core.Controls">
 
-	<ControlTheme x:Key="{x:Type local:ResponsiveColumnPanel}" TargetType="local:ResponsiveColumnPanel">
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Grid RowDefinitions="Auto,*">
-					<!-- Header row (optional) -->
-					<ContentPresenter Grid.Row="0" Content="{TemplateBinding Header}" />
+    <ControlTheme x:Key="{x:Type local:ResponsiveColumnPanel}" TargetType="local:ResponsiveColumnPanel">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid RowDefinitions="Auto,*">
+                    <!--  Header row (optional)  -->
+                    <ContentPresenter Grid.Row="0" Content="{TemplateBinding Header}" />
 
-					<!-- Content grid -->
-					<Grid Grid.Row="1" Name="ContentGridContainer">
-						<ContentPresenter Name="FirstColumnContent" Content="{TemplateBinding FirstColumn}" />
-						<ContentPresenter Name="SecondColumnContent" Content="{TemplateBinding SecondColumn}" />
-					</Grid>
-				</Grid>
-			</ControlTemplate>
-		</Setter>
-	</ControlTheme>
+                    <!--  Content grid  -->
+                    <Grid Name="ContentGridContainer" Grid.Row="1">
+                        <ContentPresenter Name="FirstColumnContent" Content="{TemplateBinding FirstColumn}" />
+                        <ContentPresenter Name="SecondColumnContent" Content="{TemplateBinding SecondColumn}" />
+                    </Grid>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
 </ResourceDictionary>

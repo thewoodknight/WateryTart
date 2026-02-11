@@ -1,52 +1,60 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
-			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-			 xmlns:app="clr-namespace:WateryTart.Core"
-			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:DataType="vm:PlayersViewModel"
-			 x:Class="WateryTart.Core.Views.PlayersView">
-	<UserControl.Resources>
-		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-		<converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
-	</UserControl.Resources>
-	<ListBox ItemsSource="{Binding Players}"
-			 SelectedItem="{Binding SelectedPlayer}"
-			 Background="Transparent">
+﻿<UserControl
+    x:Class="WateryTart.Core.Views.PlayersView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="clr-namespace:WateryTart.Core"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:PlayersViewModel"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+        <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
+        <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
+    </UserControl.Resources>
+    <ListBox
+        Background="Transparent"
+        ItemsSource="{Binding Players}"
+        SelectedItem="{Binding SelectedPlayer}">
 
-		<ListBox.GestureRecognizers>
-			<ScrollGestureRecognizer  CanVerticallyScroll="True"/>
-		</ListBox.GestureRecognizers>
+        <ListBox.GestureRecognizers>
+            <ScrollGestureRecognizer CanVerticallyScroll="True" />
+        </ListBox.GestureRecognizers>
 
-		<ListBox.ItemTemplate>
-			<DataTemplate>
-				<StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<Border ClipToBounds ="True"
-								CornerRadius="5">
-							<Grid>
-								<avalonia:MaterialIcon Kind="Speaker" Height="50" Width="50" Opacity="0.7" />
-								<asyncImageLoader:AdvancedImage
-								Loader="{x:Static app:App.ImageLoaderInstance}"
-								Height="50" Width="50" Source="{Binding CurrentMedia.ImageUrl}">
-								</asyncImageLoader:AdvancedImage>
-							</Grid>
-						</Border>
-						<StackPanel Margin="10,0,0,0">
-							<TextBlock Text="{Binding DisplayName}" FontWeight="Bold" />
-							<TextBlock Text="{Binding CurrentMedia.Title}" />
-							<TextBlock Text="{Binding CurrentMedia.Artist}" Opacity="0.7" />
-						</StackPanel>
+        <ListBox.ItemTemplate>
+            <DataTemplate>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Border ClipToBounds="True" CornerRadius="5">
+                            <Grid>
+                                <avalonia:MaterialIcon
+                                    Width="50"
+                                    Height="50"
+                                    Kind="Speaker"
+                                    Opacity="0.7" />
+                                <asyncImageLoader:AdvancedImage
+                                    Width="50"
+                                    Height="50"
+                                    Loader="{x:Static app:App.ImageLoaderInstance}"
+                                    Source="{Binding CurrentMedia.ImageUrl}" />
+                            </Grid>
+                        </Border>
+                        <StackPanel Margin="10,0,0,0">
+                            <TextBlock FontWeight="Bold" Text="{Binding DisplayName}" />
+                            <TextBlock Text="{Binding CurrentMedia.Title}" />
+                            <TextBlock Opacity="0.7" Text="{Binding CurrentMedia.Artist}" />
+                        </StackPanel>
 
-					</StackPanel>
-					<ProgressBar Value="{Binding VolumeLevel}" />
-				</StackPanel>
-			</DataTemplate>
-		</ListBox.ItemTemplate>
-	</ListBox>
+                    </StackPanel>
+                    <ProgressBar Value="{Binding VolumeLevel}" />
+                </StackPanel>
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
 </UserControl>

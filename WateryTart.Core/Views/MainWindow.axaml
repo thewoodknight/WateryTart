@@ -1,20 +1,21 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
-		xmlns:app="using:WateryTart"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:WateryTart="using:WateryTart.Core.Views"
-		ExtendClientAreaChromeHints="NoChrome"
-		ExtendClientAreaToDecorationsHint="True"
-		x:Class="WateryTart.Core.Views.MainWindow"
-		Icon="avares://WateryTart.Core/Assets/logo_square.png"
-		Padding="0"
-		Width="800"
-		Height="480"
-		x:Name="window"
-		Title="Watery Tart">
-	<Window.Resources>
-		<x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
-	</Window.Resources>
-	<WateryTart:MainView x:Name="Host" />
+﻿<Window
+    x:Class="WateryTart.Core.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:WateryTart="using:WateryTart.Core.Views"
+    xmlns:app="using:WateryTart"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="window"
+    Title="Watery Tart"
+    Width="800"
+    Height="480"
+    Padding="0"
+    ExtendClientAreaChromeHints="NoChrome"
+    ExtendClientAreaToDecorationsHint="True"
+    Icon="avares://WateryTart.Core/Assets/logo_square.png">
+    <Window.Resources>
+        <x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
+    </Window.Resources>
+    <WateryTart:MainView x:Name="Host" />
 </Window>

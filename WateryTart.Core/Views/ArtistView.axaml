@@ -1,77 +1,85 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-			 xmlns:app="clr-namespace:WateryTart.Core"
-			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
-			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="WateryTart.Core.Views.ArtistView"
-			 x:DataType="vm:ArtistViewModel">
-	<UserControl.Resources>
-		<converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-		<converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-		<converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
-	</UserControl.Resources>
-	<StackPanel>
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-			<Ellipse Width="150" Height="150">
-				<Ellipse.Fill>
-					<ImageBrush
-					asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />
+﻿<UserControl
+    x:Class="WateryTart.Core.Views.ArtistView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:app="clr-namespace:WateryTart.Core"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:ArtistViewModel"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+        <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
+        <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
+    </UserControl.Resources>
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Ellipse Width="150" Height="150">
+                <Ellipse.Fill>
+                    <ImageBrush asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />
 
-				</Ellipse.Fill>
-			</Ellipse>
+                </Ellipse.Fill>
+            </Ellipse>
 
-			<StackPanel Grid.Column="1" Margin="20,0,20,20">
-				<asyncImageLoader:AdvancedImage
-				Loader="{x:Static app:App.ImageLoaderInstance}"
-				MaxWidth="350" Source="{Binding Path=ArtistLogo, Converter={StaticResource MassImageImageConverter}}" />
-				<Button Command="{Binding PlayArtistRadioCommand}">
-					<avalonia:MaterialIcon HorizontalAlignment="Right"  Kind="Radio" Width="35" Height="35" />
-				</Button>
-				<Button />
-				<Button />
-			</StackPanel>
-		</Grid>
+            <StackPanel Grid.Column="1" Margin="20,0,20,20">
+                <asyncImageLoader:AdvancedImage
+                    MaxWidth="350"
+                    Loader="{x:Static app:App.ImageLoaderInstance}"
+                    Source="{Binding Path=ArtistLogo, Converter={StaticResource MassImageImageConverter}}" />
+                <Button Command="{Binding PlayArtistRadioCommand}">
+                    <avalonia:MaterialIcon
+                        Width="35"
+                        Height="35"
+                        HorizontalAlignment="Right"
+                        Kind="Radio" />
+                </Button>
+                <Button />
+                <Button />
+            </StackPanel>
+        </Grid>
 
 
-		<TextBlock>Albums</TextBlock>
-		<ListBox Background="Transparent"
-				 ItemsSource="{Binding Albums}"
-				 Padding="0"
-				 ItemTemplate="{StaticResource albumSmallReusableTemplate}">
-
-		</ListBox>
-		<TextBlock>Bio</TextBlock>
-		<StackPanel Margin="10">
-			<TextBlock Text="{Binding Artist.Metadata.Description}"
-					   TextWrapping="Wrap"
-					   MaxLines="{Binding IsBioExpanded, Converter={x:Static converters:BoolToMaxLinesConverter.Instance}}"
-					   TextTrimming="CharacterEllipsis">
-				<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="Tapped">
-						<vm:ToggleBioClickedAction TargetObject="{Binding}"/>
-					</EventTriggerBehavior>
-				</Interaction.Behaviors>
-			</TextBlock>
-			<TextBlock Text="{Binding IsBioExpanded, Converter={x:Static converters:BoolToShowMoreTextConverter.Instance}}"
-					   Foreground="#99FFFFFF"
-					   FontSize="12"
-					   Margin="0,5,0,0"
-					   Cursor="Hand">
-				<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="Tapped">
-						<vm:ToggleBioClickedAction TargetObject="{Binding}"/>
-					</EventTriggerBehavior>
-				</Interaction.Behaviors>
-			</TextBlock>
-		</StackPanel>
-	</StackPanel>
+        <TextBlock>Albums</TextBlock>
+        <ListBox
+            Padding="0"
+            Background="Transparent"
+            ItemTemplate="{StaticResource albumSmallReusableTemplate}"
+            ItemsSource="{Binding Albums}" />
+        <TextBlock>Bio</TextBlock>
+        <StackPanel Margin="10">
+            <TextBlock
+                MaxLines="{Binding IsBioExpanded, Converter={x:Static converters:BoolToMaxLinesConverter.Instance}}"
+                Text="{Binding Artist.Metadata.Description}"
+                TextTrimming="CharacterEllipsis"
+                TextWrapping="Wrap">
+                <Interaction.Behaviors>
+                    <EventTriggerBehavior EventName="Tapped">
+                        <vm:ToggleBioClickedAction TargetObject="{Binding}" />
+                    </EventTriggerBehavior>
+                </Interaction.Behaviors>
+            </TextBlock>
+            <TextBlock
+                Margin="0,5,0,0"
+                Cursor="Hand"
+                FontSize="12"
+                Foreground="#99FFFFFF"
+                Text="{Binding IsBioExpanded, Converter={x:Static converters:BoolToShowMoreTextConverter.Instance}}">
+                <Interaction.Behaviors>
+                    <EventTriggerBehavior EventName="Tapped">
+                        <vm:ToggleBioClickedAction TargetObject="{Binding}" />
+                    </EventTriggerBehavior>
+                </Interaction.Behaviors>
+            </TextBlock>
+        </StackPanel>
+    </StackPanel>
 </UserControl>

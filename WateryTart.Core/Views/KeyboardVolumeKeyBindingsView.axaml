@@ -1,145 +1,199 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-             xmlns:views="clr-namespace:WateryTart.Core.Views"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="vm:KeyboardVolumeKeyBindingsViewModel"
-             x:Class="WateryTart.Core.Views.KeyboardVolumeKeyBindingsView">
+﻿<UserControl
+    x:Class="WateryTart.Core.Views.KeyboardVolumeKeyBindingsView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:WateryTart.Core.Views"
+    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:KeyboardVolumeKeyBindingsViewModel"
+    mc:Ignorable="d">
 
-  <ScrollViewer>
-    <StackPanel Spacing="20">
-      <!-- Header -->
-      <StackPanel Spacing="8">
-        <TextBlock Text="Keyboard Shortcuts" FontSize="24" FontWeight="Bold" />
-        <TextBlock Text="Configure keyboard bindings for media controls" FontSize="12" />
-      </StackPanel>
-
-      <!-- Reset to Defaults Button -->
-      <Button Command="{Binding ResetToDefaultsCommand}"
-              Padding="12,8"
-              HorizontalAlignment="Left">
-        Reset to Defaults
-      </Button>
-
-      <!-- Recording Status -->
-      <Border BorderThickness="1" 
-              CornerRadius="4"
-              Padding="12"
-              IsVisible="{Binding IsRecording}">
-        <TextBlock Text="Press any key to bind..." FontWeight="SemiBold" />
-      </Border>
-
-      <!-- Keyboard Bindings List -->
-      <StackPanel Spacing="12">
-        
-        <!-- Play Binding -->
-        <Border BorderThickness="1" CornerRadius="4" Padding="16">
-          <Grid ColumnDefinitions="*,150">
-            <StackPanel Grid.Column="0" Spacing="4">
-              <TextBlock Text="Play" FontWeight="SemiBold" FontSize="14" />
-              <TextBlock Text="Start playback" FontSize="11" />
+    <ScrollViewer>
+        <StackPanel Spacing="20">
+            <!--  Header  -->
+            <StackPanel Spacing="8">
+                <TextBlock
+                    FontSize="24"
+                    FontWeight="Bold"
+                    Text="Keyboard Shortcuts" />
+                <TextBlock FontSize="12" Text="Configure keyboard bindings for media controls" />
             </StackPanel>
-            <Button Grid.Column="1" 
-                    Command="{Binding RecordKeyCommand}" 
-                    CommandParameter="Play"
-                    Padding="8">
-              <TextBlock Text="{Binding PlayBinding}" />
-            </Button>
-          </Grid>
-        </Border>
 
-        <!-- Next Binding -->
-        <Border BorderThickness="1" CornerRadius="4" Padding="16">
-          <Grid ColumnDefinitions="*,150">
-            <StackPanel Grid.Column="0" Spacing="4">
-              <TextBlock Text="Next Track" FontWeight="SemiBold" FontSize="14" />
-              <TextBlock Text="Skip to next song" FontSize="11" />
+            <!--  Reset to Defaults Button  -->
+            <Button
+                Padding="12,8"
+                HorizontalAlignment="Left"
+                Command="{Binding ResetToDefaultsCommand}">
+                Reset to Defaults
+            </Button>
+
+            <!--  Recording Status  -->
+            <Border
+                Padding="12"
+                BorderThickness="1"
+                CornerRadius="4"
+                IsVisible="{Binding IsRecording}">
+                <TextBlock FontWeight="SemiBold" Text="Press any key to bind..." />
+            </Border>
+
+            <!--  Keyboard Bindings List  -->
+            <StackPanel Spacing="12">
+
+                <!--  Play Binding  -->
+                <Border
+                    Padding="16"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <Grid ColumnDefinitions="*,150">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Text="Play" />
+                            <TextBlock FontSize="11" Text="Start playback" />
+                        </StackPanel>
+                        <Button
+                            Grid.Column="1"
+                            Padding="8"
+                            Command="{Binding RecordKeyCommand}"
+                            CommandParameter="Play">
+                            <TextBlock Text="{Binding PlayBinding}" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--  Next Binding  -->
+                <Border
+                    Padding="16"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <Grid ColumnDefinitions="*,150">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Text="Next Track" />
+                            <TextBlock FontSize="11" Text="Skip to next song" />
+                        </StackPanel>
+                        <Button
+                            Grid.Column="1"
+                            Padding="8"
+                            Command="{Binding RecordKeyCommand}"
+                            CommandParameter="Next">
+                            <TextBlock Text="{Binding NextBinding}" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--  Previous Binding  -->
+                <Border
+                    Padding="16"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <Grid ColumnDefinitions="*,150">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Text="Previous Track" />
+                            <TextBlock FontSize="11" Text="Skip to previous song" />
+                        </StackPanel>
+                        <Button
+                            Grid.Column="1"
+                            Padding="8"
+                            Command="{Binding RecordKeyCommand}"
+                            CommandParameter="Previous">
+                            <TextBlock Text="{Binding PreviousBinding}" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--  Volume Up Binding  -->
+                <Border
+                    Padding="16"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <Grid ColumnDefinitions="*,150">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Text="Volume Up" />
+                            <TextBlock FontSize="11" Text="Increase volume" />
+                        </StackPanel>
+                        <Button
+                            Grid.Column="1"
+                            Padding="8"
+                            Command="{Binding RecordKeyCommand}"
+                            CommandParameter="VolumeUp">
+                            <TextBlock Text="{Binding VolumeUpBinding}" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--  Volume Down Binding  -->
+                <Border
+                    Padding="16"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <Grid ColumnDefinitions="*,150">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Text="Volume Down" />
+                            <TextBlock FontSize="11" Text="Decrease volume" />
+                        </StackPanel>
+                        <Button
+                            Grid.Column="1"
+                            Padding="8"
+                            Command="{Binding RecordKeyCommand}"
+                            CommandParameter="VolumeDown">
+                            <TextBlock Text="{Binding VolumeDownBinding}" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!--  Mute Binding  -->
+                <Border
+                    Padding="16"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <Grid ColumnDefinitions="*,150">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Text="Mute" />
+                            <TextBlock FontSize="11" Text="Toggle mute" />
+                        </StackPanel>
+                        <Button
+                            Grid.Column="1"
+                            Padding="8"
+                            Command="{Binding RecordKeyCommand}"
+                            CommandParameter="Mute">
+                            <TextBlock Text="{Binding MuteBinding}" />
+                        </Button>
+                    </Grid>
+                </Border>
+
             </StackPanel>
-            <Button Grid.Column="1" 
-                    Command="{Binding RecordKeyCommand}" 
-                    CommandParameter="Next"
-                    Padding="8">
-              <TextBlock Text="{Binding NextBinding}" />
-            </Button>
-          </Grid>
-        </Border>
 
-        <!-- Previous Binding -->
-        <Border BorderThickness="1" CornerRadius="4" Padding="16">
-          <Grid ColumnDefinitions="*,150">
-            <StackPanel Grid.Column="0" Spacing="4">
-              <TextBlock Text="Previous Track" FontWeight="SemiBold" FontSize="14" />
-              <TextBlock Text="Skip to previous song" FontSize="11" />
-            </StackPanel>
-            <Button Grid.Column="1" 
-                    Command="{Binding RecordKeyCommand}" 
-                    CommandParameter="Previous"
-                    Padding="8">
-              <TextBlock Text="{Binding PreviousBinding}" />
-            </Button>
-          </Grid>
-        </Border>
+            <!--  Info  -->
+            <Border
+                Padding="12"
+                BorderThickness="1"
+                CornerRadius="4">
+                <TextBlock
+                    FontSize="11"
+                    Text="Click a button above to set its keyboard shortcut, then press the key combination you want to use."
+                    TextWrapping="Wrap" />
+            </Border>
 
-        <!-- Volume Up Binding -->
-        <Border BorderThickness="1" CornerRadius="4" Padding="16">
-          <Grid ColumnDefinitions="*,150">
-            <StackPanel Grid.Column="0" Spacing="4">
-              <TextBlock Text="Volume Up" FontWeight="SemiBold" FontSize="14" />
-              <TextBlock Text="Increase volume" FontSize="11" />
-            </StackPanel>
-            <Button Grid.Column="1" 
-                    Command="{Binding RecordKeyCommand}" 
-                    CommandParameter="VolumeUp"
-                    Padding="8">
-              <TextBlock Text="{Binding VolumeUpBinding}" />
-            </Button>
-          </Grid>
-        </Border>
-
-        <!-- Volume Down Binding -->
-        <Border BorderThickness="1" CornerRadius="4" Padding="16">
-          <Grid ColumnDefinitions="*,150">
-            <StackPanel Grid.Column="0" Spacing="4">
-              <TextBlock Text="Volume Down" FontWeight="SemiBold" FontSize="14" />
-              <TextBlock Text="Decrease volume" FontSize="11" />
-            </StackPanel>
-            <Button Grid.Column="1" 
-                    Command="{Binding RecordKeyCommand}" 
-                    CommandParameter="VolumeDown"
-                    Padding="8">
-              <TextBlock Text="{Binding VolumeDownBinding}" />
-            </Button>
-          </Grid>
-        </Border>
-
-        <!-- Mute Binding -->
-        <Border BorderThickness="1" CornerRadius="4" Padding="16">
-          <Grid ColumnDefinitions="*,150">
-            <StackPanel Grid.Column="0" Spacing="4">
-              <TextBlock Text="Mute" FontWeight="SemiBold" FontSize="14" />
-              <TextBlock Text="Toggle mute" FontSize="11" />
-            </StackPanel>
-            <Button Grid.Column="1" 
-                    Command="{Binding RecordKeyCommand}" 
-                    CommandParameter="Mute"
-                    Padding="8">
-              <TextBlock Text="{Binding MuteBinding}" />
-            </Button>
-          </Grid>
-        </Border>
-
-      </StackPanel>
-
-      <!-- Info -->
-      <Border BorderThickness="1" CornerRadius="4" Padding="12">
-        <TextBlock Text="Click a button above to set its keyboard shortcut, then press the key combination you want to use." 
-                   FontSize="11"
-                   TextWrapping="Wrap" />
-      </Border>
-
-    </StackPanel>
-  </ScrollViewer>
+        </StackPanel>
+    </ScrollViewer>
 
 </UserControl>

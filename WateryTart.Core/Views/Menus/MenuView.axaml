@@ -1,84 +1,104 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:vm="using:WateryTart.Core.ViewModels.Menus"
-			 xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-			 xmlns:converters="clr-namespace:WateryTart.Core.Converters"
-			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-			 xmlns:models="clr-namespace:WateryTart.MusicAssistant.Models;assembly=WateryTart.MusicAssistant"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="WateryTart.Core.Views.Menus.MenuView"
-			 x:DataType="vm:MenuViewModel"
-			 x:CompileBindings="True">
-	<UserControl.Resources>
-		<converters:IndentedToMarginConverter x:Key="IndentedToMarginConverter"/>
-	</UserControl.Resources>
+﻿<UserControl
+    x:Class="WateryTart.Core.Views.Menus.MenuView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+    xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+    xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:WateryTart.MusicAssistant.Models;assembly=WateryTart.MusicAssistant"
+    xmlns:vm="using:WateryTart.Core.ViewModels.Menus"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:CompileBindings="True"
+    x:DataType="vm:MenuViewModel"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:IndentedToMarginConverter x:Key="IndentedToMarginConverter" />
+    </UserControl.Resources>
 
-	<UserControl.DataTemplates>
-		<DataTemplate x:DataType="vm:MenuItemViewModel">
-			<Grid Margin="0,5,0,5" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-				<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="Tapped">
-						<vm:MenuItemClickedAction TargetObject="{Binding}"  />
-					</EventTriggerBehavior>
-				</Interaction.Behaviors>
+    <UserControl.DataTemplates>
+        <DataTemplate x:DataType="vm:MenuItemViewModel">
+            <Grid
+                Margin="0,5,0,5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="Transparent">
+                <Interaction.Behaviors>
+                    <EventTriggerBehavior EventName="Tapped">
+                        <vm:MenuItemClickedAction TargetObject="{Binding}" />
+                    </EventTriggerBehavior>
+                </Interaction.Behaviors>
 
-				<Grid Margin="{Binding Indented, Converter={StaticResource IndentedToMarginConverter}}">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="50" />
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-					<avalonia:MaterialIcon Kind="{Binding Icon}" Width="30" Height="30" />
+                <Grid Margin="{Binding Indented, Converter={StaticResource IndentedToMarginConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <avalonia:MaterialIcon
+                        Width="30"
+                        Height="30"
+                        Kind="{Binding Icon}" />
 
-					<TextBlock Grid.Column="1" Text="{Binding Title}" />
-				</Grid>
-			</Grid>
-		</DataTemplate>
+                    <TextBlock Grid.Column="1" Text="{Binding Title}" />
+                </Grid>
+            </Grid>
+        </DataTemplate>
 
-		<DataTemplate x:DataType="vm:TwoLineMenuItemViewModel">
-			<Grid  Margin="0,5,0,5" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-				<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="Tapped">
-						<vm:TwoLineMenuItemClickedAction TargetObject="{Binding}"  />
-					</EventTriggerBehavior>
-				</Interaction.Behaviors>
-				<Grid Margin="{Binding Indented, Converter={StaticResource IndentedToMarginConverter}}">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="50" />
-						<ColumnDefinition Width="*"/>
-					</Grid.ColumnDefinitions>
-					<avalonia:MaterialIcon Kind="{Binding Icon}" Width="30" Height="30" />
-					<StackPanel Grid.Column="1" >
-						<TextBlock Text="{Binding Title}" />
-						<TextBlock Text="{Binding SubTitle}" Opacity="0.7" />
-					</StackPanel>
-				</Grid>
-			</Grid>
-		</DataTemplate>
+        <DataTemplate x:DataType="vm:TwoLineMenuItemViewModel">
+            <Grid
+                Margin="0,5,0,5"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Background="Transparent">
+                <Interaction.Behaviors>
+                    <EventTriggerBehavior EventName="Tapped">
+                        <vm:TwoLineMenuItemClickedAction TargetObject="{Binding}" />
+                    </EventTriggerBehavior>
+                </Interaction.Behaviors>
+                <Grid Margin="{Binding Indented, Converter={StaticResource IndentedToMarginConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <avalonia:MaterialIcon
+                        Width="30"
+                        Height="30"
+                        Kind="{Binding Icon}" />
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="{Binding Title}" />
+                        <TextBlock Opacity="0.7" Text="{Binding SubTitle}" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </DataTemplate>
 
-	</UserControl.DataTemplates>
+    </UserControl.DataTemplates>
 
-	<StackPanel Margin="10">
-		<ContentControl Content="{Binding HeaderItem}">
-			<ContentControl.DataTemplates>
-				<DataTemplate x:DataType="models:QueuedItem">
-					<Border BorderBrush="#61FFFFFF" BorderThickness="0,0,0,1" Margin="0,0,0,5">
-						<Grid Margin="0,0,0,5">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="50"></ColumnDefinition>
-								<ColumnDefinition Width="*"></ColumnDefinition>
-							</Grid.ColumnDefinitions>
-							<asyncImageLoader:AdvancedImage Source="{Binding Path=Image, Converter={StaticResource MassImageImageConverter}}" Opacity="0.7"/>
-							<StackPanel Grid.Column="1" Margin="10,0,0,0">
-								<TextBlock Text="{Binding MediaItem.Name}" />
-								<TextBlock Text="{Binding MediaItem.Album.Name}" Opacity="0.7" />
-							</StackPanel>
-						</Grid>
-					</Border>
-				</DataTemplate>
-			</ContentControl.DataTemplates>
-		</ContentControl>
-		<ItemsControl ItemsSource="{Binding MenuItems}" Background="Transparent" />
-	</StackPanel>
+    <StackPanel Margin="10">
+        <ContentControl Content="{Binding HeaderItem}">
+            <ContentControl.DataTemplates>
+                <DataTemplate x:DataType="models:QueuedItem">
+                    <Border
+                        Margin="0,0,0,5"
+                        BorderBrush="#61FFFFFF"
+                        BorderThickness="0,0,0,1">
+                        <Grid Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <asyncImageLoader:AdvancedImage Opacity="0.7" Source="{Binding Path=Image, Converter={StaticResource MassImageImageConverter}}" />
+                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                <TextBlock Text="{Binding MediaItem.Name}" />
+                                <TextBlock Opacity="0.7" Text="{Binding MediaItem.Album.Name}" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ContentControl.DataTemplates>
+        </ContentControl>
+        <ItemsControl Background="Transparent" ItemsSource="{Binding MenuItems}" />
+    </StackPanel>
 </UserControl>
