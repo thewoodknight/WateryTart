@@ -294,7 +294,8 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
 
         if (p == null)
         {
-            var menu = MenuHelper.AddPlayers(this, t);
+            var players = MenuHelper.AddPlayers(this, t);
+            var menu = new MenuViewModel(players);
             MessageBus.Current.SendMessage(menu);
         }
         else
