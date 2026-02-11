@@ -1,3 +1,5 @@
+using CommunityToolkit.Mvvm.Input;
+using Material.Icons;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
@@ -5,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.Services.Discovery;
 using WateryTart.Core.Settings;
 using WateryTart.MusicAssistant;
@@ -20,7 +21,7 @@ public partial class ServerSettingsViewModel : ReactiveObject, IHaveSettings, ID
     private readonly IMassServerDiscovery _discovery;
     private bool _disposed;
 
-    public string Icon => "Server";
+    public MaterialIconKind Icon => MaterialIconKind.Server;
 
     // Current connection info (read-only display)
     [Reactive] public partial string CurrentServer { get; set; } = string.Empty;

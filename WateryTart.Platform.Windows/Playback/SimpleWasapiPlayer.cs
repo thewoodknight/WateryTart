@@ -2,12 +2,16 @@
 // Licensed under the MIT License. See LICENSE file in the project root. https://github.com/chrisuthe/windowsSpin/.
 // </copyright>
 
+using Microsoft.VisualBasic;
 using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using Sendspin.SDK.Audio;
 using Sendspin.SDK.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using UnitsNet;
+using WateryTart.Core.Settings;
 
 namespace WateryTart.Platform.Windows.Playback;
 
@@ -15,8 +19,9 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
 {
     private WasapiOut? _wasapiOut;
     private WaveFormat? _waveFormat;
+    private AudioFormat? _format;
     private IAudioSampleSource? _sampleSource;
-    private SampleSourceProvider? _provider;
+    private AudioSampleProviderAdapter? _sampleProvider;
 
     public AudioPlayerState State { get; private set; } = AudioPlayerState.Uninitialized;
 
@@ -25,26 +30,33 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
         get => field;
         set
         {
-            field = value;
-            SetVolume();
+            field = Math.Clamp(value, 0f, 1f);
+            //If using AppVolume control, change the stream volume of the sample provider. Otherwise, set the WASAPI output volume.
+            if (_sampleProvider != null && WateryTart.Core.App.Settings.VolumeEventControl == VolumeEventControl.AppVolume)
+            {
+                _sampleProvider.Volume = field;
+            }
+            else
+                SetVolume();
         }
-    } = 1.0f;
+    }
 
     public bool IsMuted { get; set; }
     public int OutputLatencyMs { get; private set; }
 
     public event EventHandler<AudioPlayerState>? StateChanged;
     public event EventHandler<AudioPlayerError>? ErrorOccurred;
-
-    //TODO: Implement IsMuted functionality, Implement flag for app or systemwide volume setting
     public void SetVolume()
     {
-        if (_wasapiOut == null) 
+        if (_wasapiOut == null)
             return;
+
+
         _wasapiOut.Volume = Volume;
     }
     public Task InitializeAsync(AudioFormat format, CancellationToken ct = default)
     {
+        _format = format;
         // Create NAudio wave format (SDK always outputs 32-bit float)
         _waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, format.Channels);
 
@@ -59,9 +71,10 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
 
     public void SetSampleSource(IAudioSampleSource source)
     {
-        _sampleSource = source;
-        _provider = new SampleSourceProvider(source, _waveFormat!);
-        _wasapiOut?.Init(_provider);
+        _sampleProvider = new AudioSampleProviderAdapter(source, _format!);
+        _sampleProvider.Volume = 1f;
+        _sampleProvider.IsMuted = false;
+        _wasapiOut?.Init(_sampleProvider);
     }
 
     public void Play()

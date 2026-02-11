@@ -1,11 +1,12 @@
 using CommunityToolkit.Mvvm.Input;
+using Material.Icons;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using ReactiveUI.SourceGenerators;
 using WateryTart.Core.Settings;
 
 namespace WateryTart.Core.ViewModels;
@@ -28,7 +29,7 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
     public RelayCommand BrowseLogFileCommand { get; }
     [Reactive] public partial bool EnableFileLogging { get; set; }
     public IScreen HostScreen { get; }
-    public string Icon => "History";
+    public MaterialIconKind Icon => MaterialIconKind.History;
     [Reactive] public partial bool IsSaving { get; set; }
     [Reactive] public partial string LogFilePath { get; set; }
     [Reactive] public partial string LogFileSize { get; set; }

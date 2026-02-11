@@ -4,6 +4,7 @@ using System;
 using System.Reactive;
 using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.ViewModels;
+using Material.Icons;
 
 namespace WateryTart.Core.ViewModels;
 
@@ -134,5 +135,5 @@ public class KeyboardVolumeKeyBindingsViewModel : ReactiveObject, IViewModelBase
         _recordingFor = null;
     }
 
-    public string Icon => "Keyboard";
+    public MaterialIconKind Icon => MaterialIconKind.Keyboard;
 }

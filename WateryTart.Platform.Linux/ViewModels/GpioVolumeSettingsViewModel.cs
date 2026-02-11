@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Material.Icons;
+using ReactiveUI;
 using WateryTart.Core;
 using WateryTart.Core.ViewModels;
 
@@ -41,6 +42,6 @@ public class GpioVolumeSettingsViewModel : ReactiveObject, IViewModelBase, IHave
         set => this.RaiseAndSetIfChanged(ref _pulsesPerTurn, value);
     }
 
-    public string Icon => "DeveloperBoard";
+    public MaterialIconKind Icon => MaterialIconKind.DeveloperBoard;
 }
         

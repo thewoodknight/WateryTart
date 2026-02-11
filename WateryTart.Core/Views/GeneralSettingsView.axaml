@@ -1,0 +1,21 @@
+<UserControl
+          x:Class="WateryTart.Core.Views.GeneralSettingsView"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:converters="using:WateryTart.Core.Converters"
+          xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+          x:DataType="vm:GeneralSettingsViewModel">
+    <UserControl.Resources>
+        <converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+    </UserControl.Resources>
+    <StackPanel Margin="20" Spacing="10">
+        <TextBlock FontWeight="Bold" Text="Volume events control" />
+        <ComboBox ItemsSource="{Binding VolumeEventOptions}" SelectedValue="{Binding SelectedVolumeEvent, Mode=TwoWay}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource EnumDescriptionConverter}}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+    </StackPanel>
+</UserControl>

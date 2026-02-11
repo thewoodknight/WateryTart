@@ -1,13 +1,22 @@
-﻿using System;
+﻿using Avalonia.Logging;
+using System;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Avalonia.Logging;
 using WateryTart.MusicAssistant.Models.Auth;
 
 namespace WateryTart.Core.Settings;
+
+public enum VolumeEventControl
+{
+    [Description("System Volume")]
+    SystemVolume,
+    [Description("App Volume")]
+    AppVolume
+}
 
 public partial class Settings : INotifyPropertyChanged, ISettings
 {
@@ -15,6 +24,17 @@ public partial class Settings : INotifyPropertyChanged, ISettings
     public IMusicAssistantCredentials Credentials
     {
         get => field ?? new MusicAssistantCredentials();
+        set
+        {
+            field = value;
+            NotifyPropertyChanged();
+            Save();
+        }
+    }
+
+    public VolumeEventControl VolumeEventControl
+    {
+        get => field;
         set
         {
             field = value;
@@ -143,6 +163,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
                     WindowPosX = loaded.WindowPosX;
                     WindowPosY = loaded.WindowPosY;
                     LoggerSettings = loaded.LoggerSettings;
+                    VolumeEventControl = loaded.VolumeEventControl;
                 }
 
                 // Initialize if not loaded

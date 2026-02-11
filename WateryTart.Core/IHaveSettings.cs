@@ -1,7 +1,9 @@
-﻿namespace WateryTart.Core;
+﻿using Material.Icons;
+
+namespace WateryTart.Core;
 
 public interface IHaveSettings
 {
-    public string Icon { get; }
+    public MaterialIconKind Icon { get; }
 
 }
