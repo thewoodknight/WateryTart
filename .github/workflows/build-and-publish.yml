@@ -127,8 +127,9 @@ jobs:
       - name: Create Velopack Release
         working-directory: ${{ github.workspace }}
         run: |    
-          vpk [win] pack -u WateryTart --packId WateryTart --runtime win-x64 --channel win-x64 --packVersion ${{ needs.generate-version.outputs.version }} --packDir /home/runner/work/WateryTart/WateryTart/win-x64 --mainExe WateryTartDesktop.exe --icon Assets/logo_square.ico --outputDir ./releases
-
+          vpk [win] pack --packId WateryTart --runtime win-x64 --channel win-x64 --packVersion ${{ needs.generate-version.outputs.version }} --packDir /home/runner/work/WateryTart/WateryTart/win-x64 --mainExe WateryTartDesktop.exe --icon Assets/logo_square.ico --outputDir ./releases
+          vpk [linux] pack --packId WateryTart --runtime linux-x64 --channel linux-x64 --packVersion ${{ needs.generate-version.outputs.version }} --packDir /home/runner/work/WateryTart/WateryTart/linux-x64 --mainExe WateryTartLinux --icon Assets/logo_square.ico --outputDir ./releases
+          vpk [linux] pack --packId WateryTart --runtime linux-arm64 --channel linux-arm64 --packVersion ${{ needs.generate-version.outputs.version }} --packDir /home/runner/work/WateryTart/WateryTart/linux-arm64 --mainExe WateryTartLinux --icon Assets/logo_square.ico --outputDir ./releases
       - name: Upload assets to published Release
         uses: softprops/action-gh-release@v1
         with:
