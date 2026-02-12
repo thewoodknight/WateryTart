@@ -8,16 +8,16 @@
     <!-- Important: keep version in sync! -->
     <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.6.0" />
     <PackageVersion Include="Autofac" Version="9.0.0" />
-    <PackageVersion Include="Avalonia" Version="11.3.11" />
+    <PackageVersion Include="Avalonia" Version="11.3.12" />
     <PackageVersion Include="Avalonia.Labs.CommandManager" Version="11.3.1" />
-    <PackageVersion Include="Avalonia.LinuxFramebuffer" Version="11.3.11" />
-    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.11" />
+    <PackageVersion Include="Avalonia.LinuxFramebuffer" Version="11.3.12" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.12" />
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.11" />
     <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.11" />
-    <PackageVersion Include="Avalonia.Desktop" Version="11.3.11" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.12" />
     <PackageVersion Include="Avalonia.iOS" Version="11.3.11" />
     <PackageVersion Include="Avalonia.Browser" Version="11.3.11" />
-    <PackageVersion Include="Avalonia.Android" Version="11.3.11" />
+    <PackageVersion Include="Avalonia.Android" Version="11.3.12" />
     <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.1.1" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="Config.Net" Version="5.2.1" />
@@ -31,7 +31,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="10.0.2" />
-    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="10.0.3" />
     <PackageVersion Include="NAudio" Version="2.2.1" />
     <PackageVersion Include="NAudio.Asio" Version="2.2.1" />
     <PackageVersion Include="NAudio.Core" Version="2.2.1" />
@@ -54,7 +54,7 @@
     <PackageVersion Include="System.Device.Gpio" Version="4.1.0" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
     <PackageVersion Include="Velopack" Version="0.0.1298" />
-    <PackageVersion Include="WateryTart.MusicAssistant" Version="2.1.0" />
+    <PackageVersion Include="WateryTart.MusicAssistant" Version="2.1.1" />
     <PackageVersion Include="Websocket.Client" Version="5.3.0" />
     <PackageVersion Include="Xaml.Behaviors.Interactions" Version="11.3.9.4" />
     <PackageVersion Include="Xaml.Behaviors.SourceGenerators" Version="11.3.9.4" />
