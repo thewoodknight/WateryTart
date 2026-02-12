@@ -89,6 +89,8 @@ jobs:
 
   #this doesn't use Velopack just yet because I have no way of testing it, or even knowing what it creates
   macosbuild:
+    needs:
+      - generate-version
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
@@ -99,7 +101,7 @@ jobs:
       - name: Install dependencies
         run: dotnet restore src/WateryTart.Platform.macOS
       - name: Publish
-        run: dotnet publish src/WateryTart.Platform.macOS -p:PublishProfile=MacOSArm64
+        run: dotnet publish src/WateryTart.Platform.macOS -p:PublishProfile=MacOSArm64 /p:Version=${{ needs.generate-version.outputs.version }}
       - name: Create .app bundle
         run: |
           APP_NAME="WateryTart.app"
@@ -113,10 +115,10 @@ jobs:
           cp -R "$PUBLISH_DIR"/* "$APP_NAME/Contents/MacOS/"
 
           # Copy Info.plist
-          cp WateryTart.Platform.macOS/Info.plist "$APP_NAME/Contents/"
+          cp src/WateryTart.Platform.macOS/Info.plist "$APP_NAME/Contents/"
 
           # Copy icon
-          cp WateryTart.Platform.macOS/AppIcon.icns "$APP_NAME/Contents/Resources/"
+          cp src/WateryTart.Platform.macOS/AppIcon.icns "$APP_NAME/Contents/Resources/"
 
           # Make executable
           chmod +x "$APP_NAME/Contents/MacOS/WateryTartMacOS"
@@ -140,6 +142,7 @@ jobs:
       - generate-version
       - linuxbuild
       - windowsbuild
+      - macosbuild
     runs-on: ubuntu-latest
     steps:
 
@@ -148,9 +151,6 @@ jobs:
           dotnet tool install -g vpk
 
       - uses: actions/checkout@v6
-  
-      - name: List current directory (for debug)
-        run: ls -l
 
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
