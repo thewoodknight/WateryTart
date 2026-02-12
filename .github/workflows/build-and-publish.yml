@@ -1,4 +1,4 @@
-name: dotnet package
+name: build-and-publish2
 
 on:
   workflow_dispatch: {}
@@ -12,12 +12,53 @@ permissions:
 jobs:
   generate-version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set_version.outputs.version }}
     steps:
-      - name: Set Version Variable
-        if: ${{ github.ref_type == 'tag' }}
-        env:
-          TAG: ${{ github.ref_name }}
-        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+      - name: Set Version Variable (handles tags and non-tags)
+        id: set_version
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            VER="${{ github.ref_name }}"
+            VER="${VER#v}"
+            echo "version=$VER" >> $GITHUB_OUTPUT
+          else
+            echo "version=0.0.1" >> $GITHUB_OUTPUT
+          fi
+
+  linuxbuild:
+    needs:
+      - generate-version
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '10.0.x' ]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup .NET 10.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+          cache: true
+          cache-dependency-path: './src/WateryTart.Platform.Linux/packages.lock.json'
+      - name: Install dependencies
+        run: dotnet restore src/WateryTart.Platform.Linux
+      - name: Print version (for debug)
+        run: echo "The version is ${{ needs.generate-version.outputs.version }}"
+      - run: dotnet publish src/WateryTart.Platform.Linux -p:PublishProfile=LinuxArm /p:Version=${{ needs.generate-version.outputs.version }} -o ./output/linux-arm64
+      - run: dotnet publish src/WateryTart.Platform.Linux -p:PublishProfile=Linux-x64 /p:Version=${{ needs.generate-version.outputs.version }} -o ./output/linux-x64
+
+      - name: Upload Linux arm64 artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-arm64-build
+          path: output/linux-arm64
+
+      - name: Upload Linux x64 artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-x64-build
+          path: ./output/linux-x64
 
   windowsbuild:
     needs:
@@ -26,7 +67,6 @@ jobs:
     strategy:
       matrix:
         dotnet-version: [ '10.0.x' ]
-
     steps:
       - uses: actions/checkout@v6
       - name: Setup .NET 10.x
@@ -37,38 +77,63 @@ jobs:
           cache-dependency-path: './src/WateryTart.Platform.Linux/packages.lock.json'
       - name: Install dependencies
         run: dotnet restore src/WateryTart.Platform.Windows
-      - run: dotnet publish src/WateryTart.Platform.Windows -p:PublishProfile=Winx64
-      - name: Zip Windows win-x64 files
-        shell: pwsh
-        run: |
-          $artifactDir = Join-Path $env:GITHUB_WORKSPACE 'artifacts'
-          New-Item -ItemType Directory -Force -Path $artifactDir | Out-Null
-          $publishPath = Join-Path $env:GITHUB_WORKSPACE '..\output\win-x64'
-          if (-Not (Test-Path $publishPath)) {
-            # fallback to lowercase 'release' path if present
-            $publishPath = Join-Path $env:GITHUB_WORKSPACE '..\output\win-x64'
-          }
+      - name: Print version (for debug)
+        run: echo "The version is ${{ needs.generate-version.outputs.version }}"
+      - run: dotnet publish src/WateryTart.Platform.Windows -p:PublishProfile=Winx64 /p:Version=${{ needs.generate-version.outputs.version }} -o ./output/win-x64
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-x64-build
+          path: ./output/win-x64
 
   velopack:
     needs:
       - generate-version
+      - linuxbuild
       - windowsbuild
     runs-on: ubuntu-latest
     steps:
+
+      - name: List current directory (for debug)
+        run: ls -l
+
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: win-x64-build
+          path: win-x64
+
+      - name: Download Linux64 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-x64-build
+          path: linux-x64
+
+      - name: Download Linuxarm64 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-arm64-build
+          path: linux-arm64
+
+      - name: List available artifacts
+        run: ls -l
+
+      - name: List downloaded files (debug)
+        run: ls -l ./win-x64
+
+      - uses: actions/checkout@v6
+      
       - name: Create Velopack Release
         run: |
           dotnet tool install -g vpk
-          vpk pack --packId WateryTart --channel win-x64 --packVersion $VERSION --packDir ../output/win-x64 --mainExe WateryTartDesktop.exe  --icon ../Assets/logo_square.ico --outputDir ../releases
-
-      - name: List downloaded files (debug)
-        run: |
-          echo "Windows files:"
-          ls -R releases || true
+          pwd && ls -l ./win-x64
+          vpk pack --packId WateryTart --channel win-x64 --packVersion ${{ needs.generate-version.outputs.version }} --packDir /home/runner/work/WateryTart/WateryTart/win-x64 --mainExe WateryTartDesktop.exe --icon Assets/logo_square.ico --outputDir ./releases
 
       - name: Upload assets to published Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-              releases/*.*
+            releases/*.*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
