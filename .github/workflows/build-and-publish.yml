@@ -63,6 +63,7 @@ jobs:
   windowsbuild:
     needs:
       - generate-version
+      - linuxbuild # to make it sequential due to file space issues
     runs-on: windows-latest
     strategy:
       matrix:
@@ -81,6 +82,12 @@ jobs:
         run: echo "The version is ${{ needs.generate-version.outputs.version }}"
       - run: dotnet publish src/WateryTart.Platform.Windows -p:PublishProfile=Winx64 /p:Version=${{ needs.generate-version.outputs.version }} -o ./output/win-x64
 
+      - name: Remove Android, VS, and other large workloads
+        run: |
+          Remove-Item -Recurse -Force "$env:USERPROFILE\.nuget\packages"
+          Remove-Item -Recurse -Force "C:\hostedtoolcache\windows"
+        shell: pwsh
+
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -91,6 +98,7 @@ jobs:
   macosbuild:
     needs:
       - generate-version
+      - windowsbuild # to make it sequential due to file space issues
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
@@ -102,6 +110,12 @@ jobs:
         run: dotnet restore src/WateryTart.Platform.macOS
       - name: Publish
         run: dotnet publish src/WateryTart.Platform.macOS -p:PublishProfile=MacOSArm64 /p:Version=${{ needs.generate-version.outputs.version }}
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          df -h
       - name: Create .app bundle
         run: |
           APP_NAME="WateryTart.app"
