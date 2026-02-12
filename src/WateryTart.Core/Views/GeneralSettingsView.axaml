@@ -29,5 +29,10 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
+        <TextBlock TextWrapping="Wrap">
+            This only applies to how this install handles volume.
+            The default behaviour is 'App Volume' - how most media players work - but if your device directly controls an amplifier, 'System Volume' may be more appropriate.
+        </TextBlock>
+
     </StackPanel>
 </UserControl>
