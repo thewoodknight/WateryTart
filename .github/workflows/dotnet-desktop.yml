@@ -2,8 +2,6 @@ name: dotnet package
 
 on:
   workflow_dispatch: {}
-  release:
-    types: [published]
 
 # Ensure the runner can upload release assets
 permissions:

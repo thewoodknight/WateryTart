@@ -87,6 +87,54 @@ jobs:
           name: win-x64-build
           path: ./output/win-x64
 
+  #this doesn't use Velopack just yet because I have no way of testing it, or even knowing what it creates
+  macosbuild:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup .NET 10.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+      - name: Install dependencies
+        run: dotnet restore src/WateryTart.Platform.macOS
+      - name: Publish
+        run: dotnet publish src/WateryTart.Platform.macOS -p:PublishProfile=MacOSArm64
+      - name: Create .app bundle
+        run: |
+          APP_NAME="WateryTart.app"
+          PUBLISH_DIR="src/WateryTart.Platform.macOS/bin/Release/net10.0/publish/osx-arm64"
+
+          # Create bundle structure
+          mkdir -p "$APP_NAME/Contents/MacOS"
+          mkdir -p "$APP_NAME/Contents/Resources"
+
+          # Copy executable and dependencies
+          cp -R "$PUBLISH_DIR"/* "$APP_NAME/Contents/MacOS/"
+
+          # Copy Info.plist
+          cp WateryTart.Platform.macOS/Info.plist "$APP_NAME/Contents/"
+
+          # Copy icon
+          cp WateryTart.Platform.macOS/AppIcon.icns "$APP_NAME/Contents/Resources/"
+
+          # Make executable
+          chmod +x "$APP_NAME/Contents/MacOS/WateryTartMacOS"
+      - name: Create DMG
+        run: |
+          mkdir -p artifacts
+          hdiutil create -volname "WateryTart" -srcfolder WateryTart.app -ov -format UDZO artifacts/WateryTart.macOS-arm64.dmg
+      - name: Zip .app bundle
+        run: |
+          zip -r artifacts/WateryTart.macOS-arm64.app.zip WateryTart.app
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: WateryTart.macOS-arm64
+          path: |
+            artifacts/WateryTart.macOS-arm64.dmg
+            artifacts/WateryTart.macOS-arm64.app.zip
+
   velopack:
     needs:
       - generate-version
@@ -130,6 +178,13 @@ jobs:
           vpk [win] pack --packId WateryTart --runtime win-x64 --channel win-x64 --packVersion ${{ needs.generate-version.outputs.version }} --packDir /home/runner/work/WateryTart/WateryTart/win-x64 --mainExe WateryTartDesktop.exe --icon Assets/logo_square.ico --outputDir ./releases
           vpk [linux] pack --packId WateryTart --runtime linux-x64 --channel linux-x64 --packVersion ${{ needs.generate-version.outputs.version }} --packDir /home/runner/work/WateryTart/WateryTart/linux-x64 --mainExe WateryTartLinux --icon Assets/logo_square.ico --outputDir ./releases
           vpk [linux] pack --packId WateryTart --runtime linux-arm64 --channel linux-arm64 --packVersion ${{ needs.generate-version.outputs.version }} --packDir /home/runner/work/WateryTart/WateryTart/linux-arm64 --mainExe WateryTartLinux --icon Assets/logo_square.ico --outputDir ./releases
+      
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: WateryTart.macOS-arm64
+          path: releases
+          
       - name: Upload assets to published Release
         uses: softprops/action-gh-release@v1
         with:

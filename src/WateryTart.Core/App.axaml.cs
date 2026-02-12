@@ -11,7 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 using UnitsNet;
+using Velopack;
+using Velopack.Sources;
 using WateryTart.Core.Playback;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
@@ -82,6 +86,29 @@ public partial class App : Application
 
     private IEnumerable<IPlatformSpecificRegistration> PlatformSpecificRegistrations { get; }
 
+    private static async Task UpdateMyApp()
+    {
+        var gs = new GithubSource("https://github.com/TemuWolverine/WateryTart/", null, false);
+        var mgr = new UpdateManager(gs);
+
+        // check for new version
+        try
+        {
+            var newVersion = await mgr.CheckForUpdatesAsync();
+            if (newVersion == null)
+                return; // no update available
+
+            // download new version
+            await mgr.DownloadUpdatesAsync(newVersion);
+
+            // install new version and restart app
+            mgr.ApplyUpdatesAndRestart(newVersion);
+        } catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
+    }
+
     public App()
     {
 
@@ -97,6 +124,7 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        UpdateMyApp();
         var builder = new ContainerBuilder();
 
         //Settings - Load first before creating logger

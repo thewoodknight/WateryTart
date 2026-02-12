@@ -9,7 +9,19 @@
         <converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
     </UserControl.Resources>
     <StackPanel Margin="20" Spacing="10">
-        <TextBlock FontWeight="Bold" Text="Volume events control" />
+        <TextBlock FontWeight="Bold" Text="Application version" />
+        <TextBlock Text="{Binding InstalledVersion}" />
+
+        <TextBlock
+                  Margin="0,10,0,0"
+                  FontWeight="Bold"
+                  Text="Latest version" />
+        <TextBlock Text="{Binding LatestVersion}" />
+
+        <TextBlock
+                  Margin="0,10,0,0"
+                  FontWeight="Bold"
+                  Text="Volume events control" />
         <ComboBox ItemsSource="{Binding VolumeEventOptions}" SelectedValue="{Binding SelectedVolumeEvent, Mode=TwoWay}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
