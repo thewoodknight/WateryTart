@@ -1,0 +1,74 @@
+name: dotnet package
+
+on:
+  workflow_dispatch: {}
+  release:
+    types: [published]
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  generate-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Version Variable
+        if: ${{ github.ref_type == 'tag' }}
+        env:
+          TAG: ${{ github.ref_name }}
+        run: echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+
+  windowsbuild:
+    needs:
+      - generate-version
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '10.0.x' ]
+
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup .NET 10.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+          cache: true
+          cache-dependency-path: './src/WateryTart.Platform.Linux/packages.lock.json'
+      - name: Install dependencies
+        run: dotnet restore src/WateryTart.Platform.Windows
+      - run: dotnet publish src/WateryTart.Platform.Windows -p:PublishProfile=Winx64
+      - name: Zip Windows win-x64 files
+        shell: pwsh
+        run: |
+          $artifactDir = Join-Path $env:GITHUB_WORKSPACE 'artifacts'
+          New-Item -ItemType Directory -Force -Path $artifactDir | Out-Null
+          $publishPath = Join-Path $env:GITHUB_WORKSPACE '..\output\win-x64'
+          if (-Not (Test-Path $publishPath)) {
+            # fallback to lowercase 'release' path if present
+            $publishPath = Join-Path $env:GITHUB_WORKSPACE '..\output\win-x64'
+          }
+
+  velopack:
+    needs:
+      - generate-version
+      - windowsbuild
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Velopack Release
+        run: |
+          dotnet tool install -g vpk
+          vpk pack --packId WateryTart --channel win-x64 --packVersion $VERSION --packDir ../output/win-x64 --mainExe WateryTartDesktop.exe  --icon ../Assets/logo_square.ico --outputDir ../releases
+
+      - name: List downloaded files (debug)
+        run: |
+          echo "Windows files:"
+          ls -R releases || true
+
+      - name: Upload assets to published Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+              releases/*.*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
