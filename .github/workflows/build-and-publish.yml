@@ -95,6 +95,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Install Velopack
+        run: |
+          dotnet tool install -g vpk
+
+      - uses: actions/checkout@v6
+  
       - name: List current directory (for debug)
         run: ls -l
 
@@ -122,11 +128,9 @@ jobs:
       - name: List downloaded files (debug)
         run: ls -l ./win-x64
 
-      - uses: actions/checkout@v6
-      
       - name: Create Velopack Release
-        run: |
-          dotnet tool install -g vpk
+        working-directory: ${{ github.workspace }}
+        run: |    
           pwd && ls -l ./win-x64
           vpk pack --packId WateryTart --channel win-x64 --packVersion ${{ needs.generate-version.outputs.version }} --packDir /home/runner/work/WateryTart/WateryTart/win-x64 --mainExe WateryTartDesktop.exe --icon Assets/logo_square.ico --outputDir ./releases
 
