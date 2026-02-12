@@ -32,14 +32,19 @@ public partial class Settings : INotifyPropertyChanged, ISettings
         }
     }
 
+    private VolumeEventControl _volumeEventControl = VolumeEventControl.AppVolume;
+
     public VolumeEventControl VolumeEventControl
     {
-        get => field;
+        get => _volumeEventControl;
         set
         {
-            field = value;
-            NotifyPropertyChanged();
-            Save();
+            if (_volumeEventControl != value)
+            {
+                _volumeEventControl = value;
+                NotifyPropertyChanged();
+                Save();
+            }
         }
     }
 
