@@ -76,6 +76,16 @@ jobs:
       - linuxbuild # to make it sequential due to file space issues
     runs-on: macos-latest
     steps:
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/local/share/gtk-doc
+          sudo rm -rf /usr/local/share/man
+          sudo rm -rf /usr/local/share/doc
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/Homebrew
+          df -h
       - uses: actions/checkout@v6
       - name: Setup .NET 10.x
         uses: actions/setup-dotnet@v5
