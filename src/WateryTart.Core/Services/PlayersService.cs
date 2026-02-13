@@ -153,7 +153,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
                 .Bind(out currentQueue)
                 .Subscribe());
 
-        
+
         _subscriptions.Add(QueuedItems
                 .Connect()
                 .AutoRefresh(x => x.SortIndex)
@@ -192,14 +192,30 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         PlayerQueueEventResponse queueEvent;
         PlayerQueueTimeUpdatedEventResponse timeEvent;
         MediaItemEventResponse mediaEvent;
+        MediaItemEvent2Response mediaEvent2;
         Debug.WriteLine(e.EventName);
         switch (e.EventName)
         {
-            case EventType.MediaItemPlayed:
+            case EventType.MediaItemUpdated:
                 mediaEvent = (MediaItemEventResponse)e;
-                if (mediaEvent.object_id == SelectedQueue?.CurrentItem?.MediaItem?.Uri)
-                    if (mediaEvent.data.SecondsPlayed != null)
-                        SelectedQueue?.CurrentItem?.MediaItem?.ElapsedTime = mediaEvent.data.SecondsPlayed.Value;
+                var item = QueuedItems.Items.FirstOrDefault(i => i.MediaItem?.Uri == mediaEvent.data.Uri);
+                if (item != null)
+                {
+                    item.MediaItem.Favorite = mediaEvent.data.Favorite;
+                    //QueuedItems.Refresh(item);
+                }
+
+                if (SelectedQueue?.CurrentItem?.MediaItem?.Uri == mediaEvent?.data?.Uri)
+                {
+                    SelectedQueue.CurrentItem.MediaItem.Favorite = mediaEvent.data.Favorite;
+                }
+
+                break;
+            case EventType.MediaItemPlayed:
+                mediaEvent2 = (MediaItemEvent2Response)e;
+                if (mediaEvent2.object_id == SelectedQueue?.CurrentItem?.MediaItem?.Uri)
+                    if (mediaEvent2.data.SecondsPlayed != null)
+                        SelectedQueue?.CurrentItem?.MediaItem?.ElapsedTime = mediaEvent2.data.SecondsPlayed.Value;
                 break;
 
             case EventType.QueueTimeUpdated:
@@ -298,7 +314,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         {
             try
             {
-               var result = await _massClient.WithWs().SetPlayerGroupVolumeAsync(p.PlayerId, volume);
+                var result = await _massClient.WithWs().SetPlayerGroupVolumeAsync(p.PlayerId, volume);
             }
             catch (Exception ex)
             {
@@ -499,5 +515,21 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         var trackViewModel = new TrackViewModel(_massClient, null, this, queuedItem.MediaItem);
         _trackViewModelCache[cacheKey] = trackViewModel;
         return trackViewModel;
+    }
+
+    public void PlayerRemoveFromFavorites(MediaItemBase item)
+    {
+        if (item == null) return;
+#pragma warning disable CS4014
+        _ = _massClient.WithWs().RemoveFavoriteItemAsync(item);
+#pragma warning restore CS4014
+    }
+
+    public void PlayerAddToFavorites(MediaItemBase item)
+    {
+        if (item == null) return;
+#pragma warning disable CS4014
+        _ = _massClient.WithWs().AddFavoriteItemAsync(item);
+#pragma warning restore CS4014
     }
 }

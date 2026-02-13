@@ -12,8 +12,8 @@
     <PackageVersion Include="Avalonia.Labs.CommandManager" Version="11.3.1" />
     <PackageVersion Include="Avalonia.LinuxFramebuffer" Version="11.3.12" />
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.12" />
-    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.11" />
-    <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.11" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.12" />
+    <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.12" />
     <PackageVersion Include="Avalonia.Desktop" Version="11.3.12" />
     <PackageVersion Include="Avalonia.iOS" Version="11.3.11" />
     <PackageVersion Include="Avalonia.Browser" Version="11.3.11" />
@@ -25,6 +25,8 @@
     <PackageVersion Include="Iot.Device.Bindings" Version="4.1.0" />
     <PackageVersion Include="Karambolo.Extensions.Logging.File" Version="4.1.0" />
     <PackageVersion Include="Material.Icons.Avalonia" Version="2.4.1" />
+    <PackageVersion Include="Metalama.Framework.Redist" Version="2026.0.16" />
+    <PackageVersion Include="Metalama.Patterns.Observability" Version="2026.0.16" />
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="5.0.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Common" Version="5.0.0" />
@@ -54,7 +56,7 @@
     <PackageVersion Include="System.Device.Gpio" Version="4.1.0" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
     <PackageVersion Include="Velopack" Version="0.0.1298" />
-    <PackageVersion Include="WateryTart.MusicAssistant" Version="2.1.1" />
+    <PackageVersion Include="WateryTart.MusicAssistant" Version="2.2.1" />
     <PackageVersion Include="Websocket.Client" Version="5.3.0" />
     <PackageVersion Include="Xaml.Behaviors.Interactions" Version="11.3.9.4" />
     <PackageVersion Include="Xaml.Behaviors.SourceGenerators" Version="11.3.9.4" />

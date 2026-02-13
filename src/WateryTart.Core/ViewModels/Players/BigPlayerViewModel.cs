@@ -1,36 +1,26 @@
-﻿using System.Linq;
+﻿using Avalonia.Controls.Primitives;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using Material.Icons;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
-using Material.Icons;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.MusicAssistant.Models;
-using System.Diagnostics;
-using System;
 using Xaml.Behaviors.SourceGenerators;
-using Avalonia.Controls.Primitives;
 
 namespace WateryTart.Core.ViewModels.Players;
 
 public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 {
     private readonly IPlayersService _playersService;
-    public string? UrlPathSegment { get; } = "BigPlayer";
-    public required IScreen HostScreen { get; set; }
-    public bool ShowMiniPlayer => false;
-    public bool ShowNavigation => false;
-    public bool ShowBackButton => false;
-    public string Title { get; set; } = "";
-    [Reactive] public partial IColourService ColourService { get; set; }
-    [Reactive] public partial bool IsSmallDisplay { get; set; }
-    public double CachedImageWidth
-    {
-        get => field;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    private double _pendingVolume;
+    private System.Timers.Timer? _volumeDebounceTimer;
 
     public double CachedImageHeight
     {
@@ -38,40 +28,27 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public IPlayersService PlayersService => _playersService;
+    public double CachedImageWidth
+    {
+        get => field;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
+    [Reactive] public partial IColourService ColourService { get; set; }
+    public required IScreen HostScreen { get; set; }
+    [Reactive] public partial bool IsSmallDisplay { get; set; }
     public ICommand PlayerNextCommand { get; set; }
     public ICommand PlayerPlayPauseCommand { get; set; }
-    public ICommand PlayPreviousCommand { get; set; }
+    public IPlayersService PlayersService => _playersService;
     public ICommand PlayingAltMenuCommand { get; set; }
+    public ICommand PlayPreviousCommand { get; set; }
     public RelayCommand<double> SeekCommand { get; }
-
-    private System.Timers.Timer? _volumeDebounceTimer;
-    private double _pendingVolume;
-
-    [GenerateTypedAction]
-    public void VolumeChanged(object sender, object parameter)
-    {
-        //Debouncing inside itself so it doesnt' get into a loop fighting with MA sending back the new volume
-        if (parameter is RangeBaseValueChangedEventArgs args)
-        {
-            if (args.NewValue == args.OldValue)
-                return;
-
-            _pendingVolume = args.NewValue;
-
-            _volumeDebounceTimer?.Stop();
-            _volumeDebounceTimer?.Dispose();
-
-            _volumeDebounceTimer = new System.Timers.Timer(200); 
-            _volumeDebounceTimer.AutoReset = false;
-            _volumeDebounceTimer.Elapsed += (s, e) =>
-            {
-                _playersService.PlayerVolume((int)_pendingVolume);
-            };
-            _volumeDebounceTimer.Start();
-        }
-    }
+    public bool ShowBackButton => false;
+    public bool ShowMiniPlayer => false;
+    public bool ShowNavigation => false;
+    public string Title { get; set; } = "";
+    public ICommand ToggleFavoriteCommand { get; set; }
+    public string? UrlPathSegment { get; } = "BigPlayer";
 
     public BigPlayerViewModel(IPlayersService playersService, IScreen screen, IColourService colourService)
     {
@@ -83,7 +60,16 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             var newPosition = duration * (s / 100);
             _playersService?.PlayerSeek(null, (int)newPosition);
         });
-
+        ToggleFavoriteCommand = new RelayCommand(() =>
+        {
+            var item = PlayersService?.SelectedQueue?.CurrentItem?.MediaItem;
+            if (item == null)
+                return;
+            if (item.Favorite)
+                PlayersService.PlayerRemoveFromFavorites(item);
+            else
+                PlayersService.PlayerAddToFavorites(item);
+        });
         PlayPreviousCommand = new RelayCommand(() => PlayersService.PlayerPrevious());
         PlayerNextCommand = new RelayCommand(() => PlayersService.PlayerNext());
         PlayerPlayPauseCommand = new RelayCommand(() => PlayersService.PlayerPlayPause());
@@ -100,7 +86,6 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
                 albumVm.Album = item.Album;
                 albumVm.LoadFromId(item.Album.ItemId, item.Provider);
                 HostScreen.Router.Navigate.Execute(albumVm);
-
             });
 
             var GoToArtist = new RelayCommand(() =>
@@ -114,14 +99,12 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
             var GoToSimilarTracks = new RelayCommand(() =>
             {
-
                 if (item == null || HostScreen == null)
                     return;
                 var SimilarTracksViewModel = App.Container.GetRequiredService<SimilarTracksViewModel>();
                 SimilarTracksViewModel.LoadFromId(item.ItemId, item.GetProviderInstance());
                 HostScreen.Router.Navigate.Execute(SimilarTracksViewModel);
             });
-
 
             var menu = new MenuViewModel(
             [
@@ -149,6 +132,30 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         {
             CachedImageWidth = width;
             CachedImageHeight = height;
+        }
+    }
+
+    [GenerateTypedAction]
+    public void VolumeChanged(object sender, object parameter)
+    {
+        //Debouncing inside itself so it doesnt' get into a loop fighting with MA sending back the new volume
+        if (parameter is RangeBaseValueChangedEventArgs args)
+        {
+            if (args.NewValue == args.OldValue)
+                return;
+
+            _pendingVolume = args.NewValue;
+
+            _volumeDebounceTimer?.Stop();
+            _volumeDebounceTimer?.Dispose();
+
+            _volumeDebounceTimer = new System.Timers.Timer(200);
+            _volumeDebounceTimer.AutoReset = false;
+            _volumeDebounceTimer.Elapsed += (s, e) =>
+            {
+                _playersService.PlayerVolume((int)_pendingVolume);
+            };
+            _volumeDebounceTimer.Start();
         }
     }
 }

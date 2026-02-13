@@ -27,8 +27,9 @@
         <converters:AudioFormatCodecConverter x:Key="AudioFormatCodecConverter" />
         <converters:AudioFormatSampleRateConverter x:Key="AudioFormatSampleRateConverter" />
         <converters:AudioFormatBitDepthConverter x:Key="AudioFormatBitDepthConverter" />
-        <!--
-		<x:Double x:Key="SliderTrackThemeHeight">20</x:Double>-->
+        <converters:VolumeLevelToIconConverter x:Key="VolumeLevelToIconConverter" />
+
+        <converters:BoolToIconKindConverter x:Key="BoolToIconKindConverter" />
     </UserControl.Resources>
     <UserControl.Styles>
 
@@ -70,24 +71,6 @@
                                               Source="{Binding Path=PlayersService.SelectedQueue.CurrentItem.Image, Converter={StaticResource MassImageImageConverter}}"
                                               Stretch="UniformToFill" />
                                 </Grid>
-
-                                <!--  Loading indicator  -->
-                                <StackPanel
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          IsVisible="{Binding Path=#imgAlbumArt.IsLoading}">
-                                    <materialIcons:MaterialIcon
-                                              Width="60"
-                                              Height="60"
-                                              Classes="spinner"
-                                              Foreground="#CCCCCC"
-                                              Kind="MusicNote"
-                                              RenderTransformOrigin="50%,50%">
-                                        <materialIcons:MaterialIcon.RenderTransform>
-                                            <RotateTransform />
-                                        </materialIcons:MaterialIcon.RenderTransform>
-                                    </materialIcons:MaterialIcon>
-                                </StackPanel>
                             </Panel>
                         </Border>
                     </Border>
@@ -218,10 +201,11 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <materialIcons:MaterialIcon
+                                  Name="VolumeIcon"
                                   Grid.Column="0"
                                   Width="25"
                                   Height="25"
-                                  Kind="VolumeHigh" />
+                                  Kind="{Binding PlayersService.SelectedPlayer.VolumeLevel, Converter={StaticResource VolumeLevelToIconConverter}}" />
                         <Slider
                                   Grid.Column="1"
                                   Margin="10,0,10,0"
@@ -257,17 +241,11 @@
                                       Height="25"
                                       Kind="ShuffleVariant" />
                         </Button>
-                        <Button Classes="iconButton navButton">
+                        <Button Classes="iconButton navButton" Command="{Binding ToggleFavoriteCommand}">
                             <materialIcons:MaterialIcon
                                       Width="25"
                                       Height="25"
-                                      Kind="HeartOutline" />
-                        </Button>
-                        <Button Classes="iconButton navButton">
-                            <materialIcons:MaterialIcon
-                                      Width="25"
-                                      Height="25"
-                                      Kind="Heart" />
+                                      Kind="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Favorite, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='HeartOutline,Heart'}" />
                         </Button>
                     </StackPanel>
                 </StackPanel>
@@ -333,8 +311,8 @@
 
             <Border
                       Grid.Column="0"
-                      MaxWidth="300"
-                      MaxHeight="300"
+                      MaxWidth="350"
+                      MaxHeight="350"
                       Margin="10"
                       HorizontalAlignment="Center"
                       VerticalAlignment="Top"
@@ -343,8 +321,8 @@
                     <Panel>
                         <asyncImageLoader:AdvancedImage
                                   Name="imgAlbumArtSmall"
-                                  MaxWidth="300"
-                                  MaxHeight="300"
+                                  MaxWidth="350"
+                                  MaxHeight="350"
                                   Loader="{x:Static app:App.ImageLoaderInstance}"
                                   Source="{Binding Path=PlayersService.SelectedQueue.CurrentItem.Image, Converter={StaticResource MassImageImageConverter}}"
                                   Stretch="Uniform" />
@@ -355,7 +333,7 @@
             <!--  Track Info  -->
             <StackPanel
                       Grid.Column="1"
-                      Margin="10"
+                      Margin="10,10,10,20"
                       VerticalAlignment="Top"
                       Background="Transparent"
                       Spacing="5">
@@ -369,22 +347,26 @@
 
                     <TextBlock
                               HorizontalAlignment="Center"
+                              FontSize="30"
                               FontWeight="Bold"
                               Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Name}"
                               TextTrimming="CharacterEllipsis" />
                     <TextBlock
                               HorizontalAlignment="Center"
+                              FontSize="24"
                               Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Artists[0].Name}"
                               TextTrimming="CharacterEllipsis" />
                 </StackPanel>
 
                 <!--  Quality Badges for Small Display - Each as separate tag  -->
-                <StackPanel
+                <!-- <StackPanel
                           Margin="0,5,0,0"
                           HorizontalAlignment="Center"
                           Orientation="Horizontal"
                           Spacing="4">
-                    <!--  Codec Badge  -->
+                -->
+                <!--  Codec Badge  -->
+                <!--
                     <Border
                               Padding="5,2"
                               Background="#1A1A1A"
@@ -399,7 +381,9 @@
                                   Text="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={StaticResource AudioFormatCodecConverter}}" />
                     </Border>
 
-                    <!--  Sample Rate Badge  -->
+                -->
+                <!--  Sample Rate Badge  -->
+                <!--
                     <Border
                               Padding="5,2"
                               Background="#1A1A1A"
@@ -414,7 +398,9 @@
                                   Text="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={StaticResource AudioFormatSampleRateConverter}}" />
                     </Border>
 
-                    <!--  Bit Depth Badge  -->
+                -->
+                <!--  Bit Depth Badge  -->
+                <!--
                     <Border
                               Padding="5,2"
                               Background="#1A1A1A"
@@ -428,7 +414,7 @@
                                   Foreground="#FFB74D"
                                   Text="{Binding PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat, Converter={StaticResource AudioFormatBitDepthConverter}}" />
                     </Border>
-                </StackPanel>
+                </StackPanel>-->
 
                 <!--  Compact Progress Bar  -->
                 <Grid Margin="5,10,5,0">
@@ -438,14 +424,18 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.ElapsedTime, Converter={StaticResource FriendlyTimeConverter}}" />
-                    <ProgressBar
+
+                    <controls:BindableCommandSlider
                               Grid.Column="1"
-                              Height="10"
-                              Margin="5,0"
+                              Height="32"
+                              Margin="5,0,5,0"
                               Foreground="{Binding ColourService.ColourAccent}"
                               Maximum="100"
                               Minimum="0"
-                              Value="{Binding PlayersService.Progress}" />
+                              PointerPressedCommand="{Binding SeekCommand}"
+                              PointerReleasedCommand="{Binding SeekCommand}"
+                              Value="{Binding PlayersService.Progress, Mode=TwoWay}" />
+
                     <TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Duration, Converter={StaticResource FriendlyTimeConverter}}" />
                 </Grid>
 
@@ -459,41 +449,54 @@
                           Spacing="10">
                     <Button Classes="iconButton navButton" Command="{Binding PlayPreviousCommand}">
                         <materialIcons:MaterialIcon
-                                  Width="30"
-                                  Height="30"
+                                  Width="45"
+                                  Height="45"
                                   Kind="SkipPrevious" />
                     </Button>
                     <Button Classes="iconButton navButton" Command="{Binding PlayerPlayPauseCommand}">
                         <materialIcons:MaterialIcon
-                                  Width="30"
-                                  Height="30"
+                                  Width="45"
+                                  Height="45"
                                   Kind="PlayPause" />
                     </Button>
                     <Button Classes="iconButton navButton" Command="{Binding PlayerNextCommand}">
                         <materialIcons:MaterialIcon
-                                  Width="30"
-                                  Height="30"
+                                  Width="45"
+                                  Height="45"
                                   Kind="SkipNext" />
                     </Button>
                 </StackPanel>
 
 
-                <Grid MaxWidth="400" Margin="0,20,0,0">
+                <Grid
+                          MaxWidth="400"
+                          Margin="0,20,0,0"
+                          HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="0" />
-                    <ProgressBar
+                    <materialIcons:MaterialIcon
+                              Grid.Column="0"
+                              Width="25"
+                              Height="25"
+                              Kind="{Binding PlayersService.SelectedPlayer.VolumeLevel, Converter={StaticResource VolumeLevelToIconConverter}}" />
+                    <Slider
                               Grid.Column="1"
-                              Height="5"
                               Margin="10,0,10,0"
+                              HorizontalAlignment="Stretch"
                               Foreground="{Binding ColourService.ColourAccent}"
+                              IsSnapToTickEnabled="True"
                               Maximum="100"
                               Minimum="0"
-                              Value="{Binding PlayersService.SelectedPlayer.VolumeLevel}" />
-                    <TextBlock Grid.Column="2" Text="{Binding PlayersService.SelectedPlayer.VolumeLevel}" />
+                              TickFrequency="1"
+                              Value="{Binding PlayersService.SelectedPlayer.VolumeLevel}">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="ValueChanged">
+                                <players:VolumeChangedAction TargetObject="{Binding}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+                    </Slider>
                 </Grid>
             </StackPanel>
         </Grid>

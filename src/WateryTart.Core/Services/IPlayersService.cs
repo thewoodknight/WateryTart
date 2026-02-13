@@ -28,4 +28,6 @@ public interface IPlayersService
     Task PlayArtistRadio(Artist artist);
 
     Task PlayerSeek(Player? p, int position);
+    void PlayerRemoveFromFavorites(MediaItemBase item);
+    void PlayerAddToFavorites(MediaItemBase item);
 }
