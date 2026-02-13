@@ -110,7 +110,6 @@ public class TrayService : ITrayService
         _mainWindow.Show();
         _mainWindow.WindowState = WindowState.Normal;
         _mainWindow.Activate();
-        _trayIcon.IsVisible = false;
     }
 
     private void ExitApplication()

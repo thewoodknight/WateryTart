@@ -47,8 +47,11 @@ public partial class MainWindow : Window
             // Initialize tray service
             try
             {
-                _trayService = new TrayService();
-                _trayService.Initialize(this);
+                if (_trayService == null)
+                {
+                    _trayService = new TrayService();
+                    _trayService.Initialize(this);
+                }
             }
             catch (Exception ex)
             {
