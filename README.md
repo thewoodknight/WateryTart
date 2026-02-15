@@ -28,6 +28,10 @@ Raspberry Pi5 w/ Hifiberry Amp4
 ## Platform specific
 Linux ARM x64 can take advantage of GPIO pins for rotary encoders for volume control. This currently uses PINs 17 and 27, with 20 pulses per rotation. Eventually this will all be configurable.
 
+## Raspberry Pi Touch Screen
+Raspbian's Desktop Environment doesn't implement touchscreen gestures like scrolling. As a result, if you're using a touchscreen, don't use the default Rasbian desktop environment. Instead, use something like [KDE Plasma](https://kde.org/plasma-desktop) or [GNOME](https://www.gnome.org/), which do support touchscreen gestures.
+
+
 ## Whats with the name?
 WateryTart is uses Avalonia, which sounds like it comes from Camelot, and "You can't expect to wield supreme executive power just 'cause some watery tart threw a sword at you!".
 
