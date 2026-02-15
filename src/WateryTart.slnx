@@ -9,10 +9,10 @@
   </Configurations>
   <Folder Name="/Solution Items/">
     <File Path="../.gitignore" />
+    <File Path="../README.md" />
   </Folder>
   <Folder Name="/Solution Items/Build/">
-    <File Path="../.github/workflows/dotnet-desktop.yml" />
-    <File Path="../build/build_and_pack_windows.cmd" />
+    <File Path="../.github/workflows/build-and-publish.yml" />
     <File Path="../build/linux_deb_builder.sh" />
   </Folder>
   <Project Path="WateryTart.Core/WateryTart.Core.csproj">

@@ -48,6 +48,7 @@
 		</PackageReference>
 		<PackageReference Include="Sendspin.SDK" />
 		<PackageReference Include="Velopack" />
+		<PackageReference Include="WateryTart.MusicAssistant" />
 		<PackageReference Include="Xaml.Behaviors.Avalonia" />
 
 	</ItemGroup>
