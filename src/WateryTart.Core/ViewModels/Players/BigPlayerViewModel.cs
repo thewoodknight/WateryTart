@@ -12,6 +12,7 @@ using System.Windows.Input;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.Models.Enums;
 using Xaml.Behaviors.SourceGenerators;
 
 namespace WateryTart.Core.ViewModels.Players;
@@ -43,6 +44,10 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
     public IPlayersService PlayersService => _playersService;
     public ICommand PlayingAltMenuCommand { get; set; }
     public ICommand PlayPreviousCommand { get; set; }
+
+    public ICommand PlayerRepeatTrack { get; set; }
+    public ICommand PlayerRepeatQueue { get; set; }
+    public ICommand PlayerRepeatOff { get; set; }
     public RelayCommand<double> SeekCommand { get; }
     public bool ShowBackButton => false;
     public bool ShowMiniPlayer => false;
@@ -71,6 +76,10 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             else
                 PlayersService.PlayerAddToFavorites(item);
         });
+
+        PlayerRepeatQueue = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.All));
+        PlayerRepeatOff = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.Off));
+        PlayerRepeatTrack = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.One));
         PlayPreviousCommand = new RelayCommand(() => PlayersService.PlayerPrevious());
         PlayerNextCommand = new RelayCommand(() => PlayersService.PlayerNext());
         PlayerPlayPauseCommand = new RelayCommand(() => PlayersService.PlayerPlayPause());
@@ -112,6 +121,10 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
                 new TwoLineMenuItemViewModel("Go to Album", item.Album.Name, MaterialIconKind.Album, GoToAlbum),
                 new TwoLineMenuItemViewModel("Go to Artist", item.Artists.FirstOrDefault().Name, MaterialIconKind.Artist, GoToArtist),
                 new MenuItemViewModel("Similar tracks", MaterialIconKind.MusicClefTreble, GoToSimilarTracks),
+                new MenuItemViewModel("Repeat Mode", MaterialIconKind.Repeat, null),
+                new MenuItemViewModel("Repeat Off", MaterialIconKind.RepeatOff, PlayerRepeatOff, true),
+                new MenuItemViewModel("Repeat Entire Queue", MaterialIconKind.RepeatVariant, PlayerRepeatQueue, true),
+                new MenuItemViewModel("Repeat Single Track", MaterialIconKind.Repeat, PlayerRepeatTrack, true),
 
             ], PlayersService.SelectedQueue.CurrentItem);
             MessageBus.Current.SendMessage(menu);

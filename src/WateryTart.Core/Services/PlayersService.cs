@@ -517,19 +517,23 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         return trackViewModel;
     }
 
-    public void PlayerRemoveFromFavorites(MediaItemBase item)
+    public async Task PlayerRemoveFromFavorites(MediaItemBase item)
     {
-        if (item == null) return;
-#pragma warning disable CS4014
-        _ = _massClient.WithWs().RemoveFavoriteItemAsync(item);
-#pragma warning restore CS4014
+        if (item == null) 
+            return;
+        await _massClient.WithWs().RemoveFavoriteItemAsync(item);
     }
 
-    public void PlayerAddToFavorites(MediaItemBase item)
+    public async Task PlayerAddToFavorites(MediaItemBase item)
     {
-        if (item == null) return;
-#pragma warning disable CS4014
-        _ = _massClient.WithWs().AddFavoriteItemAsync(item);
-#pragma warning restore CS4014
+        if (item == null) 
+            return;
+        await _massClient.WithWs().AddFavoriteItemAsync(item);
+    }
+
+
+    public async Task PlayerSetRepeatMode(RepeatMode repeatmode)
+    {
+        await _massClient.WithWs().SetPlayerQueueRepeatAsync(SelectedQueue.QueueId, repeatmode);
     }
 }
