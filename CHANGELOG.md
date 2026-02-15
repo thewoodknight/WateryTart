@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.9](https://github.com/TemuWolverine/WateryTart/compare/v1.0.8...v1.0.9) (2026-02-15)
+
+
+### Bug Fixes
+
+* revert issues with build, split into two files. ([ddd8906](https://github.com/TemuWolverine/WateryTart/commit/ddd8906e7caea7a00e4fc12cded71fc6e0515411))
+
 ## [1.0.8](https://github.com/TemuWolverine/WateryTart/compare/v1.0.7...v1.0.8) (2026-02-15)
 
 
