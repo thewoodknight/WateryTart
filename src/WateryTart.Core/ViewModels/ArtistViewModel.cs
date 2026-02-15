@@ -27,6 +27,7 @@ namespace WateryTart.Core.ViewModels
         public Image? ArtistThumb { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.Type == ImageType.Thumb); } }
         public IScreen HostScreen { get; }
         [Reactive] public partial bool IsBioExpanded { get; set; } = false;
+        [Reactive] public partial bool IsLoading { get; set; }
         public RelayCommand PlayArtistRadioCommand { get; }
         public bool ShowMiniPlayer => true;
         public bool ShowNavigation => true;
@@ -88,7 +89,6 @@ namespace WateryTart.Core.ViewModels
             new MenuItemViewModel("Artist Radio", MaterialIconKind.Radio, new RelayCommand(() => {})),
                 new MenuItemViewModel("Play", MaterialIconKind.Play, new RelayCommand(() => { }))
             ]);
-
 
             menu.AddMenuItem(MenuHelper.AddPlayers(_playersService, Artist));
 

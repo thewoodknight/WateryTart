@@ -8,6 +8,7 @@ namespace WateryTart.Core.ViewModels.Players
 {
     public partial class MiniPlayerViewModel : ReactiveObject, IViewModelBase
     {
+        [Reactive] public partial bool IsLoading { get; set; } = false;
         public string? UrlPathSegment { get; } = "MiniPlayerViewModel";
         public IScreen HostScreen { get; }
         [Reactive] public partial IColourService ColourService { get; set; }

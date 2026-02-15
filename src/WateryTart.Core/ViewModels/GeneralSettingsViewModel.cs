@@ -15,11 +15,15 @@ namespace WateryTart.Core.ViewModels
 {
     public partial class GeneralSettingsViewModel : ReactiveObject, IViewModelBase, IHaveSettings
     {
+        private readonly ILogger _logger;
+        private readonly ISettings _settings;
         private UpdateManager _um;
         private UpdateInfo _update;
-        public IEnumerable<VolumeEventControl> VolumeEventOptions { get; } = (VolumeEventControl[])Enum.GetValues(typeof(VolumeEventControl));
-        private readonly ISettings _settings;
-        private readonly ILogger _logger;
+        public IScreen HostScreen => null;
+        public MaterialIconKind Icon => MaterialIconKind.Cog;
+        [Reactive] public partial string InstalledVersion { get; set; }
+        [Reactive] public partial bool IsLoading { get; set; } = false;
+        [Reactive] public partial string LatestVersion { get; set; }
 
         public VolumeEventControl SelectedVolumeEvent
         {
@@ -31,17 +35,11 @@ namespace WateryTart.Core.ViewModels
             }
         }
 
-        public string Title => string.Empty;
-
         public bool ShowMiniPlayer => false;
-
         public bool ShowNavigation => false;
-
+        public string Title => string.Empty;
         public string? UrlPathSegment => string.Empty;
-
-        public IScreen HostScreen => null;
-
-        public MaterialIconKind Icon => MaterialIconKind.Cog;
+        public IEnumerable<VolumeEventControl> VolumeEventOptions { get; } = (VolumeEventControl[])Enum.GetValues(typeof(VolumeEventControl));
 
         public GeneralSettingsViewModel(ISettings settings, ILoggerFactory loggerFactory)
         {
@@ -61,6 +59,7 @@ namespace WateryTart.Core.ViewModels
                 _logger.LogError(ex, "Failed to initialize UpdateManager");
             }
         }
+
         public async Task CheckForUpdates()
         {
             try
@@ -78,10 +77,5 @@ namespace WateryTart.Core.ViewModels
                 _logger.LogError(ex, "Failed to initialize UpdateManager");
             }
         }
-
-        [Reactive] public partial string LatestVersion { get; set; }
-
-        [Reactive] public partial string InstalledVersion { get; set; }
-
     }
 }

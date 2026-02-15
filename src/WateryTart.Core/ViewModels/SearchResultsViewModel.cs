@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 
 namespace WateryTart.Core.ViewModels;
 
@@ -14,7 +15,7 @@ public partial class SearchResultsViewModel : ReactiveObject, IViewModelBase
     public bool ShowNavigation => true;
     public string Title { get; set; } = string.Empty;
     public string? UrlPathSegment { get; } = string.Empty;
-
+    [Reactive] public partial bool IsLoading { get; set; } = false;
     public SearchResultsViewModel(IScreen hostScreen)
     {
         _hostScreen = hostScreen;

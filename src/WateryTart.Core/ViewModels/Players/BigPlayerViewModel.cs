@@ -36,6 +36,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
     [Reactive] public partial IColourService ColourService { get; set; }
     public required IScreen HostScreen { get; set; }
+    [Reactive] public partial bool IsLoading { get; set; } = false;
     [Reactive] public partial bool IsSmallDisplay { get; set; }
     public ICommand PlayerNextCommand { get; set; }
     public ICommand PlayerPlayPauseCommand { get; set; }

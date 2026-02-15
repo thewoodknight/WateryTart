@@ -18,10 +18,9 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
     private readonly MusicAssistantClient _massClient;
     private readonly IPlayersService _playersService;
     private readonly ILogger _logger;
-
+    [Reactive] public partial bool IsLoading { get; set; } = false;
     [Reactive] public partial string Title { get; set; }
     [Reactive] public partial ObservableCollection<PlaylistViewModel> Playlists { get; set; } = new();
-    [Reactive] public partial bool IsLoading { get; set; }
     [Reactive] public partial bool HasMoreItems { get; set; } = true;
     [Reactive] public partial int CurrentOffset { get; set; } = 0;
     

@@ -23,7 +23,7 @@ namespace WateryTart.Core.ViewModels
         public bool ShowNavigation => true;
         [Reactive] public partial Playlist Playlist { get; set; }
         [Reactive] public partial string? Title { get; set; }
-
+        [Reactive] public partial bool IsLoading { get; set; } = false;
         public ObservableCollection<TrackViewModel>? Tracks { get; set; }
         public RelayCommand<Item> PlayCommand { get; }
         public RelayCommand PlaylistAltMenuCommand { get; }

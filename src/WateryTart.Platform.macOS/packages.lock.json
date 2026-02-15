@@ -601,6 +601,7 @@
           "Avalonia.Themes.Fluent": "[11.3.12, )",
           "AvaloniaUI.DiagnosticsSupport": "[2.1.1, )",
           "CommunityToolkit.Mvvm": "[8.4.0, )",
+          "Deadpikle.AvaloniaProgressRing": "[0.10.10, )",
           "Iot.Device.Bindings": "[4.1.0, )",
           "Karambolo.Extensions.Logging.File": "[4.1.0, )",
           "Material.Icons.Avalonia": "[2.4.1, )",
@@ -612,7 +613,6 @@
           "System.Device.Gpio": "[4.1.0, )",
           "Velopack": "[0.0.1298, )",
           "WateryTart.MusicAssistant": "[2.2.1, )",
-          "Websocket.Client": "[5.3.0, )",
           "XVolume": "[0.1.1, )",
           "Xaml.Behaviors.Avalonia": "[11.3.9.5, )",
           "Xaml.Behaviors.Interactivity": "[11.3.9.5, )",
@@ -679,6 +679,15 @@
         "requested": "[8.4.0, )",
         "resolved": "8.4.0",
         "contentHash": "tqVU8yc/ADO9oiTRyTnwhFN68hCwvkliMierptWOudIAvWY1mWCh5VFh+guwHJmpMwfg0J0rY+yyd5Oy7ty9Uw=="
+      },
+      "Deadpikle.AvaloniaProgressRing": {
+        "type": "CentralTransitive",
+        "requested": "[0.10.10, )",
+        "resolved": "0.10.10",
+        "contentHash": "0JYNdCQgDegmhaBfNcbQ73UeaTA8yNvGKATBf1gYwFx3V2zxPSzjpXFzHiwO3poXZhmoaMxolbEWvlcxS/pDUg==",
+        "dependencies": {
+          "Avalonia": "11.2.1"
+        }
       },
       "Iot.Device.Bindings": {
         "type": "CentralTransitive",

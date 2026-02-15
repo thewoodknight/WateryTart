@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ReactiveUI;
-
+using ReactiveUI.SourceGenerators;
 namespace WateryTart.Core.ViewModels;
 
-public class SettingsViewModel : ReactiveObject, IViewModelBase
+public partial class SettingsViewModel : ReactiveObject, IViewModelBase
 {
+    [Reactive] public partial bool IsLoading { get; set; }
     private readonly IScreen _screen;
     public ObservableCollection<IHaveSettings> SettingsProviders { get; set; }
     public string? UrlPathSegment { get; } = "settings";

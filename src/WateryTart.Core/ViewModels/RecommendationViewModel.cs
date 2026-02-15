@@ -22,7 +22,7 @@ public partial class RecommendationViewModel : ReactiveObject, IViewModelBase
     public RelayCommand<Item> ClickedCommand { get; }
     public bool ShowMiniPlayer { get => true; }
     public bool ShowNavigation => true;
-
+    [Reactive] public partial bool IsLoading { get; set; } = false;
     [Reactive] public partial ObservableCollection<IViewModelBase> Items { get; set; } = new ObservableCollection<IViewModelBase>();
 
     public RecommendationViewModel(IScreen screen, MusicAssistantClient massClient, ISettings settings)

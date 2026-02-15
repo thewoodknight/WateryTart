@@ -15,4 +15,5 @@ public interface IViewModelBase : IRoutableViewModel
     bool ShowMiniPlayer { get; }
 
     bool ShowNavigation { get; }
+    bool IsLoading { get; set; }
 }

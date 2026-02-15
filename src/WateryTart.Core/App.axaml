@@ -272,7 +272,7 @@
         <FluentTheme />
         <materialIcons:MaterialIconStyles />
         <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
-
+        <StyleInclude Source="avares://AvaloniaProgressRing/Styles/ProgressRing.xaml" />
         <Style Selector="materialIcons|MaterialIcon.spinner">
             <Style.Animations>
                 <Animation IterationCount="INFINITE" Duration="0:0:2">

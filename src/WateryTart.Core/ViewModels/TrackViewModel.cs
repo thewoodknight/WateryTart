@@ -1,26 +1,27 @@
+using CommunityToolkit.Mvvm.Input;
 using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using System;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.Services;
+using WateryTart.Core.ViewModels.Menus;
 using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Models;
-using WateryTart.Core.ViewModels.Menus;
 
 namespace WateryTart.Core.ViewModels;
 
-public class TrackViewModel : ReactiveObject, IViewModelBase, IDisposable
+public partial class TrackViewModel : ReactiveObject, IViewModelBase, IDisposable
 {
+    private readonly CompositeDisposable _disposables = new CompositeDisposable();
     private readonly MusicAssistantClient _massClient;
     private readonly IPlayersService _playersService;
     private readonly IScreen _screen;
-    private readonly CompositeDisposable _disposables = new CompositeDisposable();
-
     private bool _isNowPlaying;
     private Item? _track = null;
     public IScreen HostScreen { get; }
+    [Reactive] public partial bool IsLoading { get; set; }
 
     public bool IsNowPlaying
     {

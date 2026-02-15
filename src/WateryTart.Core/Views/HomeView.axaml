@@ -34,55 +34,59 @@
         </Style>
     </UserControl.Styles>
 
-    <ListBox
-              x:Name="lbRecommendations"
-              Background="Transparent"
-              ItemsSource="{Binding Recommendations}">
-        <ListBox.GestureRecognizers>
-            <ScrollGestureRecognizer CanVerticallyScroll="True" />
-        </ListBox.GestureRecognizers>
-        <ListBox.ItemTemplate>
-            <DataTemplate>
-                <StackPanel>
-                    <Border
-                              Background="Transparent"
-                              BorderBrush="#66FFFFFF"
-                              BorderThickness="0,0,0,1">
-                        <Interaction.Behaviors>
-                            <EventTriggerBehavior EventName="Tapped">
-                                <InvokeCommandAction Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).RecommendationListCommand}" CommandParameter="{Binding Path=.}" />
-                            </EventTriggerBehavior>
-                        </Interaction.Behaviors>
-                        <Grid>
-                            <TextBlock
-                                      VerticalAlignment="Center"
-                                      FontSize="16"
-                                      FontWeight="Bold"
-                                      Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" />
-                            <materialIcons:MaterialIcon
-                                      Width="25"
-                                      Height="25"
-                                      HorizontalAlignment="Right"
-                                      Kind="ChevronRight" />
-                        </Grid>
-                    </Border>
+    <Grid>
 
-                    <ItemsControl
-                              Padding="0"
-                              Background="{x:Null}"
-                              Classes="hoverable"
-                              ItemsSource="{Binding Items}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.DataTemplates>
-                            <StaticResource ResourceKey="smallViewSelector" />
-                        </ItemsControl.DataTemplates>
-                    </ItemsControl>
-                </StackPanel>
-            </DataTemplate>
-        </ListBox.ItemTemplate>
-    </ListBox>
+        <!--  Recommendations List  -->
+        <ListBox
+                  x:Name="lbRecommendations"
+                  Background="Transparent"
+                  ItemsSource="{Binding Recommendations}">
+            <ListBox.GestureRecognizers>
+                <ScrollGestureRecognizer CanVerticallyScroll="True" />
+            </ListBox.GestureRecognizers>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Border
+                                  Background="Transparent"
+                                  BorderBrush="#66FFFFFF"
+                                  BorderThickness="0,0,0,1">
+                            <Interaction.Behaviors>
+                                <EventTriggerBehavior EventName="Tapped">
+                                    <InvokeCommandAction Command="{Binding #lbRecommendations.((vm:HomeViewModel)DataContext).RecommendationListCommand}" CommandParameter="{Binding Path=.}" />
+                                </EventTriggerBehavior>
+                            </Interaction.Behaviors>
+                            <Grid>
+                                <TextBlock
+                                          VerticalAlignment="Center"
+                                          FontSize="16"
+                                          FontWeight="Bold"
+                                          Text="{Binding Title, Converter={StaticResource ToUpperValueConverter}}" />
+                                <materialIcons:MaterialIcon
+                                          Width="25"
+                                          Height="25"
+                                          HorizontalAlignment="Right"
+                                          Kind="ChevronRight" />
+                            </Grid>
+                        </Border>
+
+                        <ItemsControl
+                                  Padding="0"
+                                  Background="{x:Null}"
+                                  Classes="hoverable"
+                                  ItemsSource="{Binding Items}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.DataTemplates>
+                                <StaticResource ResourceKey="smallViewSelector" />
+                            </ItemsControl.DataTemplates>
+                        </ItemsControl>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
 </UserControl>

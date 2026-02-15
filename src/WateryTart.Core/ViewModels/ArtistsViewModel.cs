@@ -1,10 +1,10 @@
-﻿using ReactiveUI;
+﻿using CommunityToolkit.Mvvm.Input;
+using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.Services;
 using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.WsExtensions;
@@ -23,7 +23,7 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
     [Reactive] public partial bool IsLoading { get; set; }
     [Reactive] public partial bool HasMoreItems { get; set; } = true;
     [Reactive] public partial int CurrentOffset { get; set; } = 0;
-    
+
     private const int PageSize = 50;
 
     public RelayCommand<ArtistViewModel> ClickedCommand { get; }
@@ -74,7 +74,7 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
         try
         {
             IsLoading = true;
-            
+
             var response = await _massClient.WithWs().GetArtistsAsync(limit: PageSize, offset: CurrentOffset);
 
             if (response?.Result != null)
@@ -85,7 +85,7 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
                 }
 
                 HasMoreItems = response.Result.Count == PageSize;
-                
+
                 if (HasMoreItems)
                 {
                     CurrentOffset += PageSize;

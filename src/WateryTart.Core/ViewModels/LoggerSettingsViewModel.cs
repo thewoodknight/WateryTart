@@ -30,6 +30,7 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
     [Reactive] public partial bool EnableFileLogging { get; set; }
     public IScreen HostScreen { get; }
     public MaterialIconKind Icon => MaterialIconKind.History;
+    [Reactive] public partial bool IsLoading { get; set; } = false;
     [Reactive] public partial bool IsSaving { get; set; }
     [Reactive] public partial string LogFilePath { get; set; }
     [Reactive] public partial string LogFileSize { get; set; }

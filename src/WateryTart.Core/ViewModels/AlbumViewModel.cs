@@ -24,6 +24,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     public bool ShowNavigation => true;
     [Reactive] public partial string Title { get; set; } = string.Empty;
     [Reactive] public partial Album? Album { get; set; }
+    [Reactive] public partial bool IsLoading { get; set; }
 
     public ObservableCollection<TrackViewModel> Tracks { get; set; }
     public AsyncRelayCommand PlayAlbumCommand { get; }

@@ -16,7 +16,7 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
     [Reactive] public partial ObservableCollection<Player> Players { get; set; }
-
+    [Reactive] public partial bool IsLoading { get; set; } = false;
     public Player? SelectedPlayer
     {
         get => field;

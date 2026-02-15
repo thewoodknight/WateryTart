@@ -34,6 +34,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
     public bool ShowMiniPlayer { get => true; }
     public bool ShowNavigation => true;
 
+    [Reactive] public partial bool IsLoading { get; set; }
     [Reactive] public partial string Title { get; set; } = "Search";
     [Reactive] public partial string SearchTerm { get; set; }
     [Reactive] public partial bool IsSearching { get; set; }

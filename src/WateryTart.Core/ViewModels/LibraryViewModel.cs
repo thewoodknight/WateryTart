@@ -10,7 +10,7 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class LibraryViewModel : ReactiveObject, IViewModelBase, IActivatableViewModel
+public partial class LibraryViewModel : ReactiveObject, IViewModelBase//, IActivatableViewModel
 {
     private ILogger<LibraryViewModel> _logger;
     private readonly MusicAssistantClient _massClient;
@@ -20,8 +20,8 @@ public partial class LibraryViewModel : ReactiveObject, IViewModelBase, IActivat
     [Reactive] public partial ObservableCollection<LibraryItem> Items { get; set; }
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
-    // CORRECT:
-    public ViewModelActivator Activator { get; } = new();
+    [Reactive] public partial bool IsLoading { get; set; } = false;
+//    public ViewModelActivator Activator { get; } = new();
 
     public LibraryViewModel(MusicAssistantClient massClient, IScreen screen, ILoggerFactory loggerFactory)
     {

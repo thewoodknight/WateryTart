@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,18 +18,19 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels
 {
-    public class HomeViewModel : ReactiveObject, IViewModelBase
+    public partial class HomeViewModel : ReactiveObject, IViewModelBase
     {
         private readonly ObservableCollection<RecommendationDisplayModel> _displayRecommendations;
+        private readonly ILogger<HomeViewModel> _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly MusicAssistantClient _massClient;
         private readonly IPlayersService _playersService;
-        private readonly ILoggerFactory _loggerFactory;
         private readonly ISettings _settings;
-        private readonly ILogger<HomeViewModel> _logger;
         public RelayCommand<Item> ClickedCommand { get; }
 
         public IScreen HostScreen => field;
 
+        [Reactive] public partial bool IsLoading { get; set; }
         public RelayCommand<RecommendationDisplayModel> RecommendationListCommand { get; }
         public ObservableCollection<RecommendationDisplayModel> Recommendations => _displayRecommendations;
         public bool ShowMiniPlayer => true;
@@ -66,7 +68,7 @@ namespace WateryTart.Core.ViewModels
             {
                 if (App.Container is not null && item is
                     {
-                        ItemId: not null, 
+                        ItemId: not null,
                         Provider: not null
                     })
                     switch (item.MediaType)
@@ -101,44 +103,52 @@ namespace WateryTart.Core.ViewModels
 
         private async Task Load()
         {
-            var recommendationResponse = await _massClient.WithWs().GetMusicRecommendationsAsync();
-            if (recommendationResponse?.Result == null)
+            IsLoading = true;
+            try
             {
-                return;
-            }
-
-            var nonEmptyRecommendations = recommendationResponse.Result
-                .Where(r => r?.Items != null && r.Items.Any())
-                .ToList();
-
-            foreach (var n in nonEmptyRecommendations)
-            {
-                SourceRecommendations.Add(n);
-
-                if (n.Items == null)
-                    continue;
-
-                var x = new Recommendation
+                var recommendationResponse = await _massClient.WithWs().GetMusicRecommendationsAsync();
+                if (recommendationResponse?.Result == null)
                 {
-                    ItemId = n.ItemId,
-                    Name = n.Name,
-                    MediaType = n.MediaType,
-                    Items = n.Items.Count > 4
-                        ? n.Items.Take(4).ToList()
-                        : new List<Item>(n.Items) // Create new list
-                };
-
-                // Convert items to appropriate view models based on MediaType
-                var viewModels = new List<object>();
-                foreach (var item in x.Items)
-                {
-                    IViewModelBase? viewModel = item.CreateViewModelForItem();
-                    if (viewModel != null)
-                        viewModels.Add(viewModel);
+                    return;
                 }
 
-                var displayModel = new RecommendationDisplayModel(x, viewModels);
-                _displayRecommendations.Add(displayModel);
+                var nonEmptyRecommendations = recommendationResponse.Result
+                    .Where(r => r?.Items != null && r.Items.Any())
+                    .ToList();
+
+                foreach (var n in nonEmptyRecommendations)
+                {
+                    SourceRecommendations.Add(n);
+
+                    if (n.Items == null)
+                        continue;
+
+                    var x = new Recommendation
+                    {
+                        ItemId = n.ItemId,
+                        Name = n.Name,
+                        MediaType = n.MediaType,
+                        Items = n.Items.Count > 4
+                            ? n.Items.Take(4).ToList()
+                            : new List<Item>(n.Items) // Create new list
+                    };
+
+                    // Convert items to appropriate view models based on MediaType
+                    var viewModels = new List<object>();
+                    foreach (var item in x.Items)
+                    {
+                        IViewModelBase? viewModel = item.CreateViewModelForItem();
+                        if (viewModel != null)
+                            viewModels.Add(viewModel);
+                    }
+
+                    var displayModel = new RecommendationDisplayModel(x, viewModels);
+                    _displayRecommendations.Add(displayModel);
+                }
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
     }

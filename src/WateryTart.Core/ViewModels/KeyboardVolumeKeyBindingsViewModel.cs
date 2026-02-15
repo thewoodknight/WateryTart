@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using Splat;
 using System;
 using System.Reactive;
@@ -8,7 +9,7 @@ using Material.Icons;
 
 namespace WateryTart.Core.ViewModels;
 
-public class KeyboardVolumeKeyBindingsViewModel : ReactiveObject, IViewModelBase, IHaveSettings
+public partial class KeyboardVolumeKeyBindingsViewModel : ReactiveObject, IViewModelBase, IHaveSettings
 {
     private string _playBinding = "P";
     private string _nextBinding = "N";
@@ -24,7 +25,7 @@ public class KeyboardVolumeKeyBindingsViewModel : ReactiveObject, IViewModelBase
     public string Title { get; set; } = "Keyboard Bindings";
     public bool ShowMiniPlayer => false;
     public bool ShowNavigation => false;
-
+    [Reactive] public partial bool IsLoading { get; set; } = false;
     public string PlayBinding
     {
         get => _playBinding;

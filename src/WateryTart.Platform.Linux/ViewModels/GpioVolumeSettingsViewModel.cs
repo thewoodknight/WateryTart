@@ -1,17 +1,18 @@
 ﻿using Material.Icons;
 using ReactiveUI;
+using ReactiveUI.SourceGenerators;
 using WateryTart.Core;
 using WateryTart.Core.ViewModels;
 
 namespace WateryTart.Platform.Linux.ViewModels;
 
-public class GpioVolumeSettingsViewModel : ReactiveObject, IViewModelBase, IHaveSettings
+public partial class GpioVolumeSettingsViewModel : ReactiveObject, IViewModelBase, IHaveSettings
 {
     private bool _isEnabled;
     private int _pinA = 17;
     private int _pinB = 27;
     private int _pulsesPerTurn = 20;
-
+    [Reactive] public partial bool IsLoading { get; set; } = false;
     public string? UrlPathSegment => null;
     public IScreen HostScreen { get; }
     public string Title { get; set; } = "GPIO Settings";

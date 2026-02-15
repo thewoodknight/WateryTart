@@ -54,6 +54,7 @@
 		</PackageReference>
 		<PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="Deadpikle.AvaloniaProgressRing" />
 		<PackageReference Include="Iot.Device.Bindings" />
 		<PackageReference Include="Karambolo.Extensions.Logging.File" />
 		<PackageReference Include="Material.Icons.Avalonia" />
