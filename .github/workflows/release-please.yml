@@ -22,5 +22,7 @@ jobs:
         id: release
         with:
           release-type: simple
+          token: ${{ secrets.stupid_release_please_trigger }}
+
         env: 
           GITHUB_TOKEN: ${{ secrets.stupid_release_please_trigger }}
