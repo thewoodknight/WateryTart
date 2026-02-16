@@ -31,11 +31,11 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
 
-    public PlaylistsViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService, ILogger logger)
+    public PlaylistsViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;
         _playersService = playersService;
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<PlaylistsViewModel>();
         HostScreen = screen;
         Title = "Playlists";
 
