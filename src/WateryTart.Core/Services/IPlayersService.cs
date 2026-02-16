@@ -17,7 +17,7 @@ public interface IPlayersService
     SourceCache<QueuedItem, string> QueuedItems { get; set; }
     Player? SelectedPlayer { get; set; }
     Task GetPlayers();
-    Task PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null, PlayMode mode = PlayMode.Play, bool RadioMode = false);
+    Task PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null, PlayMode mode = PlayMode.Replace, bool RadioMode = false);
     
     Task PlayerVolume(int volume, Player? p = null);
     Task PlayerVolumeDown(Player? p = null);
