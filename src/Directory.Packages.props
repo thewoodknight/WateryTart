@@ -57,7 +57,7 @@
     <PackageVersion Include="System.Device.Gpio" Version="4.1.0" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
     <PackageVersion Include="Velopack" Version="0.0.1298" />
-    <PackageVersion Include="WateryTart.MusicAssistant" Version="3.0.0" />
+    <PackageVersion Include="WateryTart.MusicAssistant" Version="3.0.1" />
     <PackageVersion Include="Websocket.Client" Version="5.3.0" />
     <PackageVersion Include="Xaml.Behaviors.Interactions" Version="11.3.9.4" />
     <PackageVersion Include="Xaml.Behaviors.SourceGenerators" Version="11.3.9.4" />
