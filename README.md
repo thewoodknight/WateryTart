@@ -1,13 +1,9 @@
-# WateryTart, a MediaAssistant Client
+# WateryTart
 > Disclaimer: This is an unofficial project and is not affiliated with, endorsed by, or associated with the Music Assistant project.
-> It is really just a proof of concept that has gotten out of hand - I'm very much a hobbyist coder, so I won't be surprised if I haven't somehow invented the definitive example of 'Worst Practices'
 
-Please see the Issues for some of the things not yet implemented. There is a long list.
-
-## Goals
-This is aimed as a Plexamp-like experience for MediaAssistant, with a personal focus on Windows and Linux/RaspberryPi on a 5" touch screen.
-
-While there is an Android project, this is mostly provided through Avalonia's crossplatform project setup and is currently not actively being tested/developed for Android.
+## Overview
+WateryTart is a badly named, open-source, multi-platform (Windows, Linux, Linux-arm, Mac) Plexamp-like experience for [Music Assistant](https://www.music-assistant.io/).
+Full library control, and Sendspin client for perfect audio playback.
 
 Windows  
 <img src="https://github.com/user-attachments/assets/d236796a-8e50-48ff-811b-0df6037d08de" width="300" /> <img src="https://github.com/user-attachments/assets/85e48cb2-788e-48ac-804d-069601fa1630" width="300" />
@@ -15,26 +11,33 @@ Windows
 Raspberry Pi5 w/ Hifiberry Amp4  
 <img src="https://github.com/user-attachments/assets/c75337c9-f48c-4ac3-a268-8214215ad99d" width="300" />
 <img src="https://github.com/user-attachments/assets/e985a9c7-9882-4061-aaa9-4a04b1c84014" width="300" />
+
 ## Download & Install
+### Options
+* [Windows x64 ](https://github.com/TemuWolverine/WateryTart/releases/latest/download/WateryTart-win-x64-Setup.exe) ([Portable](https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart-win-x64-Portable.zip))
+* [Linux x64](https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart-linux-x64.AppImage) 
+* [Linux ARM x64](https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart-linux-arm64.AppImage) ie for Raspberry Pi 5
+* [Mac](https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart.macOS-arm64.dmg) 
 
 ### Requirements
-- [.NET 10.0 Runtime](https://dotnet.microsoft.com/download/dotnet/10.0)
+All installers should be self contained and have no external dependencies. The only requirement is that you have a Music Assistant instance running somewhere on your network.
 
-### Options
-* Windows x64
-* Linux x64
-* Linux ARM x64 ie for Raspberry Pi 5
+## Notes
+### Updates
+Win-x64, Linux-x64 and Linux-arm64 all feature autoupdates through Velopack. Unfortunately I do not have access to a mac to test the workflow properly, so it still relies on manual updating.
 
-## Platform specific
-Linux ARM x64 can take advantage of GPIO pins for rotary encoders for volume control. This currently uses PINs 17 and 27, with 20 pulses per rotation. Eventually this will all be configurable.
-
-## Raspberry Pi Touch Screen
-Raspbian's Desktop Environment doesn't implement touchscreen gestures like scrolling. As a result, if you're using a touchscreen, don't use the default Rasbian desktop environment. Instead, use something like [KDE Plasma](https://kde.org/plasma-desktop) or [GNOME](https://www.gnome.org/), which do support touchscreen gestures.
+### Raspberry Pi
+Raspbian's default Desktop Environment doesn't implement touchscreen gestures like scrolling. As a result, if you're using a touchscreen, don't use the default Rasbian desktop environment. Instead, use something like [KDE Plasma](https://kde.org/plasma-desktop) or [GNOME](https://www.gnome.org/), which do support touchscreen gestures.
 
 
-## Whats with the name?
+### Whats with the name?
 WateryTart is uses Avalonia, which sounds like it comes from Camelot, and "You can't expect to wield supreme executive power just 'cause some watery tart threw a sword at you!".
 
-## License
+### License
 
 MIT License — see [LICENSE](LICENSE) for details.
+
+
+
+
+
