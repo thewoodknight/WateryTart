@@ -7,6 +7,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
+using WateryTart.Core.ViewModels.Popups;
 using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Models;
 
@@ -69,13 +70,13 @@ public partial class TrackViewModel : ReactiveObject, IViewModelBase, IDisposabl
         TrackFullViewCommand = new RelayCommand(() =>
         {
             if (Track != null)
-                MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(_playersService, Track));
+                MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(_playersService, Track));
         });
 
         TrackAltMenuCommand = new RelayCommand(() =>
         {
             if (Track != null)
-                MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(_playersService, Track));
+                MessageBus.Current.SendMessage< IPopupViewModel>(MenuHelper.BuildStandardPopup(_playersService, Track));
         });
     }
 

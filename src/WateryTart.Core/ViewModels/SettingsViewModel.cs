@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using WateryTart.Core.Settings;
 namespace WateryTart.Core.ViewModels;
 
 public partial class SettingsViewModel : ReactiveObject, IViewModelBase

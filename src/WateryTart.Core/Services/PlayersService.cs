@@ -17,6 +17,7 @@ using WateryTart.Core.Extensions;
 using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels;
 using WateryTart.Core.ViewModels.Menus;
+using WateryTart.Core.ViewModels.Popups;
 using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Events;
 using WateryTart.MusicAssistant.Models;
@@ -379,7 +380,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
             _logger.LogInformation("No player was selected, present popup to pick");
             var players = MenuHelper.AddPlayers(this, t);
             var menu = new MenuViewModel(players);
-            MessageBus.Current.SendMessage(menu);
+            MessageBus.Current.SendMessage<IPopupViewModel>(menu);
         }
         else
         {

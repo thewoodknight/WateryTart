@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls.Primitives;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Material.Icons;
@@ -9,8 +10,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using UnitsNet;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
+using WateryTart.Core.ViewModels.Popups;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
 using Xaml.Behaviors.SourceGenerators;
@@ -44,11 +47,12 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
     public IPlayersService PlayersService => _playersService;
     public ICommand PlayingAltMenuCommand { get; set; }
     public ICommand PlayPreviousCommand { get; set; }
-
     public ICommand PlayerRepeatTrack { get; set; }
     public ICommand PlayerRepeatQueue { get; set; }
     public ICommand PlayerRepeatOff { get; set; }
     public RelayCommand<double> SeekCommand { get; }
+
+    public ICommand ShowTrackInfo { get; set; }
     public bool ShowBackButton => false;
     public bool ShowMiniPlayer => false;
     public bool ShowNavigation => false;
@@ -58,6 +62,13 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
     public BigPlayerViewModel(IPlayersService playersService, IScreen screen, IColourService colourService)
     {
+        ShowTrackInfo = new RelayCommand(() =>
+        {
+            MessageBus.Current.SendMessage<IPopupViewModel>(new TrackInfoViewModel(PlayersService.SelectedQueue.CurrentItem.StreamDetails));
+
+            Console.WriteLine("got here");
+        });
+
         SeekCommand = new RelayCommand<double>((s) =>
         {
             if (s == 0)
@@ -127,7 +138,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
                 new MenuItemViewModel("Repeat Single Track", MaterialIconKind.Repeat, PlayerRepeatTrack, true),
 
             ], PlayersService.SelectedQueue.CurrentItem);
-            MessageBus.Current.SendMessage(menu);
+            MessageBus.Current.SendMessage<IPopupViewModel>(menu);
         });
         _playersService = playersService;
         ColourService = colourService;

@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using ReactiveUI.SourceGenerators;
 using WateryTart.MusicAssistant.Models;
+using WateryTart.Core.ViewModels.Popups;
 
 namespace WateryTart.Core.ViewModels.Menus;
 
-public partial class MenuViewModel : ReactiveObject, ISmallViewModelBase
+public partial class MenuViewModel : ReactiveObject, IPopupViewModel
 {
     [Reactive] public partial object HeaderItem { get; set; }
     public List<IMenuItemViewModel> MenuItems { get; set; } = new List<IMenuItemViewModel>();
@@ -16,6 +17,8 @@ public partial class MenuViewModel : ReactiveObject, ISmallViewModelBase
     public string Title { get; set; } = string.Empty;
     public MaterialIconKind Icon { get; } = MaterialIconKind.Sword;
     public string? UrlPathSegment { get; } = string.Empty;
+
+    public string Message => throw new System.NotImplementedException();
 
     public MenuViewModel(IEnumerable<IMenuItemViewModel>? menuItems = null, object headerItem = null)
     {

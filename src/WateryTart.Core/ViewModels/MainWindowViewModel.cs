@@ -13,6 +13,7 @@ using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Core.ViewModels.Players;
 using WateryTart.MusicAssistant;
 using Xaml.Behaviors.SourceGenerators;
+using WateryTart.Core.ViewModels.Popups;
 
 namespace WateryTart.Core.ViewModels;
 
@@ -45,7 +46,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     public RoutingState Router { get; } = new();
     public ISettings Settings => _settings;
     [Reactive] public partial bool ShowSlideupMenu { get; set; }
-    [Reactive] public partial ReactiveObject? SlideupMenu { get; set; } = new();
+    [Reactive] public partial IPopupViewModel? SlideupMenu { get; set; }
     [Reactive] public partial string Title { get; set; }
 
     public MainWindowViewModel(MusicAssistantClient massClient, IPlayersService playersService, ISettings settings, IColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory)
@@ -109,7 +110,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
 
         MessageBus.Current.Listen<FromLoginMessage>().Subscribe(x => { _ = Connect(); });
 
-        MessageBus.Current.Listen<MenuViewModel>()
+        MessageBus.Current.Listen<IPopupViewModel>()
             .Subscribe(
                 x =>
                 {

@@ -10,6 +10,7 @@ using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.WsExtensions;
 using WateryTart.MusicAssistant.Models;
 using CommunityToolkit.Mvvm.Input;
+using WateryTart.Core.ViewModels.Popups;
 
 namespace WateryTart.Core.ViewModels
 {
@@ -45,7 +46,7 @@ namespace WateryTart.Core.ViewModels
 
             PlaylistAltMenuCommand = new RelayCommand(() =>
             {
-                MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(playersService, Playlist));
+                MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(playersService, Playlist));
             });
 
             PlayCommand = new RelayCommand<Item>((i) => { _playersService.PlayItem(Playlist as MediaItemBase); });

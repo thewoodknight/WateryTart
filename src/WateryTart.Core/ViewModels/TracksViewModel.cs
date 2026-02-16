@@ -10,6 +10,7 @@ using WateryTart.Core.ViewModels.Menus;
 using WateryTart.MusicAssistant;
 using CommunityToolkit.Mvvm.Input;
 using WateryTart.MusicAssistant.WsExtensions;
+using WateryTart.Core.ViewModels.Popups;
 
 namespace WateryTart.Core.ViewModels;
 
@@ -47,7 +48,7 @@ public partial class TracksViewModel : ReactiveObject, IViewModelBase
             if (item == null)
                 return;
 
-            MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(_playersService, item.Track));
+            MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(_playersService, item.Track));
         }, item => item != null);
 
         LoadMoreCommand = new AsyncRelayCommand(LoadMoreAsync, CanLoadMore);

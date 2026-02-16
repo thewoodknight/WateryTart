@@ -12,6 +12,7 @@ using WateryTart.MusicAssistant.WsExtensions;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
 using Xaml.Behaviors.SourceGenerators;
+using WateryTart.Core.ViewModels.Popups;
 
 namespace WateryTart.Core.ViewModels
 {
@@ -68,7 +69,7 @@ namespace WateryTart.Core.ViewModels
 
                 menu.AddMenuItem(MenuHelper.AddPlayers(_playersService, Artist));
 
-                MessageBus.Current.SendMessage(menu);
+                MessageBus.Current.SendMessage<IPopupViewModel>(menu);
             });
 
             PlayArtistRadioCommand = new RelayCommand(() =>
@@ -92,7 +93,7 @@ namespace WateryTart.Core.ViewModels
 
             menu.AddMenuItem(MenuHelper.AddPlayers(_playersService, Artist));
 
-            MessageBus.Current.SendMessage(menu);
+            MessageBus.Current.SendMessage<IPopupViewModel>(menu);
         }
 
         [GenerateTypedAction]

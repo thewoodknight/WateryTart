@@ -11,6 +11,7 @@ using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
 using WateryTart.MusicAssistant.WsExtensions;
+using WateryTart.Core.ViewModels.Popups;
 
 namespace WateryTart.Core.ViewModels;
 
@@ -45,7 +46,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
             if (Album != null)
                 if (_playersService.SelectedPlayer == null)
                 {
-                    MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(_playersService, Album));
+                    MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(_playersService, Album));
                     await Task.CompletedTask;
                 }
                 else
@@ -68,7 +69,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         });
         AlbumAltMenuCommand = new RelayCommand(() =>
         {
-            MessageBus.Current.SendMessage(MenuHelper.BuildStandardPopup(playersService, Album));
+            MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(playersService, Album));
         });
     }
 

@@ -1,4 +1,5 @@
-﻿<UserControl
+﻿
+<UserControl
           x:Class="WateryTart.Core.Views.Players.BigPlayerView"
           xmlns="https://github.com/avaloniaui"
           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -98,29 +99,35 @@
                     </Grid>
 
                     <StackPanel Margin="0,0,0,5" Background="Transparent">
-                        <Interaction.Behaviors>
-                            <EventTriggerBehavior EventName="Tapped">
-                                <vm:ClickAction Command="{Binding PlayingAltMenuCommand}" />
-                            </EventTriggerBehavior>
-                        </Interaction.Behaviors>
+                        <StackPanel Background="Transparent">
+                            <Interaction.Behaviors>
+                                <EventTriggerBehavior EventName="Tapped">
+                                    <vm:ClickAction Command="{Binding PlayingAltMenuCommand}" />
+                                </EventTriggerBehavior>
+                            </Interaction.Behaviors>
 
-                        <TextBlock
-                                  HorizontalAlignment="Center"
-                                  FontSize="18"
-                                  Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Artists[0].Name}" />
-                        <TextBlock
-                                  HorizontalAlignment="Center"
-                                  FontSize="20"
-                                  FontWeight="Bold"
-                                  Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Name}" />
-                        <TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Album.Name}" />
-
-                        <!--  Quality Badges - Each as separate tag  -->
+                            <TextBlock
+                                      HorizontalAlignment="Center"
+                                      FontSize="20"
+                                      FontWeight="Bold"
+                                      Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Name}" />
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Album.Name}" />
+                            <TextBlock
+                                      HorizontalAlignment="Center"
+                                      FontSize="18"
+                                      Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Artists[0].Name}" />
+                            <!--  Quality Badges - Each as separate tag  -->
+                        </StackPanel>
                         <StackPanel
                                   Margin="0,20,0,10"
                                   HorizontalAlignment="Center"
                                   Orientation="Horizontal"
                                   Spacing="6">
+                            <Interaction.Behaviors>
+                                <EventTriggerBehavior EventName="Tapped">
+                                    <vm:ClickAction Command="{Binding ShowTrackInfo}" />
+                                </EventTriggerBehavior>
+                            </Interaction.Behaviors>
                             <!--  Codec Badge (FLAC, MP3, OPUS, etc.)  -->
                             <Border
                                       Padding="8,3"
@@ -215,7 +222,7 @@
                                   Maximum="100"
                                   Minimum="0"
                                   TickFrequency="1"
-                                  Value="{Binding PlayersService.SelectedPlayer.VolumeLevel}">
+                                  Value="{Binding PlayersService.SelectedPlayer.VolumeLevel, FallbackValue=0}">
                             <Interaction.Behaviors>
                                 <EventTriggerBehavior EventName="ValueChanged">
                                     <players:VolumeChangedAction TargetObject="{Binding}" />
@@ -351,7 +358,7 @@
                               FontWeight="Bold"
                               Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Name}"
                               TextTrimming="CharacterEllipsis" />
-                     <TextBlock
+                    <TextBlock
                               HorizontalAlignment="Center"
                               FontSize="24"
                               Text="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Album.Name}"

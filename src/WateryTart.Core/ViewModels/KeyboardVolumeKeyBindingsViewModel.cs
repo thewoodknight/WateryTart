@@ -6,6 +6,7 @@ using System.Reactive;
 using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.ViewModels;
 using Material.Icons;
+using WateryTart.Core.Settings;
 
 namespace WateryTart.Core.ViewModels;
 

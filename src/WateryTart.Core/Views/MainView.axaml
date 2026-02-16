@@ -226,8 +226,6 @@
                                   Duration="0:0:0.3">
                             <KeyFrame Cue="0%">
                                 <Setter Property="TranslateTransform.Y" Value="250" />
-                                <!--  Value="{Binding ElementName=grd, Converter={StaticResource MeasureControlConverter}}"/>  -->
-                                <!--  {Binding #gridSlideup.Height} Need to measure the element  -->
                             </KeyFrame>
                             <KeyFrame Cue="100%">
                                 <Setter Property="TranslateTransform.Y" Value="0" />
@@ -237,16 +235,10 @@
                 </Style>
             </Grid.Styles>
             <ScrollViewer>
-                <ContentControl x:Name="ccMenu" Content="{Binding SlideupMenu}">
-                    <ContentControl.ContentTemplate>
-                        <DataTemplate x:DataType="vm1:MenuViewModel">
-                            <menus:MenuView DataContext="{Binding}" />
-                        </DataTemplate>
-                    </ContentControl.ContentTemplate>
-                </ContentControl>
+                <ContentControl x:Name="ccMenu" Content="{Binding SlideupMenu}" />
             </ScrollViewer>
         </Grid>
-                <!--  Global Loading Animation  -->
+        <!--  Global Loading Animation  -->
         <progRing:ProgressRing
                   Grid.RowSpan="3"
                   Width="80"

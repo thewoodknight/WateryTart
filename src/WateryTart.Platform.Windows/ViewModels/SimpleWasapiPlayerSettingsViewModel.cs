@@ -1,7 +1,7 @@
 ﻿using Material.Icons;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
-using WateryTart.Core;
+using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels;
 
 namespace WateryTart.Platform.Windows.ViewModels

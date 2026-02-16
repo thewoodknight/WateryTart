@@ -1,6 +1,6 @@
 ﻿using Material.Icons;
 
-namespace WateryTart.Core;
+namespace WateryTart.Core.Settings;
 
 public interface IHaveSettings
 {
