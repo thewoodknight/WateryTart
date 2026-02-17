@@ -87,6 +87,9 @@
 		<Compile Update="Views\KeyboardVolumeKeyBindingsView.axaml.cs">
 			<DependentUpon>KeyboardVolumeKeyBindingsView.axaml</DependentUpon>
 		</Compile>
+		<Compile Update="Views\Popups\TrackInfoView.axaml.cs">
+		  <DependentUpon>TrackInfoView.axaml</DependentUpon>
+		</Compile>
 		<Compile Update="Views\SearchResultsView.axaml.cs">
 			<DependentUpon>SearchResultsView.axaml</DependentUpon>
 		</Compile>

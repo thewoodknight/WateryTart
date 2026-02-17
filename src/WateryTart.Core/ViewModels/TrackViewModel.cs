@@ -17,7 +17,7 @@ public partial class TrackViewModel : ReactiveObject, IViewModelBase, IDisposabl
 {
     private readonly CompositeDisposable _disposables = new CompositeDisposable();
     private readonly MusicAssistantClient _massClient;
-    private readonly IPlayersService _playersService;
+    private readonly PlayersService _playersService;
     private readonly IScreen _screen;
     private bool _isNowPlaying;
     private Item? _track = null;
@@ -46,7 +46,7 @@ public partial class TrackViewModel : ReactiveObject, IViewModelBase, IDisposabl
     public RelayCommand TrackFullViewCommand { get; }
     public string? UrlPathSegment { get; } = "Track/ID";
 
-    public TrackViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService, Item? t = null)
+    public TrackViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, Item? t = null)
     {
         _massClient = massClient;
         _screen = screen;
