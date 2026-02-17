@@ -24,7 +24,7 @@ namespace WateryTart.Core.ViewModels
         private readonly ILogger<HomeViewModel> _logger;
         private readonly ILoggerFactory _loggerFactory;
         private readonly MusicAssistantClient _massClient;
-        private readonly IPlayersService _playersService;
+        private readonly PlayersService _playersService;
         private readonly ISettings _settings;
         public RelayCommand<Item> ClickedCommand { get; }
 
@@ -40,7 +40,7 @@ namespace WateryTart.Core.ViewModels
 
         private List<Recommendation> SourceRecommendations { get; set; }
 
-        public HomeViewModel(IScreen screen, MusicAssistantClient massClient, ISettings settings, IPlayersService playersService, ILoggerFactory loggerFactory)
+        public HomeViewModel(IScreen screen, MusicAssistantClient massClient, ISettings settings, PlayersService playersService, ILoggerFactory loggerFactory)
         {
             Title = "Home";
             _massClient = massClient;

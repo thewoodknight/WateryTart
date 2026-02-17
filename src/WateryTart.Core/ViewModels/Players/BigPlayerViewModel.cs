@@ -22,7 +22,7 @@ namespace WateryTart.Core.ViewModels.Players;
 
 public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 {
-    private readonly IPlayersService _playersService;
+    private readonly PlayersService _playersService;
     private double _pendingVolume;
     private System.Timers.Timer? _volumeDebounceTimer;
 
@@ -38,13 +38,13 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    [Reactive] public partial IColourService ColourService { get; set; }
+    [Reactive] public partial ColourService ColourService { get; set; }
     public required IScreen HostScreen { get; set; }
     [Reactive] public partial bool IsLoading { get; set; } = false;
     [Reactive] public partial bool IsSmallDisplay { get; set; }
     public ICommand PlayerNextCommand { get; set; }
     public ICommand PlayerPlayPauseCommand { get; set; }
-    public IPlayersService PlayersService => _playersService;
+    public PlayersService PlayersService => _playersService;
     public ICommand PlayingAltMenuCommand { get; set; }
     public ICommand PlayPreviousCommand { get; set; }
     public ICommand PlayerRepeatTrack { get; set; }
@@ -60,11 +60,11 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
     public ICommand ToggleFavoriteCommand { get; set; }
     public string? UrlPathSegment { get; } = "BigPlayer";
 
-    public BigPlayerViewModel(IPlayersService playersService, IScreen screen, IColourService colourService)
+    public BigPlayerViewModel(PlayersService playersService, IScreen screen, ColourService colourService)
     {
         ShowTrackInfo = new RelayCommand(() =>
         {
-            MessageBus.Current.SendMessage<IPopupViewModel>(new TrackInfoViewModel(PlayersService.SelectedQueue.CurrentItem.StreamDetails));
+            MessageBus.Current.SendMessage<IPopupViewModel>(new TrackInfoViewModel(PlayersService.SelectedQueue.CurrentItem));
 
             Console.WriteLine("got here");
         });

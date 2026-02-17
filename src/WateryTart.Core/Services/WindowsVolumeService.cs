@@ -5,12 +5,12 @@ namespace WateryTart.Core.Services;
 
 public class WindowsVolumeService : IVolumeService, IReaper
 {
-    private readonly IPlayersService playerService;
+    private readonly PlayersService playerService;
     private EventLoopGlobalHook _hook;
 
     public bool IsEnabled { get; set; }
 
-    public WindowsVolumeService(IPlayersService playerService)
+    public WindowsVolumeService(PlayersService playerService)
     {
         UioHookProvider.Instance.KeyTypedEnabled = false;
         _hook = new EventLoopGlobalHook(SharpHook.Data.GlobalHookType.Keyboard);

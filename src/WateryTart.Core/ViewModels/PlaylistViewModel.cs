@@ -19,7 +19,7 @@ namespace WateryTart.Core.ViewModels
         public string? UrlPathSegment => "playlist";
         public IScreen HostScreen { get; }
         private readonly MusicAssistantClient _massClient;
-        private readonly IPlayersService _playersService;
+        private readonly PlayersService _playersService;
         public bool ShowMiniPlayer => true; 
         public bool ShowNavigation => true;
         [Reactive] public partial Playlist Playlist { get; set; }
@@ -29,7 +29,7 @@ namespace WateryTart.Core.ViewModels
         public RelayCommand<Item> PlayCommand { get; }
         public RelayCommand PlaylistAltMenuCommand { get; }
         public RelayCommand PlaylistFullViewCommand { get; }
-        public PlaylistViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService, Playlist? playlist = null)
+        public PlaylistViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, Playlist? playlist = null)
         {
             _massClient = massClient;
             _playersService = playersService;
@@ -49,7 +49,9 @@ namespace WateryTart.Core.ViewModels
                 MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(playersService, Playlist));
             });
 
-            PlayCommand = new RelayCommand<Item>((i) => { _playersService.PlayItem(Playlist as MediaItemBase); });
+            PlayCommand = new RelayCommand<Item>((i) => { 
+                _playersService.PlayItem(Playlist as MediaItemBase);
+            });
         }
 
         public void LoadFromId(string id, string provider)
@@ -62,6 +64,7 @@ namespace WateryTart.Core.ViewModels
 
         private async Task LoadPlaylistDataAsync(string id, string provider)
         {
+            IsLoading = true;
             try
             {
                 var playlistResponse = await _massClient.WithWs().GetPlaylistAsync(id, provider);
@@ -89,6 +92,8 @@ namespace WateryTart.Core.ViewModels
             {
                 App.Logger?.LogError(ex, $"Error loading playlists tracks");
             }
+
+            IsLoading = false;
         }
     }
 }

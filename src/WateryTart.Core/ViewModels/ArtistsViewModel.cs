@@ -16,7 +16,7 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
     public string? UrlPathSegment { get; } = "ArtistsList";
     public IScreen HostScreen { get; }
     private readonly MusicAssistantClient _massClient;
-    private readonly IPlayersService _playersService;
+    private readonly PlayersService _playersService;
 
     [Reactive] public partial string Title { get; set; }
     [Reactive] public partial ObservableCollection<ArtistViewModel> Artists { get; set; } = [];
@@ -31,7 +31,7 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
 
-    public ArtistsViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService)
+    public ArtistsViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService)
     {
         _massClient = massClient;
         _playersService = playersService;

@@ -11,7 +11,7 @@ using WateryTart.Core.Utilities;
 
 namespace WateryTart.Core.Services;
 
-public partial class ColourService : ReactiveObject, IColourService
+public partial class ColourService : ReactiveObject
 {
     private readonly HttpClient _httpClient;
 
@@ -28,8 +28,6 @@ public partial class ColourService : ReactiveObject, IColourService
     {
         _httpClient = new HttpClient();
 
-        //ColourA = FromHex("FF5B4272");
-        //ColourB = FromHex("FF1C1C1E");
         ColourA = FromHex("092127");
         ColourB = FromHex("144753");
         ColourAccent = new SolidColorBrush(FromHex("FFFFFF"));

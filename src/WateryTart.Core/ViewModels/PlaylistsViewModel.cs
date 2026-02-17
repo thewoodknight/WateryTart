@@ -16,7 +16,7 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
     public string? UrlPathSegment { get; } = "Playlists";
     public IScreen HostScreen { get; }
     private readonly MusicAssistantClient _massClient;
-    private readonly IPlayersService _playersService;
+    private readonly PlayersService _playersService;
     private readonly ILogger _logger;
     [Reactive] public partial bool IsLoading { get; set; } = false;
     [Reactive] public partial string Title { get; set; }
@@ -31,7 +31,7 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
 
-    public PlaylistsViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService, ILoggerFactory loggerFactory)
+    public PlaylistsViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;
         _playersService = playersService;

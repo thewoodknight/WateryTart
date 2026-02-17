@@ -10,7 +10,7 @@ namespace WateryTart.Core.ViewModels;
 
 public partial class PlayersViewModel : ReactiveObject, IViewModelBase
 {
-    private readonly IPlayersService _playersService;
+    private readonly PlayersService _playersService;
     public string? UrlPathSegment { get; } = "players";
     public IScreen HostScreen { get; }
     public bool ShowMiniPlayer => true;
@@ -27,7 +27,7 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
         }
     }
 
-    public PlayersViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService)
+    public PlayersViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService)
     {
         _playersService = playersService;
         HostScreen = screen;

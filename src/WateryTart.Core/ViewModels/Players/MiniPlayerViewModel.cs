@@ -11,12 +11,12 @@ namespace WateryTart.Core.ViewModels.Players
         [Reactive] public partial bool IsLoading { get; set; } = false;
         public string? UrlPathSegment { get; } = "MiniPlayerViewModel";
         public IScreen HostScreen { get; }
-        [Reactive] public partial IColourService ColourService { get; set; }
+        [Reactive] public partial ColourService ColourService { get; set; }
         [Reactive] public partial string? Title { get; set; }
         public bool ShowMiniPlayer => false;
         public bool ShowNavigation => false;
         public bool ShowBackButton => true;
-        [Reactive] public partial IPlayersService PlayersService { get; set; }
+        [Reactive] public partial PlayersService PlayersService { get; set; }
         public ICommand PlayerNextCommand { get; set; }
         public ICommand PlayerPlayPauseCommand { get; set; }
         public ICommand PlayPreviousCommand { get; set; }
@@ -29,7 +29,7 @@ namespace WateryTart.Core.ViewModels.Players
                 HostScreen.Router.Navigate.Execute(vm);
         }
 
-        public MiniPlayerViewModel(IPlayersService playersService, IScreen screen, IColourService colourService)
+        public MiniPlayerViewModel(PlayersService playersService, IScreen screen, ColourService colourService)
         {
             PlayersService = playersService;
             HostScreen = screen;

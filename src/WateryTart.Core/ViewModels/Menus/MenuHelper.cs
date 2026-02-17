@@ -14,7 +14,7 @@ namespace WateryTart.Core.ViewModels.Menus;
 
 public static class MenuHelper
 {
-    public static IEnumerable<MenuItemViewModel> AddPlayers(IPlayersService playersService, MediaItemBase item)
+    public static IEnumerable<MenuItemViewModel> AddPlayers(PlayersService playersService, MediaItemBase item)
     {
         var players = new List<MenuItemViewModel>();
 
@@ -52,7 +52,7 @@ public static class MenuHelper
         return players;
     }
 
-    public static MenuViewModel BuildStandardPopup(IPlayersService playersService, MediaItemBase item, bool addPlayers = true)
+    public static MenuViewModel BuildStandardPopup(PlayersService playersService, MediaItemBase item, bool addPlayers = true)
     {
         if (item == null)
         {

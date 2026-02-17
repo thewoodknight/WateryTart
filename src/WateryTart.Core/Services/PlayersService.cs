@@ -26,11 +26,11 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.Services;
 
-public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncReaper
+public partial class PlayersService : ReactiveObject, IAsyncReaper
 {
     private readonly MusicAssistantClient _massClient;
     private readonly ISettings _settings;
-    private readonly IColourService _colourService;
+    private readonly ColourService _colourService;
     private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<PlayersService> _logger;
     private ReadOnlyObservableCollection<TrackViewModel> currentQueue;
@@ -129,7 +129,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
 
 
 
-    public PlayersService(MusicAssistantClient massClient, ISettings settings, IColourService colourService, ILoggerFactory loggerFactory)
+    public PlayersService(MusicAssistantClient massClient, ISettings settings, ColourService colourService, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;
         _settings = settings;
@@ -324,7 +324,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async Task PlayerVolumeDown(Player? p)
+    public async Task PlayerVolumeDown(Player? p = null)
     {
         p ??= SelectedPlayer;
 
@@ -341,7 +341,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async Task PlayerVolumeUp(Player? p)
+    public async Task PlayerVolumeUp(Player p = null)
     {
         p ??= SelectedPlayer;
 
@@ -358,7 +358,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async Task PlayerPlayPause(Player? p)
+    public async Task PlayerPlayPause(Player? p  = null)
     {
         p ??= SelectedPlayer;
         try
@@ -431,7 +431,7 @@ public partial class PlayersService : ReactiveObject, IPlayersService, IAsyncRea
         }
     }
 
-    public async Task PlayerPrevious(Player? p)
+    public async Task PlayerPrevious(Player? p = null)
     {
         p ??= SelectedPlayer;
         if (p?.PlayerId == null)

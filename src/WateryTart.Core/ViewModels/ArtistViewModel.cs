@@ -19,7 +19,7 @@ namespace WateryTart.Core.ViewModels
     public partial class ArtistViewModel : ReactiveObject, IViewModelBase
     {
         private readonly MusicAssistantClient _massClient;
-        private readonly IPlayersService _playersService;
+        private readonly PlayersService _playersService;
         [Reactive] public partial ObservableCollection<AlbumViewModel> Albums { get; set; } = new();
         public RelayCommand<Artist> AltMenuCommand { get; }
         [Reactive] public partial Artist? Artist { get; set; }
@@ -37,7 +37,7 @@ namespace WateryTart.Core.ViewModels
         public ObservableCollection<Item>? Tracks { get; set; }
         public string? UrlPathSegment { get; } = "Artist/ID";
 
-        public ArtistViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService, Artist? artist = null)
+        public ArtistViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, Artist? artist = null)
         {
             _massClient = massClient;
             _playersService = playersService;

@@ -32,7 +32,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     private bool _canNavigateBack = true;
     public ViewModelActivator? Activator { get; }
     public RelayCommand CloseSlideupCommand { get; }
-    public IColourService ColourService { get; }
+    public ColourService ColourService { get; }
     [Reactive] public partial IViewModelBase CurrentViewModel { get; set; }
     public RelayCommand GoBack { get; }
     public RelayCommand GoHome { get; }
@@ -42,14 +42,14 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     public RelayCommand GoSettings { get; }
     [Reactive] public partial bool IsMiniPlayerVisible { get; set; }
     [Reactive] public partial MiniPlayerViewModel MiniPlayer { get; set; }
-    [Reactive] public partial IPlayersService PlayersService { get; set; }
+    [Reactive] public partial PlayersService PlayersService { get; set; }
     public RoutingState Router { get; } = new();
     public ISettings Settings => _settings;
     [Reactive] public partial bool ShowSlideupMenu { get; set; }
     [Reactive] public partial IPopupViewModel? SlideupMenu { get; set; }
     [Reactive] public partial string Title { get; set; }
 
-    public MainWindowViewModel(MusicAssistantClient massClient, IPlayersService playersService, ISettings settings, IColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory)
+    public MainWindowViewModel(MusicAssistantClient massClient, PlayersService playersService, ISettings settings, ColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;
         PlayersService = playersService;

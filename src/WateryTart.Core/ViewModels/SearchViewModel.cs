@@ -25,7 +25,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
 {
     private readonly MusicAssistantClient _massClient;
     private readonly ISettings _settings;
-    private readonly IPlayersService _playersService;
+    private readonly PlayersService _playersService;
     private readonly ILogger<SearchViewModel> _logger;
     private readonly CompositeDisposable _disposables;
 
@@ -58,7 +58,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
     public ReadOnlyObservableCollection<TrackViewModel> SearchItem => searchItem;
     public ReadOnlyObservableCollection<PlaylistViewModel> SearchPlaylist => searchPlaylist;
 
-    public SearchViewModel(MusicAssistantClient massClient, ISettings settings, IPlayersService playersService, IScreen screen, ILoggerFactory loggerFactory)
+    public SearchViewModel(MusicAssistantClient massClient, ISettings settings, PlayersService playersService, IScreen screen, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;
         _settings = settings;

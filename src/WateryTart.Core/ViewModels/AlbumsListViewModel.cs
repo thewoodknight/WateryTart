@@ -15,7 +15,7 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
 {
     private const int PageSize = 50;
     private readonly MusicAssistantClient _massClient;
-    private readonly IPlayersService _playersService;
+    private readonly PlayersService _playersService;
     public ObservableCollection<AlbumViewModel> Albums { get; set; }
     [Reactive] public partial int CurrentOffset { get; set; } = 0;
     public RelayCommand GoNext { get; }
@@ -29,7 +29,7 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
     [Reactive] public partial string Title { get; set; } = string.Empty;
     public string? UrlPathSegment { get; } = "AlbumsList";
 
-    public AlbumsListViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService)
+    public AlbumsListViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService)
     {
         _massClient = massClient;
         _playersService = playersService;

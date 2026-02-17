@@ -18,7 +18,7 @@ namespace WateryTart.Core.ViewModels;
 public partial class AlbumViewModel : ReactiveObject, IViewModelBase
 {
     private readonly MusicAssistantClient _massClient;
-    private readonly IPlayersService _playersService;
+    private readonly PlayersService _playersService;
     public string? UrlPathSegment { get; } = "Album/ID";
     public IScreen HostScreen { get; }
     public bool ShowMiniPlayer => true;
@@ -33,7 +33,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     public RelayCommand AlbumAltMenuCommand { get; }
 
     public RelayCommand AlbumFullViewCommand { get; }
-    public AlbumViewModel(MusicAssistantClient massClient, IScreen screen, IPlayersService playersService, Album? a = null)
+    public AlbumViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, Album? a = null)
     {
         _massClient = massClient;
         _playersService = playersService;
