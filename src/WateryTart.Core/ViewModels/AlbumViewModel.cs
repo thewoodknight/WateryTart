@@ -27,7 +27,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     [Reactive] public partial Album? Album { get; set; }
     [Reactive] public partial bool IsLoading { get; set; }
 
-    public ObservableCollection<TrackViewModel> Tracks { get; set; }
+    [Reactive] public ObservableCollection<TrackViewModel> Tracks { get; set; }
     public AsyncRelayCommand PlayAlbumCommand { get; }
     public AsyncRelayCommand<Item?> TrackTappedCommand { get; }
     public RelayCommand AlbumAltMenuCommand { get; }
@@ -75,7 +75,6 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
 
     public void LoadFromId(string id, string provider)
     {
-        Tracks = new ObservableCollection<TrackViewModel>();
 #pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
         _ = LoadAlbumDataAsync(id, provider);
 #pragma warning restore CS4014
@@ -84,7 +83,6 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     public void Load(Album album)
     {
         Album = album;
-        Tracks = new ObservableCollection<TrackViewModel>();
 #pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
         if (album.ItemId != null && album.Provider != null)
             _ = LoadAlbumDataAsync(album.ItemId, album.Provider);
@@ -105,21 +103,6 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
             Debug.WriteLine($"Error loading album: {ex.Message}");
         }
 
-        try
-        {
-            var tracksResponse = await _massClient.WithWs().GetMusicAlbumTracksAsync(id, provider);
-            if (tracksResponse.Result != null)
-                foreach (var t in tracksResponse.Result)
-                    Tracks.Add(new TrackViewModel(_massClient, HostScreen, _playersService, t));
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error loading tracks: {ex.Message}");
-        }
-    }
-
-    private async Task LoadTracksAsync(string id, string provider)
-    {
         try
         {
             var tracksResponse = await _massClient.WithWs().GetMusicAlbumTracksAsync(id, provider);

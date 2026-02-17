@@ -40,7 +40,7 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
         {
             screen.Router.Navigate.Execute(SelectedAlbum);
             SelectedAlbum.Load(SelectedAlbum.Album);
-            SelectedAlbum = null;
+            //SelectedAlbum = null;
         });
 
         LoadMoreCommand = new AsyncRelayCommand(
