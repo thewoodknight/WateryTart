@@ -180,7 +180,8 @@ public partial class App : Application
             c.Resolve<ISettings>(),
             c.Resolve<ColourService>(),
             c.Resolve<SendSpinClient>(),
-            c.Resolve<ILoggerFactory>()
+            c.Resolve<ILoggerFactory>(),
+            c.Resolve<ProviderService>()
         )).As<IScreen>().As<IActivatableViewModel>().SingleInstance();
         builder.RegisterType<MusicAssistantClient>().As<MusicAssistantClient>().SingleInstance();
         builder.RegisterType<PlayersService>().As<PlayersService>().As<IAsyncReaper>().SingleInstance();
@@ -198,6 +199,7 @@ public partial class App : Application
         builder.RegisterType<SearchResultsViewModel>().AsSelf().SingleInstance();
         builder.RegisterType<LoggerSettingsViewModel>().As<IHaveSettings>().SingleInstance();
         builder.RegisterType<SearchViewModel>().SingleInstance();
+        builder.RegisterType<ProviderService>().SingleInstance();
 
         //Platform specific registrations from Platform.Linux, Platform.Windows projects
         if (PlatformSpecificRegistrations != null)

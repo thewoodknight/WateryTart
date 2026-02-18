@@ -54,6 +54,7 @@
     <PackageVersion Include="SkiaSharp" Version="2.88.9" />
     <PackageVersion Include="Splat.Autofac" Version="19.2.1" />
     <PackageVersion Include="Splat.Avalonia.Autofac" Version="15.5.3" />
+    <PackageVersion Include="Svg.Controls.Skia.Avalonia" Version="11.3.9.2" />
     <PackageVersion Include="System.Device.Gpio" Version="4.1.0" />
     <PackageVersion Include="System.Reactive" Version="6.1.0" />
     <PackageVersion Include="Velopack" Version="0.0.1298" />

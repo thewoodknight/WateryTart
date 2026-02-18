@@ -2,16 +2,23 @@
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using ReactiveUI;
+using ReactiveUI.SourceGenerators;
+using Sendspin.SDK.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using UnitsNet;
+using WateryTart.Core.Services;
+using WateryTart.Core.Settings;
 using WateryTart.MusicAssistant.Models;
 
 namespace WateryTart.Core.ViewModels.Popups
 {
-    public class TrackInfoViewModel : IPopupViewModel
+    public partial class TrackInfoViewModel : ReactiveObject, IPopupViewModel
     {
         public string Message => throw new NotImplementedException();
 
@@ -20,10 +27,42 @@ namespace WateryTart.Core.ViewModels.Popups
         public Streamdetails? Streamdetails { get; }
         public QueuedItem Item { get; }
 
-        public TrackInfoViewModel(QueuedItem item)
+        [Reactive] public partial ProviderManifest Provider { get; set; }
+        [Reactive] public partial string InputProviderIcon { get; set; }
+        [Reactive] public partial Player Player { get; set; }
+        [Reactive] public partial ProviderManifest PlayerProvider { get; set; }
+
+        [Reactive] public partial string OutputProviderIcon { get; set; }
+        [Reactive] public partial string QualityString { get; set; }
+        public TrackInfoViewModel(QueuedItem item, Player player)
         {
             this.Streamdetails = item.StreamDetails;
             Item = item;
+            Provider = GetProvider(Item.MediaItem.ProviderMappings[0].ProviderDomain);
+            if (!string.IsNullOrEmpty(Provider.IconSvgDark))
+                InputProviderIcon = Provider.IconSvgDark;
+            else InputProviderIcon = Provider.IconSvg;
+
+            Player = player;
+            double sampleRateKhz = Streamdetails.AudioFormat.SampleRate / 1000.0;
+            QualityString = $"{sampleRateKhz:F1}kHz / {Streamdetails?.AudioFormat.BitDepth}bit";
+
+            PlayerProvider = GetProvider(Player.Provider);
+
+            if (!string.IsNullOrEmpty(PlayerProvider.IconSvgDark))
+                OutputProviderIcon = PlayerProvider.IconSvgDark;
+            else if (!string.IsNullOrEmpty(PlayerProvider.IconSvg))
+                OutputProviderIcon = PlayerProvider.IconSvg;
+            else
+                OutputProviderIcon = PlayerProvider.IconSvgMonochrome;
+        }
+
+        private ProviderManifest GetProvider(string domain)
+        {
+            var providerService = App.Container.GetRequiredService<ProviderService>();
+            var p = providerService.ProviderManifests.FirstOrDefault(x => x.Domain == domain);
+
+            return p;
         }
     }
 
@@ -37,7 +76,7 @@ namespace WateryTart.Core.ViewModels.Popups
                 return null;
 
 
-            return new Bitmap(AssetLoader.Open(new Uri("avares://WateryTart.Core/Assets/mediaassistant/flac.png")));
+            return new Bitmap(AssetLoader.Open(new Uri($"avares://WateryTart.Core/Assets/mediaassistant/{format}.png")));
 
         }
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
@@ -62,8 +101,6 @@ namespace WateryTart.Core.ViewModels.Popups
                 return "ogg";
             else if (contentType.Contains("wav"))
                 return "wav";
-            else if (contentType.Contains("alac"))
-                return "alac";
 
             return string.Empty;
 

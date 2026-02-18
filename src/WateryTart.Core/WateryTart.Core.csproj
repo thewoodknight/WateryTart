@@ -67,6 +67,7 @@
 		<PackageReference Include="Sendspin.SDK" />
 		<PackageReference Include="SharpHook" />
 		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="Svg.Controls.Skia.Avalonia" />
 		<PackageReference Include="System.Device.Gpio" />
 		<PackageReference Include="Velopack" />
 		<PackageReference Include="WateryTart.MusicAssistant" />

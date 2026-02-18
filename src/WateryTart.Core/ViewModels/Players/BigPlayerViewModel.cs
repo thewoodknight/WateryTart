@@ -6,6 +6,7 @@ using Material.Icons;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
@@ -25,6 +26,22 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
     private readonly PlayersService _playersService;
     private double _pendingVolume;
     private System.Timers.Timer? _volumeDebounceTimer;
+    private static readonly HashSet<string> _losslessContentTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "FLAC",
+        "AIFF",
+        "WAV",
+        "ALAC",
+        "WAVPACK",
+        "TAK",
+        "APE",
+        "TRUEHD",
+        "DSD_LSBF",
+        "DSD_MSBF",
+        "DSD_LSBF_PLANAR",
+        "DSD_MSBF_PLANAR",
+        "RA_144"
+    };
 
     public double CachedImageHeight
     {
@@ -64,7 +81,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
     {
         ShowTrackInfo = new RelayCommand(() =>
         {
-            MessageBus.Current.SendMessage<IPopupViewModel>(new TrackInfoViewModel(PlayersService.SelectedQueue.CurrentItem));
+            MessageBus.Current.SendMessage<IPopupViewModel>(new TrackInfoViewModel(PlayersService.SelectedQueue.CurrentItem, PlayersService.SelectedPlayer));
 
             Console.WriteLine("got here");
         });
@@ -149,6 +166,19 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             .Select(player => player != null)
             .ObserveOn(RxApp.MainThreadScheduler)
             .DistinctUntilChanged();
+
+        // Ensure Quality property updates when the selected queue item or player changes
+        this.WhenAnyValue(x => x.PlayersService.SelectedQueue.CurrentItem)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => this.RaisePropertyChanged(nameof(Quality)));
+
+        // Also update Quality when inner stream details change (bit depth, sample rate or content type)
+        this.WhenAnyValue(
+                x => x.PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat.BitDepth,
+                x => x.PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat.SampleRate,
+                x => x.PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat.ContentType)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(_ => this.RaisePropertyChanged(nameof(Quality)));
     }
 
     public void UpdateCachedDimensions(double width, double height)
@@ -183,4 +213,40 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             _volumeDebounceTimer.Start();
         }
     }
+
+    private bool IsContentTypeLossless(string contentType)
+    {
+        return _losslessContentTypes.Contains(contentType);
+    }
+
+    public QualityTier Quality
+    {
+        get
+        {
+            var streamDetails = PlayersService?.SelectedQueue?.CurrentItem?.StreamDetails;
+
+            if (streamDetails == null || streamDetails.AudioFormat == null)
+                return QualityTier.LOW;
+
+            if (streamDetails.AudioFormat.BitDepth > 16 || streamDetails.AudioFormat.SampleRate > 48000)
+            {
+                return QualityTier.HIRES;
+            }
+            else if (IsContentTypeLossless(streamDetails.AudioFormat.ContentType))
+            {
+                return QualityTier.HQ;
+            }
+            else
+            {
+                return QualityTier.LOW;
+            }
+        }
+    }
+}
+
+public enum QualityTier
+{
+    LOW,
+    HQ,
+    HIRES
 }

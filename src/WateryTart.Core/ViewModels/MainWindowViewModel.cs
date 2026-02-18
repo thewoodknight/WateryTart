@@ -21,6 +21,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
 {
     private readonly MusicAssistantClient _massClient;
     private readonly SendSpinClient _sendSpinClient;
+    private readonly ProviderService providerService;
     private readonly ISettings _settings;
     private readonly ILogger<MainWindowViewModel> _logger;
 
@@ -49,12 +50,13 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     [Reactive] public partial IPopupViewModel? SlideupMenu { get; set; }
     [Reactive] public partial string Title { get; set; }
 
-    public MainWindowViewModel(MusicAssistantClient massClient, PlayersService playersService, ISettings settings, ColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory)
+    public MainWindowViewModel(MusicAssistantClient massClient, PlayersService playersService, ISettings settings, ColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory, ProviderService providerService)
     {
         _massClient = massClient;
         PlayersService = playersService;
         _settings = settings;
         _sendSpinClient = sendSpinClient;
+        this.providerService = providerService;
         ColourService = colourService;
         _logger = loggerFactory.CreateLogger<MainWindowViewModel>();
         ShowSlideupMenu = false;
@@ -177,5 +179,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
 
         if (!OperatingSystem.IsAndroid())
             _ = _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
+
+        _ = providerService.Load();
     }
 }

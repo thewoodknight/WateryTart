@@ -19,10 +19,6 @@
             <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
             <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
             <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
-            <converters:AudioFormatCodecConverter x:Key="AudioFormatCodecConverter" />
-            <converters:AudioFormatSampleRateConverter x:Key="AudioFormatSampleRateConverter" />
-            <converters:AudioFormatBitDepthConverter x:Key="AudioFormatBitDepthConverter" />
-
 
             <app:WateryTartSmallViewSelector x:Key="smallViewSelector">
                 <StaticResource x:Key="AlbumViewModel" ResourceKey="albumSmallReusableTemplate" />

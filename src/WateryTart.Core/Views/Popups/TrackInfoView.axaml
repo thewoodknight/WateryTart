@@ -6,6 +6,7 @@
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:popups="using:WateryTart.Core.ViewModels.Popups"
+          xmlns:svg="clr-namespace:vg.Controls.Skia.Avalonia;assembly=Svg.Controls.Skia.Avalonia"
           xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
           d:DesignHeight="450"
           d:DesignWidth="800"
@@ -13,15 +14,16 @@
           mc:Ignorable="d">
 
     <UserControl.Resources>
-        <c:AudioFormatCodecConverter x:Key="AudioFormatCodecConverter" />
         <popups:CodecTypeToImageConverter x:Key="CodecTypeToImageConverter" />
     </UserControl.Resources>
     <Grid
               Margin="30"
-              ColumnSpacing="10"
+              ColumnSpacing="20"
               RowSpacing="20">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
+            <!--  left gutter for the connector line and nodes  -->
+            <ColumnDefinition Width="24" />
+            <ColumnDefinition Width="30" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -35,51 +37,148 @@
             <RowDefinition Height="*" />
 
         </Grid.RowDefinitions>
+        <!--  vertical connector line that runs down the left column to connect the rows  -->
+        <Rectangle
+                  Grid.Row="1"
+                  Grid.RowSpan="6"
+                  Grid.Column="0"
+                  Width="2"
+                  Margin="0,4,0,4"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Stretch"
+                  Fill="#FF888888"
+                  ZIndex="0" />
+
+        <!--  nodes placed on top of the line to represent steps  -->
+        <Ellipse
+                  Grid.Row="1"
+                  Grid.Column="0"
+                  Width="12"
+                  Height="12"
+                  Margin="0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Fill="#FF444444"
+                  Stroke="#FFFFFFFF"
+                  StrokeThickness="1"
+                  ZIndex="1" />
+        <Ellipse
+                  Grid.Row="2"
+                  Grid.Column="0"
+                  Width="12"
+                  Height="12"
+                  Margin="0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Fill="#FF444444"
+                  Stroke="#FFFFFFFF"
+                  StrokeThickness="1"
+                  ZIndex="1" />
+        <Ellipse
+                  Grid.Row="3"
+                  Grid.Column="0"
+                  Width="12"
+                  Height="12"
+                  Margin="0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Fill="#FF444444"
+                  Stroke="#FFFFFFFF"
+                  StrokeThickness="1"
+                  ZIndex="1" />
+        <Ellipse
+                  Grid.Row="5"
+                  Grid.Column="0"
+                  Width="12"
+                  Height="12"
+                  Margin="0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Fill="#FF444444"
+                  Stroke="#FFFFFFFF"
+                  StrokeThickness="1"
+                  ZIndex="1" />
+        <Ellipse
+                  Grid.Row="6"
+                  Grid.Column="0"
+                  Width="12"
+                  Height="12"
+                  Margin="0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Fill="#FF444444"
+                  Stroke="#FFFFFFFF"
+                  StrokeThickness="1"
+                  ZIndex="1" />
         <TextBlock
                   Grid.Row="0"
-                  Grid.Column="1"
+                  Grid.Column="2"
                   FontWeight="Bold"
                   Text="Input" />
 
         <!--  Source  -->
-        <PathIcon Grid.Row="1" Grid.Column="0" />
-        <TextBlock
+        <Svg
                   Grid.Row="1"
                   Grid.Column="1"
-                  Text="{Binding Item.StreamDetails.Provider}" />
-        <!--  needs a converter  -->
+                  Source="{Binding InputProviderIcon}" />
+        <TextBlock
+                  Grid.Row="1"
+                  Grid.Column="2"
+                  VerticalAlignment="Center"
+                  Text="{Binding Provider.Name}" />
 
         <!--  sample rate/bitdepth  -->
         <Image
                   Grid.Row="2"
-                  Grid.Column="0"
-                  Width="50"
+                  Grid.Column="1"
                   Source="{Binding Streamdetails.AudioFormat.CodecType, Converter={StaticResource CodecTypeToImageConverter}}" />
         <TextBlock
                   Grid.Row="2"
-                  Grid.Column="1"
+                  Grid.Column="2"
                   VerticalAlignment="Center"
-                  Text="{Binding Streamdetails.AudioFormat, Converter={StaticResource AudioFormatCodecConverter}}" />
+                  Text="{Binding QualityString}" />
 
-        <TextBlock
+        <Image
                   Grid.Row="3"
                   Grid.Column="1"
+                  Width="30"
+                  Height="30"
+                  Source="avares://WateryTart.Core/Assets/mediaassistant/level.png" />
+        <TextBlock
+                  Grid.Row="3"
+                  Grid.Column="2"
+                  VerticalAlignment="Center"
+                  Text="Dynamic Volume Normalisation" />
+
+        <TextBlock
+                  Grid.Row="4"
+                  Grid.Column="2"
                   FontWeight="Bold"
                   Text="Output" />
 
         <!--  output DSP  -->
-        <PathIcon Grid.Row="4" Grid.Column="0" />
-        <TextBlock
-                  Grid.Row="4"
-                  Grid.Column="1"
-                  Text="Input Effects" />
-
-        <!--  output device  -->
-        <PathIcon Grid.Row="5" Grid.Column="0" />
-        <TextBlock
+        <Image
                   Grid.Row="5"
                   Grid.Column="1"
-                  Text="{Binding Item.QueueId}" />
+                  Width="30"
+                  Height="30"
+                  Source="avares://WateryTart.Core/Assets/mediaassistant/level.png" />
+        <TextBlock
+                  Grid.Row="5"
+                  Grid.Column="2"
+                  VerticalAlignment="Center"
+                  Text="Output Effects" />
+
+        <!--  output device  -->
+        <Svg
+                  Grid.Row="6"
+                  Grid.Column="1"
+                  Source="{Binding OutputProviderIcon}" />
+        <TextBlock
+                  Grid.Row="6"
+                  Grid.Column="2"
+                  VerticalAlignment="Center"
+                  Text="{Binding Player.Name}" />
         <!--  needs a converter ?  -->
     </Grid>
 </UserControl>
