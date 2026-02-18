@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+:root{
+  --bg: white;
+  --panel: #ffffff;
+  --muted: #2b4752;
+  --accent: #144753;
+  --accent-2: #2f5662;
+  --glass: rgba(20,30,40,0.04);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color:var(--muted);
+  /*background-color: var(--bg);*/
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+
+/* Navigation */
+.site-nav{
+  background: rgba(255,255,255,0.88);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  padding:12px 0;
+  position:sticky;
+  top:0;
+  z-index:40;
+  border-bottom:1px solid rgba(11,22,30,0.03);
+  transition: background .18s, box-shadow .18s;
+}
+.site-nav .wrap{display:flex;align-items:center;justify-content:space-between}
+.brand{color:var(--muted);font-weight:700;text-decoration:none;font-size:1.05rem}
+.nav-links{list-style:none;margin:0;padding:0;display:flex;gap:20px}
+.nav-links a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;transition:background .18s}
+.nav-links a:hover{background:var(--glass);color:var(--muted)}
+
+/* GitHub icon in nav */
+.nav-github{display:inline-flex;align-items:center;justify-content:center;margin-left:18px;color:var(--muted);text-decoration:none;width:50px;height:50px;padding:0;border-radius:50%;overflow:hidden}
+.nav-github svg{width:28px;height:28px;display:block}
+.nav-github:hover{color:var(--accent);background:var(--glass)}
+/* ensure SVG inside the GitHub button uses the accent color */
+.nav-github svg{color:var(--accent) !important}
+
+/* Hero */
+.hero{padding:56px 0;background-color:var(--panel);color:var(--muted)}
+.hero-inner{display:flex;flex-direction:column;align-items:stretch;gap:20px}
+.hero-text{flex:none;max-width:100%}
+.hero-text h1{font-size:2.6rem;margin:0 0 10px;line-height:1.03;color:#0f2b36}
+.tagline{color:#4b6870;font-size:1.05rem;margin:0 0 16px}
+.cta{display:inline-block;background-color:var(--accent);color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:700}
+.hero-image{width:100%;display:block}
+.hero-image img{width:100%;max-width:none;border-radius:12px;box-shadow:none;border: none; background: none}
+
+/* Main content */
+.main-content{padding:56px 0;background:transparent}
+h2{color:#0f2b36;margin:0 0 18px}
+
+/* Downloads */
+.downloads{padding:18px 0 28px}
+.download-list{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:flex-start}
+.download-btn{display:inline-flex;align-items:center;gap:12px;padding:12px 14px;background:var(--accent);border:1px solid rgba(0,0,0,0.06);border-radius:10px;color:#ffffff;text-decoration:none;box-shadow:0 6px 18px rgba(9,33,39,0.06);transition:transform .14s ease,box-shadow .14s ease,filter .14s ease,background-color .14s ease}
+.download-btn svg{flex:none;color:#ffffff !important}
+.download-btn i{flex:none;color:#ffffff !important;font-size:22px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center}
+
+.download-btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(9,33,39,0.12);filter:brightness(0.98)}
+.download-btn:active{transform:translateY(-1px);box-shadow:0 8px 22px rgba(9,33,39,0.08);filter:brightness(0.96)}
+.download-text small{display:block;color:#4b6870;font-size:0.86rem;margin-top:2px}
+
+@media (max-width:700px){
+  .download-list{justify-content:center}
+  .download-btn{width:100%;justify-content:flex-start}
+}
+
+/* Accordion / Features */
+.accordion{background:transparent;border-radius:8px;overflow:hidden}
+.accordion-item{border-top:1px solid rgba(11,22,30,0.04);background:var(--panel);margin-bottom:12px;border-radius:10px;box-shadow:0 6px 18px rgba(11,22,30,0.04)}
+.accordion-toggle{width:100%;padding:18px 14px;text-align:left;background:transparent;border:0;color:#0f2b36;font-weight:700;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.accordion-toggle:after{content:'+';font-weight:700;color:var(--accent) !important}
+.accordion-toggle[aria-expanded='true']{
+  background: rgba(9,33,39,0.04);
+  color:#0b2b36;
+  border:1px solid rgba(9,33,39,0.12);
+  box-shadow:0 6px 18px rgba(11,22,30,0.02);
+  border-radius:8px;
+}
+.accordion-toggle[aria-expanded='true']:after{content:'−';color:var(--accent-2)}
+.accordion-panel{padding:0 14px 18px 14px;color:#2b4752;line-height:1.6;background:transparent}
+
+/* Footer */
+.site-footer{padding:28px 0;color:#4b6870;text-align:center;border-top:1px solid rgba(11,22,30,0.03)}
+
+/* Responsive */
+@media (max-width:900px){
+  .hero-inner{flex-direction:column}
+  .hero-text{max-width:100%;text-align:center}
+  .hero-image{justify-content:center}
+  .nav-links{display:none}
+}
+
+@media (max-width:560px){
+  .hero-text h1{font-size:1.6rem}
+  .cta{padding:8px 14px}
+}
+
+/* Merged from assets/single.css */
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+.site-nav{
+  background: rgba(255,255,255,0.9);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  padding:12px 0;
+  position:sticky;
+  top:0;
+  z-index:40;
+  border-bottom:1px solid rgba(11,22,30,0.03);
+}
+.site-nav .wrap { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; }
+.site-nav .brand { color:#0f2b36; font-weight:700; text-decoration:none; font-size:1.1rem }
+.nav-links { list-style:none; margin:0; padding:0; display:flex; gap:16px }
+.nav-links a { color:#4b6870; text-decoration:none }
+
+/* GitHub icon in nav */
+.nav-github{display:inline-flex;align-items:center;justify-content:center;margin-left:18px;color:#4b6870;text-decoration:none;width:50px;height:50px;padding:0;border-radius:50%;overflow:hidden}
+.nav-github svg{width:28px;height:28px;display:block}
+.nav-github:hover{color:var(--accent);background:rgba(9,33,39,0.06)}
+.nav-github sv  g{color:var(--accent) !important}
+
+.hero { background-color: var(--panel); color:#0f2b36; padding:48px 0; }
+.hero-inner { display:flex; flex-direction:column; gap:20px; align-items:stretch; }
+.hero-text { flex:none; max-width:100% }
+.hero-text h1 { font-size:2.2rem; margin:0 0 8px; color:#0f2b36 }
+.tagline { opacity:0.9; color:#4b6870 }
+.cta { display:inline-block; margin-top:12px; background-color: var(--accent); color:#fff; padding:8px 14px; border-radius:6px; text-decoration:none }
+.hero-image { width:100%; display:block }
+.hero-image img { width:100%; max-width:none; border-radius:8px; box-shadow:none; border:none; background:none }
+
+.main-content { padding:48px 0; }
+h2 { margin-top:0 }
+
+/* Downloads */
+.downloads{padding:18px 0 28px}
+.download-list{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:flex-start}
+.download-btn{display:inline-flex;align-items:center;gap:12px;padding:12px 14px;background:var(--accent);border:1px solid rgba(0,0,0,0.06);border-radius:10px;color:#ffffff;text-decoration:none;box-shadow:0 6px 18px rgba(9,33,39,0.06)}
+.download-btn svg{flex:none;color:#ffffff !important}
+.download-btn i{flex:none;color:#ffffff !important;font-size:22px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center}
+.download-text small{display:block;color:#4b6870;font-size:0.86rem;margin-top:2px}
+
+@media (max-width:700px){
+  .download-list{justify-content:center}
+  .download-btn{width:100%;justify-content:flex-start}
+}
+
+.accordion { border-top:0; }
+.accordion-item { border-bottom:0; background:var(--panel);box-shadow:0 6px 18px rgba(11,22,30,0.04) }
+.accordion-toggle { width:100%; text-align:left; padding:16px; background:transparent; border:0; font-size:1rem; cursor:pointer; color:#0f2b36; font-weight:700 }
+.accordion-toggle[aria-expanded="true"] {
+  background: rgba(9,33,39,0.04);
+  color: #0b2b36;
+  border: 1px solid rgba(9,33,39,0.12);
+  box-shadow: 0 6px 18px rgba(11,22,30,0.02);
+  border-radius: 8px;
+}
+.accordion-toggle:after{color:var(--accent) !important}
+.accordion-panel { padding:0 16px 16px 16px; color:#2b4752 }
+
+.site-footer { border-top:1px solid #eee; padding:18px 0; text-align:center; color:#666 }
+
+@media (max-width:800px) {
+  .hero-inner { flex-direction:column }
+  .hero-image img { max-width:100% }
+  .nav-links { display:none }
+}
+
+/* Changelog styles (scoped to the changelog include) */
+.accordion-panel .changelog{padding:12px 6px 18px 6px;border-radius:8px}
+.accordion-panel .changelog h1,
+.accordion-panel .changelog h2,
+.accordion-panel .changelog h3,
+.accordion-panel .changelog h4{color:var(--accent-2);margin:10px 0 6px;font-weight:700}
+.accordion-panel .changelog p{margin:6px 0;color:var(--muted)}
+.accordion-panel .changelog ul{margin:8px 0 12px 1.15rem;padding:0}
+.accordion-panel .changelog li{margin:6px 0}
+.accordion-panel .changelog a{color:var(--accent);text-decoration:underline}
+.accordion-panel .changelog code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;background:rgba(11,22,30,0.04);padding:2px 6px;border-radius:6px;font-size:0.94em}
+.accordion-panel .changelog pre{background:rgba(11,22,30,0.04);padding:12px;border-radius:8px;overflow:auto;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace}
+.accordion-panel .changelog .commit{color:#6b8990;font-size:0.86rem}
+

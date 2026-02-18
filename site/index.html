@@ -1,0 +1,76 @@
+---
+layout: single
+title: WateryTart
+---
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <h1>WateryTart — Music Assistant Client</h1>
+    </div>
+    <div class="hero-image">
+      <img src="/assets/hero.png" alt="WateryTart screenshot">
+    </div>
+  </div>
+</header>
+
+  <!-- Downloads placed below the hero image -->
+  <div class="wrap downloads">
+    <h2 id="download">Download</h2>
+    <div class="download-list">
+      <a class="download-btn" href="https://github.com/TemuWolverine/WateryTart/releases/latest/download/WateryTart-win-x64-Setup.exe" title="Windows Installer">
+        <i class="fab fa-windows" aria-hidden="true"></i>
+        <div class="download-text"><strong>Windows Installer</strong></div>
+      </a>
+
+      <a class="download-btn" href="https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart-win-x64-Portable.zip" title="Windows Portable">
+        <i class="fas fa-file-archive" aria-hidden="true"></i>
+        <div class="download-text"><strong>Windows Portable</strong><small>Portable ZIP</small></div>
+      </a>
+
+        <a class="download-btn" href="https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart-linux-x64.AppImage" title="Linux x64 AppImage">
+      <i class="fab fa-linux" aria-hidden="true"></i>
+          <div class="download-text"><strong>Linux x64</strong><small>AppImage</small></div>
+        </a>
+        <a class="download-btn" href="https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart-linux-arm64.AppImage" title="Linux ARM64 AppImage">
+      <i class="fab fa-linux" aria-hidden="true"></i>
+          <div class="download-text"><strong>Linux ARM64</strong><small>AppImage</small></div>
+        </a>
+
+      <a class="download-btn" href="https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart.macOS-arm64.dmg" title="macOS dmg">
+      <i class="fab fa-apple" aria-hidden="true"></i>
+        <div class="download-text"><strong>macOS</strong><small>DMG (arm64)</small></div>
+      </a>
+    </div>
+  </div>
+
+  <main class="wrap main-content">
+  <section id="features">
+    <h2>Features</h2>
+    <div class="accordion" id="features-accordion">
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false">Cross-platform</button>
+        <div class="accordion-panel">Thanks to the power of Avalonia and .NET, WateryTart runs on Windows, macOS and Linux, all with no dependencies - you don't need to even install .NET.</div>
+      </div>
+    <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false">Control all the music on your network</button>
+        <div class="accordion-panel">WateryTart works on top of Music Assistant, allowing you to control all the music on your network, providing a seamless and integrated experience across multiple devices.</div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-toggle" aria-expanded="false">Changelog</button>
+        <div class="accordion-panel">
+          <div class="changelog">
+            {% capture changelog %}{% include CHANGELOG.md %}{% endcapture %}
+            {{ changelog | markdownify }}
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <section id="about">
+    <h2>About</h2>
+    <p>WateryTart is an open-source, cross-platform Music Assistant client including Sendspin playback.</p>
+  </section>
+</main>
