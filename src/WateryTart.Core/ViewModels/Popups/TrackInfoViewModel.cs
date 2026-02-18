@@ -37,6 +37,9 @@ namespace WateryTart.Core.ViewModels.Popups
         public TrackInfoViewModel(QueuedItem item, Player player)
         {
             this.Streamdetails = item.StreamDetails;
+            if (Streamdetails == null)
+                return;
+
             Item = item;
             Provider = GetProvider(Item.MediaItem.ProviderMappings[0].ProviderDomain);
             if (!string.IsNullOrEmpty(Provider.IconSvgDark))
