@@ -27,7 +27,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     [Reactive] public partial Album? Album { get; set; }
     [Reactive] public partial bool IsLoading { get; set; }
 
-    [Reactive] public ObservableCollection<TrackViewModel> Tracks { get; set; }
+    [Reactive] public partial ObservableCollection<TrackViewModel> Tracks { get; set; }
     public AsyncRelayCommand PlayAlbumCommand { get; }
     public AsyncRelayCommand<Item?> TrackTappedCommand { get; }
     public RelayCommand AlbumAltMenuCommand { get; }

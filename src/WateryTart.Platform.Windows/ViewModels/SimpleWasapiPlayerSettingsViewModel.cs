@@ -9,7 +9,10 @@ namespace WateryTart.Platform.Windows.ViewModels
     public partial class SimpleWasapiPlayerSettingsViewModel : ReactiveObject, IViewModelBase, IHaveSettings
     {
         public string? UrlPathSegment { get; } = "wasapisettings";
-        public IScreen? HostScreen { get; } = null;
+
+#pragma warning disable CS8618
+        public IScreen HostScreen { get; }
+#pragma warning restore CS8618
         public string Title { get; set; } = "wasapisettings";
         public bool ShowMiniPlayer { get; } = false;
         public bool ShowNavigation { get; } = false;

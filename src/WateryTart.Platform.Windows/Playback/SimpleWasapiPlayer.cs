@@ -20,7 +20,7 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
     private WasapiOut? _wasapiOut;
     private WaveFormat? _waveFormat;
     private AudioFormat? _format;
-    private IAudioSampleSource? _sampleSource;
+ //   private IAudioSampleSource? _sampleSource;
     private AudioSampleProviderAdapter? _sampleProvider;
 
     public AudioPlayerState State { get; private set; } = AudioPlayerState.Uninitialized;
@@ -45,7 +45,9 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
     public int OutputLatencyMs { get; private set; }
 
     public event EventHandler<AudioPlayerState>? StateChanged;
+#pragma warning disable CS0067
     public event EventHandler<AudioPlayerError>? ErrorOccurred;
+#pragma warning restore CS0067
     public void SetVolume()
     {
         if (_wasapiOut == null)

@@ -25,12 +25,20 @@ public partial class SimilarTracksViewModel : ReactiveObject, IViewModelBase
         HostScreen = screen;
     }
 
-    public async Task LoadFromId(string id, string provider)
+    public async Task LoadFromId(string id, string? provider)
     {
+        if (provider == null)
+            return;
+
         var results = await _client.WithWs().GetMusicSimilarTracksAsync(id, provider);
+        if (results == null || results.Result == null)
+            return;
+
         foreach (var i in results.Result)
         {
-           Tracks.Add(i.CreateViewModelForItem());
+            var item = i.CreateViewModelForItem();
+            if (item != null)
+                Tracks.Add(item);
         }
     }
 

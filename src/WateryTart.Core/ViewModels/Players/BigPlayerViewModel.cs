@@ -81,7 +81,8 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
     {
         ShowTrackInfo = new RelayCommand(() =>
         {
-            MessageBus.Current.SendMessage<IPopupViewModel>(new TrackInfoViewModel(PlayersService.SelectedQueue.CurrentItem, PlayersService.SelectedPlayer));
+            if (PlayersService != null && PlayersService.SelectedQueue != null && PlayersService.SelectedQueue.CurrentItem != null && PlayersService.SelectedPlayer != null)
+                MessageBus.Current.SendMessage<IPopupViewModel>(new TrackInfoViewModel(PlayersService.SelectedQueue.CurrentItem, PlayersService.SelectedPlayer));
 
             Console.WriteLine("got here");
         });
@@ -92,32 +93,36 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
                 return;
             var duration = _playersService?.SelectedQueue?.CurrentItem?.Duration;
             var newPosition = duration * (s / 100);
-            _playersService?.PlayerSeek(null, (int)newPosition);
+            if (newPosition != null)
+                _playersService?.PlayerSeek(null, (int)newPosition);
         });
         ToggleFavoriteCommand = new RelayCommand(() =>
         {
             var item = PlayersService?.SelectedQueue?.CurrentItem?.MediaItem;
             if (item == null)
                 return;
+
             if (item.Favorite)
-                PlayersService.PlayerRemoveFromFavorites(item);
+                PlayersService?.PlayerRemoveFromFavorites(item);
             else
-                PlayersService.PlayerAddToFavorites(item);
+                PlayersService?.PlayerAddToFavorites(item);
         });
 
+#pragma warning disable CS4014
         PlayerRepeatQueue = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.All));
         PlayerRepeatOff = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.Off));
         PlayerRepeatTrack = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.One));
         PlayPreviousCommand = new RelayCommand(() => PlayersService.PlayerPrevious());
         PlayerNextCommand = new RelayCommand(() => PlayersService.PlayerNext());
         PlayerPlayPauseCommand = new RelayCommand(() => PlayersService.PlayerPlayPause());
+#pragma warning restore CS4014
         PlayingAltMenuCommand = new RelayCommand(() =>
         {
             var item = PlayersService?.SelectedQueue?.CurrentItem?.MediaItem;
 
             var GoToAlbum = new RelayCommand(() =>
             {
-                if (item == null || HostScreen == null)
+                if (item == null || item.Album == null || item.Album.ItemId == null || item.Provider == null || HostScreen == null)
                     return;
 
                 var albumVm = App.Container.GetRequiredService<AlbumViewModel>();
@@ -128,19 +133,25 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
             var GoToArtist = new RelayCommand(() =>
             {
-                if (item == null || HostScreen == null)
+                if (item == null || item.Artists == null || item.Provider == null || HostScreen == null)
                     return;
+                var artist = item.Artists.FirstOrDefault();
+                if (artist == null || artist.ItemId == null)
+                    return;
+
                 var artistVm = App.Container.GetRequiredService<ArtistViewModel>();
-                artistVm.LoadFromId(item.Artists[0].ItemId, item.Provider);
+                artistVm.LoadFromId(artist.ItemId, item.Provider);
                 HostScreen.Router.Navigate.Execute(artistVm);
             });
 
             var GoToSimilarTracks = new RelayCommand(() =>
             {
-                if (item == null || HostScreen == null)
+                if (item == null || HostScreen == null || item.ItemId == null)
                     return;
                 var SimilarTracksViewModel = App.Container.GetRequiredService<SimilarTracksViewModel>();
+#pragma warning disable CS4014
                 SimilarTracksViewModel.LoadFromId(item.ItemId, item.GetProviderInstance());
+#pragma warning restore CS4014
                 HostScreen.Router.Navigate.Execute(SimilarTracksViewModel);
             });
 
@@ -167,6 +178,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             .ObserveOn(RxApp.MainThreadScheduler)
             .DistinctUntilChanged();
 
+#pragma warning disable CS8602
         // Ensure Quality property updates when the selected queue item or player changes
         this.WhenAnyValue(x => x.PlayersService.SelectedQueue.CurrentItem)
             .ObserveOn(RxApp.MainThreadScheduler)
@@ -179,6 +191,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
                 x => x.PlayersService.SelectedQueue.CurrentItem.StreamDetails.AudioFormat.ContentType)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Subscribe(_ => this.RaisePropertyChanged(nameof(Quality)));
+#pragma warning restore CS8602
     }
 
     public void UpdateCachedDimensions(double width, double height)
@@ -208,7 +221,9 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             _volumeDebounceTimer.AutoReset = false;
             _volumeDebounceTimer.Elapsed += (s, e) =>
             {
+#pragma warning disable CS4014
                 _playersService.PlayerVolume((int)_pendingVolume);
+#pragma warning restore CS4014
             };
             _volumeDebounceTimer.Start();
         }
@@ -225,7 +240,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         {
             var streamDetails = PlayersService?.SelectedQueue?.CurrentItem?.StreamDetails;
 
-            if (streamDetails == null || streamDetails.AudioFormat == null)
+            if (streamDetails == null || streamDetails.AudioFormat == null || string.IsNullOrEmpty(streamDetails.AudioFormat.ContentType))
                 return QualityTier.LOW;
 
             if (streamDetails.AudioFormat.BitDepth > 16 || streamDetails.AudioFormat.SampleRate > 48000)
