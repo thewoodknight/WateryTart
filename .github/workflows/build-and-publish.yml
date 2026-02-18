@@ -1,4 +1,4 @@
-name: build-and-publish2
+name: Publish Update
 
 on:
   workflow_dispatch: {}

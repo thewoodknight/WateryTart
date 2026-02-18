@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
   id-token: write
 
-name: release-please
+name: Release-Please-Bot
 
 jobs:
   release-please:
