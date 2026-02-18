@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.1.0](https://github.com/TemuWolverine/WateryTart/compare/v1.0.11...v1.1.0) (2026-02-18)
+
+
+### Features
+
+* **streamdetails:** began work on trackinfoview - a more details/MA way of showing the streams details from input -&gt; format -&gt; effects -&gt; output ([340b7b4](https://github.com/TemuWolverine/WateryTart/commit/340b7b49df9bc02275d08716cb5b6a88e5118efb))
+* **streamdetails:** brought the stream quality badges inline with how MusicAssistant presents it with LQ/HQ/HiRes. Introduced ProviderService to better access all the provider icons/information ([7f8d890](https://github.com/TemuWolverine/WateryTart/commit/7f8d89009fe11df5930fe8c5940d0b8b0bbde324))
+
+
+### Bug Fixes
+
+* default playmode now set to replace instead of play ([75e4d98](https://github.com/TemuWolverine/WateryTart/commit/75e4d9846b9360eaca2cb89fafbd81417d6c1c76))
+* Missed some references for iplayerservice -&gt; playerservice rename ([b952f76](https://github.com/TemuWolverine/WateryTart/commit/b952f76b3819a6380e80f9571f6744e5fe4e9d23))
+* Playlists view (from library) no longer crashes ([1cb2687](https://github.com/TemuWolverine/WateryTart/commit/1cb26874fb6f00eb089ab5d7cd9e14f95f2176b8))
+* Reworked menu popup to take a more generic IPopupViewModel, allowing for menus or other info popups to slide up from the bottom of the screen ([b8aa872](https://github.com/TemuWolverine/WateryTart/commit/b8aa872687be6c8bf47f8952d670e0ed03ab2146))
+
 ## [1.0.11](https://github.com/TemuWolverine/WateryTart/compare/v1.0.10...v1.0.11) (2026-02-15)
 
 
