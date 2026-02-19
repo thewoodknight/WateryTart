@@ -9,10 +9,13 @@ public class FriendlyTimeConverter : IValueConverter
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         TimeSpan ts;
+        if (value == null)
+            return string.Empty;
+
         if (value is Int32 i)
             ts = TimeSpan.FromSeconds(i);
         else
-            ts = TimeSpan.FromSeconds((double)value!);
+            ts = TimeSpan.FromSeconds((double)value);
         return $"{ts.Minutes}:{ts.Seconds:D2}";
     }
 
