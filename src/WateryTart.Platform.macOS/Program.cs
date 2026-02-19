@@ -12,13 +12,6 @@ namespace WateryTart.Platform.macOS;
 
 sealed class Program
 {
-    private static readonly string LockFilePath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-        "WateryTart",
-        "watertart.lock");
-
-    private static FileStream? _lockFile;
-
     // ObjC runtime imports for setting process name on macOS
     [DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_getClass")]
     private static extern IntPtr objc_getClass(string className);
@@ -68,42 +61,7 @@ sealed class Program
 
         // Set the process name for macOS menu bar display
         SetMacOSProcessName("WateryTart");
-
-        // Ensure directory exists
-        var lockDir = Path.GetDirectoryName(LockFilePath)!;
-        Directory.CreateDirectory(lockDir);
-
-        // Try to acquire exclusive lock on the lock file
-        try
-        {
-            _lockFile = new FileStream(
-                LockFilePath,
-                FileMode.OpenOrCreate,
-                FileAccess.ReadWrite,
-                FileShare.None);
-
-            // Write PID to lock file for debugging
-            using var writer = new StreamWriter(_lockFile, leaveOpen: true);
-            writer.Write(Environment.ProcessId);
-            writer.Flush();
-        }
-        catch (IOException)
-        {
-            // Another instance has the lock
-            Console.WriteLine("WateryTart is already running. Only one instance is allowed.");
-            Environment.Exit(1);
-            return;
-        }
-
-        try
-        {
-            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
-        }
-        finally
-        {
-            _lockFile?.Dispose();
-            try { File.Delete(LockFilePath); } catch { }
-        }
+        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
     public static AppBuilder BuildAvaloniaApp()

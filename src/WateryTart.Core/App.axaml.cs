@@ -5,25 +5,24 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
-using UnitsNet;
 using Velopack;
 using Velopack.Sources;
 using WateryTart.Core.Playback;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
+using WateryTart.Core.Utilities;
 using WateryTart.Core.ViewModels;
 using WateryTart.Core.ViewModels.Players;
 using WateryTart.Core.Views;
 using WateryTart.MusicAssistant;
-using XVolume.Factory;
 using ColourService = WateryTart.Core.Services.ColourService;
 using PlayersService = WateryTart.Core.Services.PlayersService;
 
@@ -39,20 +38,20 @@ public static class AntipatternExtensionsYesIKnowItsBad
 
 public partial class App : Application
 {
-
+    public static IContainer Container;
     private static readonly string BaseAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "WateryTart");
     private static readonly string AppDataPath = Path.Combine(BaseAppDataPath, "Cache");
+    
     private static readonly Lazy<DiskCachedWebImageLoader> LazyImageLoader = new(() => new DiskCachedWebImageLoader(AppDataPath));
     private static string? _cachedBaseUrl;
     private static ISettings? _cachedSettings;
-    private static IEnumerable<IReaper>? _reapers;
     private static bool _isShuttingDown;
-    private static ILoggerFactory? _loggerFactory;
     private static ILogger? _logger;
+    private static ILoggerFactory? _loggerFactory;
+    private static IEnumerable<IReaper>? _reapers;
+    private static SingleInstanceLock? _singleInstanceLock;
+    private static Bitmap? fallbackImage;
 
-    public static IContainer Container;
-
-    public static ILogger? Logger => _logger;
     public static string BaseUrl
     {
         get
@@ -65,6 +64,18 @@ public partial class App : Application
         }
     }
 
+    public static Bitmap FallbackImage
+    {
+        get
+        {
+            return fallbackImage ??= new Bitmap(AssetLoader.Open(new Uri("avares://WateryTart.Core/Assets/cover_dark.png")));
+        }
+    }
+
+    public static DiskCachedWebImageLoader ImageLoaderInstance => LazyImageLoader.Value;
+    public static ILauncher Launcher { get; set; }
+    public static ILogger? Logger => _logger;
+
     public static ISettings Settings
     {
         get
@@ -74,49 +85,17 @@ public partial class App : Application
         }
     }
 
-    private static Bitmap? fallbackImage;
-    public static Bitmap FallbackImage
-    {
-        get
-        {
-            return fallbackImage ??= new Bitmap(AssetLoader.Open(new Uri("avares://WateryTart.Core/Assets/cover_dark.png")));
-        }
-    }
-    public static DiskCachedWebImageLoader ImageLoaderInstance => LazyImageLoader.Value;
-
     private IEnumerable<IPlatformSpecificRegistration> PlatformSpecificRegistrations { get; }
-
-    private static async Task UpdateMyApp()
-    {
-        var gs = new GithubSource("https://github.com/TemuWolverine/WateryTart/", null, false);
-        var mgr = new UpdateManager(gs);
-
-        // check for new version
-        try
-        {
-            var newVersion = await mgr.CheckForUpdatesAsync();
-            if (newVersion == null)
-                return; // no update available
-
-            // download new version
-            await mgr.DownloadUpdatesAsync(newVersion);
-
-            // install new version and restart app
-            mgr.ApplyUpdatesAndRestart(newVersion);
-        } catch (Exception ex)
-        {
-            Debug.WriteLine(ex.Message);
-        }
-    }
 
     public App()
     {
-
     }
+
     public App(IEnumerable<IPlatformSpecificRegistration> platformSpecificRegistrations)
     {
         PlatformSpecificRegistrations = platformSpecificRegistrations;
     }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -124,6 +103,24 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        // Try to acquire a filesystem lock to ensure single instance
+        try
+        {
+            var lockPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WateryTart", "watertart.lock");
+            if (!SingleInstanceLock.TryAcquire(lockPath, out _singleInstanceLock))
+            {
+                // Another instance is running - exit early
+                Console.WriteLine("WateryTart is already running. Only one instance is allowed.");
+                Environment.Exit(1);
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            // If lock acquisition fails unexpectedly, log and continue — don't prevent startup for non-critical failures
+            Console.WriteLine($"Warning acquiring single-instance lock: {ex.Message}");
+        }
+        
         UpdateMyApp();
         var builder = new ContainerBuilder();
 
@@ -154,7 +151,6 @@ public partial class App : Application
                     // Uncomment when you have file logging provider
                     logBuilder.AddFile(o =>
                     {
-
                         o.RootPath = logPath;
                         // o.BasePath = "WateryTart.Logs";
                         o.MaxFileSize = 10_000_000;
@@ -242,7 +238,6 @@ public partial class App : Application
             hostView.Host.DataContext = vm;
             desktop.MainWindow = hostView;
 
-
             desktop.ShutdownRequested += (s, e) =>
             {
                 // Prevent re-entry - if we're already shutting down, let it proceed
@@ -293,11 +288,15 @@ public partial class App : Application
                 if (process.Threads.Count > 50)
                 {
                     _logger?.LogWarning("Too many threads ({ThreadCount}) still running, forcing exit...", process.Threads.Count);
+                    // dispose single-instance lock before forcing exit
+                    _singleInstanceLock?.Dispose();
                     Environment.Exit(0);
                 }
                 else
                 {
                     _loggerFactory?.Dispose();
+                    // release single-instance lock before normal shutdown
+                    _singleInstanceLock?.Dispose();
                     desktop.Shutdown(0);
                 }
             };
@@ -310,5 +309,29 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static async Task UpdateMyApp()
+    {
+        var gs = new GithubSource("https://github.com/TemuWolverine/WateryTart/", null, false);
+        var mgr = new UpdateManager(gs);
+
+        // check for new version
+        try
+        {
+            var newVersion = await mgr.CheckForUpdatesAsync();
+            if (newVersion == null)
+                return; // no update available
+
+            // download new version
+            await mgr.DownloadUpdatesAsync(newVersion);
+
+            // install new version and restart app
+            mgr.ApplyUpdatesAndRestart(newVersion);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
     }
 }

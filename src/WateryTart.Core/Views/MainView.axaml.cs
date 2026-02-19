@@ -20,5 +20,8 @@ public partial class MainView : UserControl
             var sv = this.Find<ScrollViewer>("sv");
             sv?.ScrollToHome();
         });
+
+        App.Launcher = TopLevel.GetTopLevel(this).Launcher;
     }
+
 }
