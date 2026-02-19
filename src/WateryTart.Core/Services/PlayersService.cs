@@ -5,12 +5,14 @@ using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using WateryTart.Core.Converters;
 using WateryTart.Core.Extensions;
@@ -39,6 +41,13 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
     private readonly Dictionary<string, TrackViewModel> _trackViewModelCache = new Dictionary<string, TrackViewModel>();
     private bool _isFetchingQueueContents = false;
     private DispatcherTimer _timer;
+
+    // Volume coordination
+    private readonly SemaphoreSlim _volumeSemaphore = new(1, 1);
+    private readonly ConcurrentDictionary<string, (int Volume, DateTime Timestamp)> _pendingLocalVolumeChanges = new();
+    private DateTime _lastLocalChange = DateTime.MinValue;
+    private static readonly TimeSpan EchoIgnoreWindow = TimeSpan.FromMilliseconds(700);
+    private const int VolumeTolerance = 1;
 
     [Reactive] public partial SourceCache<QueuedItem, string> QueuedItems { get; set; } = new SourceCache<QueuedItem, string>(x => x.QueueItemId);
     [Reactive] public partial ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
@@ -241,7 +250,32 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
                 {
                     player.PlaybackState = playerEvent.data.PlaybackState;
                     player.CurrentMedia = playerEvent.data.CurrentMedia;
-                    player.VolumeLevel = playerEvent.data.VolumeLevel;
+
+                    var serverVol = playerEvent.data.VolumeLevel;
+
+                    // If we have a recent local change for this player, and server value is close, treat as echo (ack).
+                    if (_pendingLocalVolumeChanges.TryGetValue(player.PlayerId, out var pending))
+                    {
+                        var age = DateTime.UtcNow - pending.Timestamp;
+                        var diff = Math.Abs(pending.Volume - (int)serverVol);
+
+                        if (age < EchoIgnoreWindow && diff <= VolumeTolerance)
+                        {
+                            // Echo/ack: clear pending and keep optimistic local value (no UI bounce).
+                            _pendingLocalVolumeChanges.TryRemove(player.PlayerId, out _);
+                        }
+                        else
+                        {
+                            // Not an echo: apply authoritative server value and clear any pending (stale).
+                            player.VolumeLevel = serverVol;
+                            _pendingLocalVolumeChanges.TryRemove(player.PlayerId, out _);
+                        }
+                    }
+                    else
+                    {
+                        // No local pending change: apply server value directly.
+                        player.VolumeLevel = serverVol;
+                    }
                 }
                 break;
 
@@ -317,55 +351,90 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
     }
 
-    public async Task PlayerVolume(int volume, Player? p = null)
+    // Fixed PlayerChangeBy method - corrected parentheses on Math.Round
+    public async Task PlayerChangeBy(int delta, Player? p = null)
     {
         p ??= SelectedPlayer;
+        if (p == null)
+            return;
 
-        if (p != null)
+        await _volumeSemaphore.WaitAsync().ConfigureAwait(false);
+        try
         {
+            var current = (int)Math.Round((decimal)p.VolumeLevel);
+            var newVol = Math.Clamp(current + delta, 0, 100);
+
+            // Optimistically update local model
+            p.VolumeLevel = newVol;
+
+            // Record pending local change per-player
+            _pendingLocalVolumeChanges[p.PlayerId] = (newVol, DateTime.UtcNow);
+
             try
             {
-                var result = await _massClient.WithWs().SetPlayerGroupVolumeAsync(p.PlayerId, volume);
+                await _massClient.WithWs().SetPlayerGroupVolumeAsync(p.PlayerId, newVol).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error adjusting volume down for player {PlayerId}", p.PlayerId);
+                _logger.LogError(ex, "Error adjusting volume for player {PlayerId}", p.PlayerId);
             }
+        }
+        finally
+        {
+            _volumeSemaphore.Release();
+        }
+    }
+
+    // Updated absolute volume setter to use same coordination
+    public async Task PlayerVolume(int volume, Player? p = null)
+    {
+        p ??= SelectedPlayer;
+        if (p == null)
+            return;
+
+        await _volumeSemaphore.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            var newVol = Math.Clamp(volume, 0, 100);
+
+            // Optimistically update local model
+            p.VolumeLevel = newVol;
+
+            // Record pending local change per-player
+            _pendingLocalVolumeChanges[p.PlayerId] = (newVol, DateTime.UtcNow);
+
+            try
+            {
+                await _massClient.WithWs().SetPlayerGroupVolumeAsync(p.PlayerId, newVol).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adjusting volume for player {PlayerId}", p.PlayerId);
+            }
+        }
+        finally
+        {
+            _volumeSemaphore.Release();
         }
     }
 
     public async Task PlayerVolumeDown(Player? p = null)
     {
         p ??= SelectedPlayer;
+        if (p == null)
+            return;
 
-        if (p != null)
-        {
-            try
-            {
-                await _massClient.WithWs().PlayerGroupVolumeDownAsync(p.PlayerId);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error adjusting volume down for player {PlayerId}", p.PlayerId);
-            }
-        }
+        // Use delta path for consistent behavior (assumes volume step of 1)
+        await PlayerChangeBy(-1, p).ConfigureAwait(false);
     }
 
     public async Task PlayerVolumeUp(Player p = null)
     {
         p ??= SelectedPlayer;
+        if (p == null)
+            return;
 
-        if (p != null)
-        {
-            try
-            {
-                await _massClient.WithWs().PlayerGroupVolumeUpAsync(p.PlayerId);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error adjusting volume up for player {PlayerId}", p.PlayerId);
-            }
-        }
+        await PlayerChangeBy(1, p).ConfigureAwait(false);
     }
 
     public async Task PlayerPlayPause(Player? p  = null)

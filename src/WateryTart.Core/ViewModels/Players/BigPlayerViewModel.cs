@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using System.Threading;
+using System.Threading.Tasks;
 using UnitsNet;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
@@ -25,7 +27,10 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 {
     private readonly PlayersService _playersService;
     private double _pendingVolume;
-    private System.Timers.Timer? _volumeDebounceTimer;
+    private CancellationTokenSource? _volumeCts;
+    private bool _suppressVolumeUpdate;
+    private double _volume; // backing for exposed Volume property
+
     private static readonly HashSet<string> _losslessContentTypes = new(StringComparer.OrdinalIgnoreCase)
     {
         "FLAC",
@@ -55,6 +60,13 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
+    // Expose a VM property for slider binding. This is the single source for UI -> PlayersService.
+    public double Volume
+    {
+        get => _volume;
+        set => this.RaiseAndSetIfChanged(ref _volume, value);
+    }
+
     [Reactive] public partial ColourService ColourService { get; set; }
     public required IScreen HostScreen { get; set; }
     [Reactive] public partial bool IsLoading { get; set; } = false;
@@ -79,12 +91,34 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
     public BigPlayerViewModel(PlayersService playersService, IScreen screen, ColourService colourService)
     {
+        _playersService = playersService;
+        ColourService = colourService;
+        HostScreen = screen;
+
+        // Initialize VM Volume from currently selected player if available
+        Volume = _playersService?.SelectedPlayer?.VolumeLevel ?? 0;
+
+        // Keep VM Volume in sync with PlayersService.SelectedPlayer.VolumeLevel
+        // When a server update drives the player model, update the VM's Volume but suppress sending it back to server.
+        this.WhenAnyValue(x => x.PlayersService.SelectedPlayer.VolumeLevel)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(serverVol =>
+            {
+                try
+                {
+                    _suppressVolumeUpdate = true;
+                    Volume = (int)serverVol;
+                }
+                finally
+                {
+                    _suppressVolumeUpdate = false;
+                }
+            });
+
         ShowTrackInfo = new RelayCommand(() =>
         {
             if (PlayersService != null && PlayersService.SelectedQueue != null && PlayersService.SelectedQueue.CurrentItem != null && PlayersService.SelectedPlayer != null)
                 MessageBus.Current.SendMessage<IPopupViewModel>(new TrackInfoViewModel(PlayersService.SelectedQueue.CurrentItem, PlayersService.SelectedPlayer));
-
-            Console.WriteLine("got here");
         });
 
         SeekCommand = new RelayCommand<double>((s) =>
@@ -96,6 +130,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             if (newPosition != null)
                 _playersService?.PlayerSeek(null, (int)newPosition);
         });
+
         ToggleFavoriteCommand = new RelayCommand(() =>
         {
             var item = PlayersService?.SelectedQueue?.CurrentItem?.MediaItem;
@@ -116,6 +151,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         PlayerNextCommand = new RelayCommand(() => PlayersService.PlayerNext());
         PlayerPlayPauseCommand = new RelayCommand(() => PlayersService.PlayerPlayPause());
 #pragma warning restore CS4014
+
         PlayingAltMenuCommand = new RelayCommand(() =>
         {
             var item = PlayersService?.SelectedQueue?.CurrentItem?.MediaItem;
@@ -168,9 +204,6 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             ], PlayersService.SelectedQueue.CurrentItem);
             MessageBus.Current.SendMessage<IPopupViewModel>(menu);
         });
-        _playersService = playersService;
-        ColourService = colourService;
-        HostScreen = screen;
 
         // Create a CanExecute observable that checks if a player is selected
         var canExecute = this.WhenAnyValue(x => x._playersService.SelectedPlayer)
@@ -206,7 +239,11 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
     [GenerateTypedAction]
     public void VolumeChanged(object sender, object parameter)
     {
-        //Debouncing inside itself so it doesnt' get into a loop fighting with MA sending back the new volume
+        // Debounce slider changes and route through PlayersService's coordinated setter.
+        // Ignore changes that were driven by server updates (suppressed).
+        if (_suppressVolumeUpdate)
+            return;
+
         if (parameter is RangeBaseValueChangedEventArgs args)
         {
             if (args.NewValue == args.OldValue)
@@ -214,18 +251,27 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
             _pendingVolume = args.NewValue;
 
-            _volumeDebounceTimer?.Stop();
-            _volumeDebounceTimer?.Dispose();
+            // Cancel previous pending task and schedule a new debounce task.
+            _volumeCts?.Cancel();
+            _volumeCts?.Dispose();
+            _volumeCts = new CancellationTokenSource();
+            var ct = _volumeCts.Token;
+            var pending = _pendingVolume;
 
-            _volumeDebounceTimer = new System.Timers.Timer(200);
-            _volumeDebounceTimer.AutoReset = false;
-            _volumeDebounceTimer.Elapsed += (s, e) =>
+            _ = Task.Run(async () =>
             {
-#pragma warning disable CS4014
-                _playersService.PlayerVolume((int)_pendingVolume);
-#pragma warning restore CS4014
-            };
-            _volumeDebounceTimer.Start();
+                try
+                {
+                    await Task.Delay(200, ct).ConfigureAwait(false);
+                    // Use PlayersService.PlayerVolume which serializes and performs echo suppression.
+                    await _playersService.PlayerVolume((int)pending).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException) { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Volume change error: {ex}");
+                }
+            }, ct);
         }
     }
 

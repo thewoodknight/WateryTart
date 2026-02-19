@@ -1,13 +1,17 @@
-﻿using Avalonia.Controls;
+﻿using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using Avalonia.Controls.Primitives;
 using CommunityToolkit.Mvvm.Input;
 using Material.Icons;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Windows.Input;
+using System.Threading;
+using System.Threading.Tasks;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Core.ViewModels.Popups;
@@ -15,12 +19,11 @@ using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
 using Xaml.Behaviors.SourceGenerators;
-
 namespace WateryTart.Core.ViewModels;
 
 public partial class PlayersViewModel : ReactiveObject, IViewModelBase
 {
-    private readonly PlayersService _playersService;
+    [Reactive] public partial PlayersService _playersService { get; set; }
     public string? UrlPathSegment { get; } = "players";
     public IScreen HostScreen { get; }
     public string Title => "Players";
@@ -41,6 +44,17 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
     [Reactive] public partial RelayCommand<Player> PlayerAltCommand { get; set; }
     [Reactive] public partial RelayCommand<Player> PlayerTogglePlayPauseCommand { get; set; }
     [Reactive] public partial ColourService ColourService { get; set; }
+    private double _volume;
+    private double _pendingVolume;
+    private CancellationTokenSource? _volumeCts;
+    private bool _suppressVolumeUpdate;
+
+    public double Volume
+    {
+        get => _volume;
+        set => this.RaiseAndSetIfChanged(ref _volume, value);
+    }
+
     public PlayersViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, ColourService colourService)
     {
         _playersService = playersService;
@@ -48,6 +62,25 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
         Players = playersService.Players;
         SelectedPlayer = playersService.SelectedPlayer;
         ColourService = colourService;
+
+        // Initialize from selected player if available
+        Volume = _playersService?.SelectedPlayer?.VolumeLevel ?? 0;
+
+        // Keep VM Volume in sync with server updates, suppress round-trip
+        this.WhenAnyValue(x => x._playersService.SelectedPlayer.VolumeLevel)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe(serverVol =>
+            {
+                try
+                {
+                    _suppressVolumeUpdate = true;
+                    Volume = (double)serverVol;
+                }
+                finally
+                {
+                    _suppressVolumeUpdate = false;
+                }
+            });
 
         PlayerTogglePlayPauseCommand = new RelayCommand<Player>(p =>
         {
@@ -99,35 +132,39 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
 
     }
 
-    private double _pendingVolume;
-    private System.Timers.Timer? _volumeDebounceTimer;
+    // Add a slider change handler (or use the existing one) that debounces and calls PlayersService
     [GenerateTypedAction]
     public void VolumeChanged(object sender, object parameter)
     {
-        //Debouncing inside itself so it doesnt' get into a loop fighting with MA sending back the new volume
+        if (_suppressVolumeUpdate)
+            return;
+
         if (parameter is RangeBaseValueChangedEventArgs args)
         {
-            
-            var player = ((Slider)sender).DataContext as Player;
-
             if (args.NewValue == args.OldValue)
                 return;
-            var pendingVolume = args.NewValue;
-            
-            var _pendingVolume = args.NewValue;
 
-            _volumeDebounceTimer?.Stop();
-            _volumeDebounceTimer?.Dispose();
+            _pendingVolume = args.NewValue;
 
-            _volumeDebounceTimer = new System.Timers.Timer(200);
-            _volumeDebounceTimer.AutoReset = false;
-            _volumeDebounceTimer.Elapsed += (s, e) =>
+            _volumeCts?.Cancel();
+            _volumeCts?.Dispose();
+            _volumeCts = new CancellationTokenSource();
+            var ct = _volumeCts.Token;
+            var pending = _pendingVolume;
+
+            _ = Task.Run(async () =>
             {
-#pragma warning disable CS4014
-            _playersService.PlayerVolume((int)_pendingVolume, player);
-#pragma warning restore CS4014
-            };
-            _volumeDebounceTimer.Start();
+                try
+                {
+                    await Task.Delay(200, ct).ConfigureAwait(false);
+                    await _playersService.PlayerVolume((int)pending).ConfigureAwait(false);
+                }
+                catch (System.OperationCanceledException) { }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Volume change error: {ex}");
+                }
+            }, ct);
         }
     }
 

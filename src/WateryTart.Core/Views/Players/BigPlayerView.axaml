@@ -191,7 +191,7 @@
                                   Maximum="100"
                                   Minimum="0"
                                   TickFrequency="1"
-                                  Value="{Binding PlayersService.SelectedPlayer.VolumeLevel, FallbackValue=0}">
+                                  Value="{Binding PlayersService.SelectedPlayer.VolumeLevel, FallbackValue=0, Mode=OneWay}">
                             <Interaction.Behaviors>
                                 <EventTriggerBehavior EventName="ValueChanged">
                                     <players:VolumeChangedAction TargetObject="{Binding}" />
@@ -413,7 +413,7 @@
                               Maximum="100"
                               Minimum="0"
                               TickFrequency="1"
-                              Value="{Binding PlayersService.SelectedPlayer.VolumeLevel}">
+                              Value="{Binding PlayersService.SelectedPlayer.VolumeLevel, Mode=OneWay}">
                         <Interaction.Behaviors>
                             <EventTriggerBehavior EventName="ValueChanged">
                                 <players:VolumeChangedAction TargetObject="{Binding}" />
