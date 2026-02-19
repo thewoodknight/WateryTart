@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.2.0](https://github.com/TemuWolverine/WateryTart/compare/v1.1.0...v1.2.0) (2026-02-19)
+
+
+### Features
+
+* App will now be restricted to a single instance ([21d7e46](https://github.com/TemuWolverine/WateryTart/commit/21d7e46aaa50b8bdf8218c1dfed2e68a0dcb8d17))
+* **PlayersTray:** Can control the volume of any items in the player tray ([cb44fc9](https://github.com/TemuWolverine/WateryTart/commit/cb44fc9a1e4d44347486e9556e95bad73713ddaf))
+* **PlayersTray:** Players Tray addresses much of [#15](https://github.com/TemuWolverine/WateryTart/issues/15). Player service can now clear queue, enable dont-stop-music, enable shuffle ([0eac782](https://github.com/TemuWolverine/WateryTart/commit/0eac78235b3069ea0fda14bc9c8907e8c59273fa))
+
+
+### Bug Fixes
+
+* addressed many of the build warnings ([641ab49](https://github.com/TemuWolverine/WateryTart/commit/641ab4930beffcfc2f18cb7d154a77415ab634f4))
+* basic handling of queue added event ([644a24f](https://github.com/TemuWolverine/WateryTart/commit/644a24f2dc8c5e6ac4b87be5230d69d4c4fd33e6))
+* Converter now checks for null, so when music stops it doesn't crash ([63519fd](https://github.com/TemuWolverine/WateryTart/commit/63519fd4141e4629f493c41c719fd2ddbdc935f6))
+* some fixes for playing from external services (ie, sonos playing on speakers that are connected to MA) ([8f85816](https://github.com/TemuWolverine/WateryTart/commit/8f858165e16f996dbbbbc5bab9c1c607f0a537bf))
+
 ## [1.1.0](https://github.com/TemuWolverine/WateryTart/compare/v1.0.11...v1.1.0) (2026-02-18)
 
 
