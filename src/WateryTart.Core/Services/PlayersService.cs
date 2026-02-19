@@ -250,6 +250,16 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
                 Players.RemoveAll(p => p.PlayerId == playerEvent.data.PlayerId);
                 break;
 
+            case EventType.QueueAdded:
+
+                queueEvent = (PlayerQueueEventResponse)e;
+                var existing = Queues.FirstOrDefault(q => q.QueueId == queueEvent.data.QueueId);
+                if (existing == null)
+                    Queues.Add(queueEvent.data);
+                else
+                    Queues.ReplaceOrAdd(existing, queueEvent.data);
+                break;
+
             case EventType.QueueUpdated:
                 queueEvent = (PlayerQueueEventResponse)e;
                 if (SelectedQueue != null && queueEvent?.data?.QueueId == SelectedQueue.QueueId)
