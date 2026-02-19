@@ -49,7 +49,7 @@ public partial class MainWindow : Window
             {
                 if (_trayService == null)
                 {
-                    _trayService = new TrayService();
+                    _trayService = new TrayService(_settings);
                     _trayService.Initialize(this);
                 }
             }
