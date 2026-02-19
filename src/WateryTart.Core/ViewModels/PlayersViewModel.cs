@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using CommunityToolkit.Mvvm.Input;
 using Material.Icons;
 using ReactiveUI;
@@ -13,6 +14,7 @@ using WateryTart.Core.ViewModels.Popups;
 using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
+using Xaml.Behaviors.SourceGenerators;
 
 namespace WateryTart.Core.ViewModels;
 
@@ -97,6 +99,36 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
 
     }
 
+    private double _pendingVolume;
+    private System.Timers.Timer? _volumeDebounceTimer;
+    [GenerateTypedAction]
+    public void VolumeChanged(object sender, object parameter)
+    {
+        //Debouncing inside itself so it doesnt' get into a loop fighting with MA sending back the new volume
+        if (parameter is RangeBaseValueChangedEventArgs args)
+        {
+            
+            var player = ((Slider)sender).DataContext as Player;
 
+            if (args.NewValue == args.OldValue)
+                return;
+            var pendingVolume = args.NewValue;
+            
+            var _pendingVolume = args.NewValue;
+
+            _volumeDebounceTimer?.Stop();
+            _volumeDebounceTimer?.Dispose();
+
+            _volumeDebounceTimer = new System.Timers.Timer(200);
+            _volumeDebounceTimer.AutoReset = false;
+            _volumeDebounceTimer.Elapsed += (s, e) =>
+            {
+#pragma warning disable CS4014
+            _playersService.PlayerVolume((int)_pendingVolume, player);
+#pragma warning restore CS4014
+            };
+            _volumeDebounceTimer.Start();
+        }
+    }
 
 }

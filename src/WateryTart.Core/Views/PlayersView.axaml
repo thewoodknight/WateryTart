@@ -108,11 +108,11 @@
                               Minimum="0"
                               TickFrequency="1"
                               Value="{Binding VolumeLevel, FallbackValue=0}">
-                        <!--                            <Interaction.Behaviors>
-                                <EventTriggerBehavior EventName="ValueChanged">
-                                    <players:VolumeChangedAction TargetObject="{Binding}" />
-                                </EventTriggerBehavior>
-                            </Interaction.Behaviors>-->
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="ValueChanged">
+                                <vm:VolumeChangedAction TargetObject="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext)}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
                     </Slider>
                 </Grid>
             </DataTemplate>
