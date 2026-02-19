@@ -1,11 +1,9 @@
 ﻿using Material.Icons;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Velopack;
 using Velopack.Sources;
