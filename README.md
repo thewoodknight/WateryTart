@@ -5,19 +5,14 @@
 WateryTart is a badly named, open-source, multi-platform (Windows, Linux, Linux-arm, Mac) Plexamp-like experience for [Music Assistant](https://www.music-assistant.io/).
 Full library control, and Sendspin client for perfect audio playback.
 
-Windows  
-<img src="https://github.com/user-attachments/assets/d236796a-8e50-48ff-811b-0df6037d08de" width="300" /> <img src="https://github.com/user-attachments/assets/85e48cb2-788e-48ac-804d-069601fa1630" width="300" />
-
-Raspberry Pi5 w/ Hifiberry Amp4  
-<img src="https://github.com/user-attachments/assets/c75337c9-f48c-4ac3-a268-8214215ad99d" width="300" />
-<img src="https://github.com/user-attachments/assets/e985a9c7-9882-4061-aaa9-4a04b1c84014" width="300" />
+![](https://raw.githubusercontent.com/TemuWolverine/WateryTart/refs/heads/master/site/assets/hero.png)
 
 ## Download & Install
 ### Options
-* [Windows x64 ](https://github.com/TemuWolverine/WateryTart/releases/latest/download/WateryTart-win-x64-Setup.exe) ([Portable](https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart-win-x64-Portable.zip))
-* [Linux x64](https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart-linux-x64.AppImage) 
-* [Linux ARM x64](https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart-linux-arm64.AppImage) ie for Raspberry Pi 5
-* [Mac](https://github.com/TemuWolverine/WateryTart/releases/download/v1.0.11/WateryTart.macOS-arm64.dmg) 
+* [Windows x64 ](https://github.com/TemuWolverine/WateryTart/releases/latest/download/WateryTart-win-x64-Setup.exe) ([Portable](https://github.com/TemuWolverine/WateryTart/releases/latest/download/WateryTart-win-x64-Portable.zip))
+* [Linux x64](https://github.com/TemuWolverine/WateryTart/releases/latest/download/WateryTart-linux-x64.AppImage) 
+* [Linux ARM x64](https://github.com/TemuWolverine/WateryTart/releases/latest/download/WateryTart-linux-arm64.AppImage) ie for Raspberry Pi 5
+* [Mac](https://github.com/TemuWolverine/WateryTart/releases/latest/download/WateryTart.macOS-arm64.dmg) 
 
 ### Requirements
 All installers should be self contained and have no external dependencies. The only requirement is that you have a Music Assistant instance running somewhere on your network.
