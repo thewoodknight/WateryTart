@@ -533,8 +533,61 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
     }
 
 
-    public async Task PlayerSetRepeatMode(RepeatMode repeatmode)
+    public async Task PlayerSetRepeatMode(RepeatMode repeatmode, Player? p = null)
     {
-        await _massClient.WithWs().SetPlayerQueueRepeatAsync(SelectedQueue.QueueId, repeatmode);
+        if (p== null)
+            p = SelectedPlayer; 
+
+        await _massClient.WithWs().SetPlayerQueueRepeatAsync(p.ActiveSource, repeatmode);
+    }
+
+    public async Task PlayerShuffle(Player? p = null, bool shuffle = true)
+    {
+        p ??= SelectedPlayer;
+        if (p?.PlayerId == null)
+            return;
+        try
+        {
+#pragma warning disable CS4014
+            _ = _massClient.WithWs().SetPlayerQueueShuffleAsync(p.ActiveSource, shuffle);
+#pragma warning restore CS4014
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
+    public async Task PlayerDontStopTheMusic(Player? p = null, bool dontstop = true)
+    {
+        p ??= SelectedPlayer;
+        if (p?.PlayerId == null)
+            return;
+        try
+        {
+#pragma warning disable CS4014
+            _ = _massClient.WithWs().SetPlayerQueueDontStopTheMusicAsync(p.ActiveSource, dontstop);
+#pragma warning restore CS4014
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
+
+    public async Task PlayerClearQueue(Player? p = null)
+    {
+        p ??= SelectedPlayer;
+        if (p?.PlayerId == null)
+            return;
+        try
+        {
+#pragma warning disable CS4014
+            _ = _massClient.WithWs().ClearPlayerQueueAsync(p.ActiveSource);
+#pragma warning restore CS4014
+        }
+        catch (Exception ex)
+        {
+
+        }
     }
 }

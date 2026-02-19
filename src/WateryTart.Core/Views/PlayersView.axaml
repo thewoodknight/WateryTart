@@ -1,27 +1,30 @@
 ﻿<UserControl
-    x:Class="WateryTart.Core.Views.PlayersView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:app="clr-namespace:WateryTart.Core"
-    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-    xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-    xmlns:converters="clr-namespace:WateryTart.Core.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="vm:PlayersViewModel"
-    mc:Ignorable="d">
+          x:Class="WateryTart.Core.Views.PlayersView"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:app="clr-namespace:WateryTart.Core"
+          xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+          xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+          xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:materialIcons="using:Material.Icons.Avalonia"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+          d:DesignHeight="450"
+          d:DesignWidth="800"
+          x:DataType="vm:PlayersViewModel"
+          mc:Ignorable="d">
     <UserControl.Resources>
         <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
         <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
         <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
+        <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
     </UserControl.Resources>
     <ListBox
-        Background="Transparent"
-        ItemsSource="{Binding Players}"
-        SelectedItem="{Binding SelectedPlayer}">
+              Name="lbPlayers"
+              Background="Transparent"
+              ItemsSource="{Binding Players}"
+              SelectedItem="{Binding SelectedPlayer}">
 
         <ListBox.GestureRecognizers>
             <ScrollGestureRecognizer CanVerticallyScroll="True" />
@@ -29,31 +32,89 @@
 
         <ListBox.ItemTemplate>
             <DataTemplate>
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <Border ClipToBounds="True" CornerRadius="5">
-                            <Grid>
-                                <avalonia:MaterialIcon
-                                    Width="50"
-                                    Height="50"
-                                    Kind="Speaker"
-                                    Opacity="0.7" />
-                                <asyncImageLoader:AdvancedImage
-                                    Width="50"
-                                    Height="50"
-                                    Loader="{x:Static app:App.ImageLoaderInstance}"
-                                    Source="{Binding CurrentMedia.ImageUrl}" />
-                            </Grid>
-                        </Border>
-                        <StackPanel Margin="10,0,0,0">
-                            <TextBlock FontWeight="Bold" Text="{Binding DisplayName}" />
-                            <TextBlock Text="{Binding CurrentMedia.Title}" />
-                            <TextBlock Opacity="0.7" Text="{Binding CurrentMedia.Artist}" />
-                        </StackPanel>
+                <Grid IsVisible="{Binding Available}" RowSpacing="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
+                    <!--  Album art  -->
+                    <avalonia:MaterialIcon
+                              Grid.Row="0"
+                              Grid.Column="0"
+                              Width="50"
+                              Height="50"
+                              Kind="Speaker"
+                              Opacity="0.7" />
+                    <asyncImageLoader:AdvancedImage
+                              Grid.Row="0"
+                              Grid.Column="0"
+                              Width="50"
+                              Height="50"
+                              Loader="{x:Static app:App.ImageLoaderInstance}"
+                              Source="{Binding CurrentMedia.ImageUrl}" />
+
+                    <!--  Info  -->
+                    <StackPanel
+                              Grid.Row="0"
+                              Grid.Column="1"
+                              Margin="10,0,0,0">
+                        <TextBlock FontWeight="Bold" Text="{Binding DisplayName}" />
+                        <TextBlock Text="{Binding CurrentMedia.Title}" />
+                        <TextBlock Opacity="0.7" Text="{Binding CurrentMedia.Artist}" />
                     </StackPanel>
-                    <ProgressBar Value="{Binding VolumeLevel}" />
-                </StackPanel>
+
+                    <!--  buttons  -->
+                    <StackPanel
+                              Grid.Row="0"
+                              Grid.Column="2"
+                              Orientation="Horizontal">
+                        <Button
+                                  Classes="iconButton navButton"
+                                  Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerTogglePlayPauseCommand}"
+                                  CommandParameter="{Binding Path=.}">
+                            <materialIcons:MaterialIcon
+                                      Width="25"
+                                      Height="25"
+                                      Kind="{Binding PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}}" />
+                        </Button>
+                        <Button
+                                  Classes="iconButton navButton"
+                                  Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerAltCommand}"
+                                  CommandParameter="{Binding Path=.}">
+                            <materialIcons:MaterialIcon
+                                      Width="25"
+                                      Height="25"
+                                      Kind="MoreVert" />
+                        </Button>
+                    </StackPanel>
+
+
+                    <!--  Volume  -->
+                    <Slider
+                              Grid.Row="1"
+                              Grid.Column="1"
+                              Grid.ColumnSpan="2"
+                              Margin="10,0,10,0"
+                              HorizontalAlignment="Stretch"
+                              Foreground="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).ColourService.ColourAccent}"
+                              IsSnapToTickEnabled="True"
+                              Maximum="100"
+                              Minimum="0"
+                              TickFrequency="1"
+                              Value="{Binding VolumeLevel, FallbackValue=0}">
+                        <!--                            <Interaction.Behaviors>
+                                <EventTriggerBehavior EventName="ValueChanged">
+                                    <players:VolumeChangedAction TargetObject="{Binding}" />
+                                </EventTriggerBehavior>
+                            </Interaction.Behaviors>-->
+                    </Slider>
+                </Grid>
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>
