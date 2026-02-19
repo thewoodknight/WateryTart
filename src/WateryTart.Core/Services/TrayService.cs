@@ -4,6 +4,7 @@ using Avalonia.Platform;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
+using WateryTart.Core.Settings;
 
 namespace WateryTart.Core.Services;
 
@@ -19,7 +20,12 @@ public class TrayService : ITrayService
     private Window? _mainWindow;
     private IDisposable? _windowStateSubscription;
     private bool _isExiting;
+    private readonly ISettings settings;
 
+    public TrayService(ISettings settings)
+    {
+        this.settings = settings;
+    }
     public void Initialize(Window mainWindow)
     {
         _mainWindow = mainWindow;
@@ -29,6 +35,9 @@ public class TrayService : ITrayService
 
     private void CreateTrayIcon()
     {
+        if (!settings.TrayIcon)
+            return;
+
         WindowIcon? icon = null;
 
         try
@@ -70,6 +79,9 @@ public class TrayService : ITrayService
         if (_mainWindow == null)
             return;
 
+        if (!settings.TrayIcon)
+            return;
+
         _mainWindow.Closing += (s, e) =>
         {
             if (!_isExiting)
@@ -95,7 +107,7 @@ public class TrayService : ITrayService
 
     private void MinimizeToTray()
     {
-        if (_mainWindow == null || _trayIcon == null)
+        if (_mainWindow == null || _trayIcon == null || !settings.TrayIcon)
             return;
 
         _mainWindow.Hide();

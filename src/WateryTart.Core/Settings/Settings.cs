@@ -48,6 +48,17 @@ public partial class Settings : INotifyPropertyChanged, ISettings
         }
     }
 
+    public bool TrayIcon
+    {
+        get => field;
+        set
+        {
+            field = value;
+            NotifyPropertyChanged();
+            Save();
+        }
+    }
+
     public string LastSelectedPlayerId
     {
         get => field ?? string.Empty;
@@ -169,10 +180,16 @@ public partial class Settings : INotifyPropertyChanged, ISettings
                     WindowPosY = loaded.WindowPosY;
                     LoggerSettings = loaded.LoggerSettings;
                     VolumeEventControl = loaded.VolumeEventControl;
+                    LoggerSettings = loaded.LoggerSettings;
                 }
 
                 // Initialize if not loaded
                 LoggerSettings ??= new LoggerSettings();
+
+                if (string.IsNullOrEmpty(LoggerSettings.LogFilePath))
+                {
+                    LoggerSettings.LogFilePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "WateryTart");
+                }
             }
             catch (Exception ex)
             {
