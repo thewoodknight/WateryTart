@@ -56,8 +56,8 @@ sealed class Program
             var x = new App(
                 [
                     new InstancePlatformSpecificRegistration<IPlayerFactory>(new LinuxAudioPlayerFactory()),
-                    new LambdaRegistration<GpioVolumeService>(c => new GpioVolumeService(c.Resolve<ISettings>(),c.Resolve<PlayersService>())),
-                    new LambdaRegistration<GpioVolumeSettingsViewModel>(c => new GpioVolumeSettingsViewModel()),
+                    new LambdaRegistration<IVolumeService>(c => new GpioVolumeService(c.Resolve<ISettings>(),c.Resolve<PlayersService>())),
+                    new LambdaRegistration<IHaveSettings>(c => new GpioVolumeSettingsViewModel()),
                 ]);
 
             return x;

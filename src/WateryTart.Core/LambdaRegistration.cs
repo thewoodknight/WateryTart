@@ -14,6 +14,6 @@ public class LambdaRegistration<T> : IPlatformSpecificRegistration where T : cla
 
     public void Register(ContainerBuilder builder)
     {
-        builder.Register(_factory).AsSelf().SingleInstance();
+        builder.Register((c,p) => _factory.Invoke(c)).AsSelf().SingleInstance();
     }
 }

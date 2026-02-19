@@ -204,10 +204,11 @@ public partial class App : Application
                 platformSpecificRegistration.Register(builder);
             }
 
+
         builder.RegisterType<SendSpinClient>().SingleInstance();
 
         //Volume controllers
-        builder.RegisterType<WindowsVolumeService>().As<IVolumeService>().As<IReaper>().SingleInstance();
+        
 
         //Transient viewmodels
         builder.RegisterType<AlbumsListViewModel>();
@@ -231,6 +232,8 @@ public partial class App : Application
         _reapers = Container.Resolve<IEnumerable<IReaper>>();
 
         var vm = Container.Resolve<IScreen>();
+
+        var volumeProviders = Container.Resolve<IEnumerable<IVolumeService>>();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
