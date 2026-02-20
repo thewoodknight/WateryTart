@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
-using Material.Icons;
+using IconPacks.Avalonia.Material;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -29,7 +29,7 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
     public RelayCommand BrowseLogFileCommand { get; }
     [Reactive] public partial bool EnableFileLogging { get; set; }
     public IScreen HostScreen { get; }
-    public MaterialIconKind Icon => MaterialIconKind.History;
+    public PackIconMaterialKind Icon => PackIconMaterialKind.History;
     [Reactive] public partial bool IsLoading { get; set; } = false;
     [Reactive] public partial bool IsSaving { get; set; }
     [Reactive] public partial string LogFilePath { get; set; }

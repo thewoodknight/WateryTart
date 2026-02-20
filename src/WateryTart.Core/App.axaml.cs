@@ -191,7 +191,7 @@ public partial class App : Application
         builder.RegisterType<MiniPlayerViewModel>().AsSelf().SingleInstance();
         builder.RegisterType<BigPlayerViewModel>().AsSelf().SingleInstance();
         builder.RegisterType<HomeViewModel>().SingleInstance();
-        builder.RegisterType<KeyboardVolumeKeyBindingsViewModel>().As<IHaveSettings>().SingleInstance();
+        //builder.RegisterType<KeyboardVolumeKeyBindingsViewModel>().As<IHaveSettings>().SingleInstance();
         builder.RegisterType<SearchResultsViewModel>().AsSelf().SingleInstance();
         builder.RegisterType<LoggerSettingsViewModel>().As<IHaveSettings>().SingleInstance();
         builder.RegisterType<SearchViewModel>().SingleInstance();

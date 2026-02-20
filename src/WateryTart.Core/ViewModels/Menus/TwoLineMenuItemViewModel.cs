@@ -1,5 +1,5 @@
 ﻿using System.Windows.Input;
-using Material.Icons;
+using IconPacks.Avalonia.Material;
 using ReactiveUI;
 using WateryTart.Core.Messages;
 using Xaml.Behaviors.SourceGenerators;
@@ -11,20 +11,20 @@ public partial class TwoLineMenuItemViewModel : ReactiveObject, ISmallViewModelB
     public bool Indented { get; }
     private readonly ICommand _clickedCommand;
 
-    private readonly MaterialIconKind _icon;
+    private readonly PackIconMaterialKind _icon;
     private readonly string _title;
     private readonly string _subTitle;
-    public MaterialIconKind Icon => _icon;
+    public PackIconMaterialKind Icon => _icon;
 
     public string Title => _title;
     public string SubTitle => _subTitle;
-    public TwoLineMenuItemViewModel(string title, string subTitle, MaterialIconKind? icon, ICommand clickedCommand, bool indented = false)
+    public TwoLineMenuItemViewModel(string title, string subTitle, PackIconMaterialKind? icon, ICommand clickedCommand, bool indented = false)
     {
         Indented = indented;
         _title = title;
         _subTitle = subTitle;
         if (icon != null)
-            _icon = (MaterialIconKind)icon;
+            _icon = (PackIconMaterialKind)icon;
         _clickedCommand = clickedCommand;
     }
 

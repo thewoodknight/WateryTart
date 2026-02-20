@@ -4,6 +4,7 @@
           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
           xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:views="clr-namespace:WateryTart.Core.Views"
           xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
@@ -15,7 +16,7 @@
     <TabControl ItemsSource="{Binding SettingsProviders}" TabStripPlacement="Left">
         <TabControl.ItemTemplate>
             <DataTemplate>
-                <avalonia:MaterialIcon
+                <iconPacks:PackIconMaterial
                           Width="30"
                           Height="30"
                           Kind="{Binding Icon}" />

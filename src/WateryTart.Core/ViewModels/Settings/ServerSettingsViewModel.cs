@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
-using Material.Icons;
+using IconPacks.Avalonia.Material;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
@@ -21,7 +21,7 @@ public partial class ServerSettingsViewModel : ReactiveObject, IHaveSettings, ID
     private readonly IMassServerDiscovery _discovery;
     private bool _disposed;
 
-    public MaterialIconKind Icon => MaterialIconKind.Server;
+    public PackIconMaterialKind Icon => PackIconMaterialKind.Server;
 
     // Current connection info (read-only display)
     [Reactive] public partial string CurrentServer { get; set; } = string.Empty;

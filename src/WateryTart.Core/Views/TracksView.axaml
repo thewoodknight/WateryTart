@@ -1,19 +1,19 @@
 ﻿<UserControl
-    x:Class="WateryTart.Core.Views.TracksView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:app="clr-namespace:WateryTart.Core"
-    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-    xmlns:behaviors="clr-namespace:WateryTart.Core.Behaviors"
-    xmlns:converters="clr-namespace:WateryTart.Core.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:materialIcons="using:Material.Icons.Avalonia"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="vm:TracksViewModel"
-    mc:Ignorable="d">
+          x:Class="WateryTart.Core.Views.TracksView"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:app="clr-namespace:WateryTart.Core"
+          xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+          xmlns:behaviors="clr-namespace:WateryTart.Core.Behaviors"
+          xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+          d:DesignHeight="450"
+          d:DesignWidth="800"
+          x:DataType="vm:TracksViewModel"
+          mc:Ignorable="d">
     <UserControl.Resources>
         <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
         <converters:ArtistsToStringConverter x:Key="ArtistsToStringConverter" />
@@ -28,16 +28,16 @@
 
         <!--  Tracks List with Infinite Scroll Behavior  -->
         <ListBox
-            x:Name="lbTracks"
-            Grid.Row="0"
-            Background="Transparent"
-            ItemsSource="{Binding Tracks}">
+                  x:Name="lbTracks"
+                  Grid.Row="0"
+                  Background="Transparent"
+                  ItemsSource="{Binding Tracks}">
             <Interaction.Behaviors>
                 <behaviors:ListScrollBehavior
-                    HasMoreItems="{Binding HasMoreItems}"
-                    IsLoading="{Binding IsLoading}"
-                    LoadMoreCommand="{Binding LoadMoreCommand}"
-                    Threshold="10" />
+                          HasMoreItems="{Binding HasMoreItems}"
+                          IsLoading="{Binding IsLoading}"
+                          LoadMoreCommand="{Binding LoadMoreCommand}"
+                          Threshold="10" />
             </Interaction.Behaviors>
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -50,16 +50,16 @@
                         </Grid.ColumnDefinitions>
 
                         <Border
-                            Grid.Column="0"
-                            Margin="0,0,10,0"
-                            ClipToBounds="True"
-                            CornerRadius="5">
+                                  Grid.Column="0"
+                                  Margin="0,0,10,0"
+                                  ClipToBounds="True"
+                                  CornerRadius="5">
                             <asyncImageLoader:AdvancedImage
-                                Width="60"
-                                Height="60"
-                                FallbackImage="{x:Static app:App.FallbackImage}"
-                                Loader="{x:Static app:App.ImageLoaderInstance}"
-                                Source="{Binding Path=Track, Converter={StaticResource MetadataImageConverter}}">
+                                      Width="60"
+                                      Height="60"
+                                      FallbackImage="{x:Static app:App.FallbackImage}"
+                                      Loader="{x:Static app:App.ImageLoaderInstance}"
+                                      Source="{Binding Path=Track, Converter={StaticResource MetadataImageConverter}}">
                                 <Interaction.Behaviors>
                                     <EventTriggerBehavior EventName="Tapped">
                                         <InvokeCommandAction Command="{Binding #lbTracks.((vm:TracksViewModel)DataContext).ClickedCommand}" CommandParameter="{Binding Path=.}" />
@@ -69,42 +69,42 @@
                         </Border>
 
                         <StackPanel
-                            Grid.Column="1"
-                            Margin="0,0,10,0"
-                            VerticalAlignment="Center"
-                            Background="Transparent">
+                                  Grid.Column="1"
+                                  Margin="0,0,10,0"
+                                  VerticalAlignment="Center"
+                                  Background="Transparent">
                             <Interaction.Behaviors>
                                 <EventTriggerBehavior EventName="Tapped">
                                     <InvokeCommandAction Command="{Binding #lbTracks.((vm:TracksViewModel)DataContext).ClickedCommand}" CommandParameter="{Binding Path=.}" />
                                 </EventTriggerBehavior>
                             </Interaction.Behaviors>
                             <TextBlock
-                                FontWeight="SemiBold"
-                                Text="{Binding Track.Name}"
-                                TextTrimming="CharacterEllipsis" />
+                                      FontWeight="SemiBold"
+                                      Text="{Binding Track.Name}"
+                                      TextTrimming="CharacterEllipsis" />
                             <TextBlock
-                                FontSize="12"
-                                Opacity="0.7"
-                                Text="{Binding Track.Artists, Converter={StaticResource ArtistsToStringConverter}}"
-                                TextTrimming="CharacterEllipsis" />
+                                      FontSize="12"
+                                      Opacity="0.7"
+                                      Text="{Binding Track.Artists, Converter={StaticResource ArtistsToStringConverter}}"
+                                      TextTrimming="CharacterEllipsis" />
                         </StackPanel>
 
                         <TextBlock
-                            Grid.Column="2"
-                            Margin="0,0,15,0"
-                            VerticalAlignment="Center"
-                            Opacity="0.7"
-                            Text="{Binding Track.Duration, Converter={StaticResource FriendlyTimeConverter}}" />
+                                  Grid.Column="2"
+                                  Margin="0,0,15,0"
+                                  VerticalAlignment="Center"
+                                  Opacity="0.7"
+                                  Text="{Binding Track.Duration, Converter={StaticResource FriendlyTimeConverter}}" />
 
                         <Button
-                            Grid.Column="3"
-                            VerticalAlignment="Center"
-                            Classes="iconButton navButton"
-                            Command="{Binding TrackAltMenuCommand}">
-                            <materialIcons:MaterialIcon
-                                Width="25"
-                                Height="25"
-                                Kind="MoreVert" />
+                                  Grid.Column="3"
+                                  VerticalAlignment="Center"
+                                  Classes="iconButton navButton"
+                                  Command="{Binding TrackAltMenuCommand}">
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="22"
+                                      Kind="DotsVertical" />
                         </Button>
                     </Grid>
                 </DataTemplate>
@@ -113,41 +113,41 @@
 
         <!--  Loading Indicator  -->
         <Grid
-            Grid.Row="0"
-            Background="#80000000"
-            IsVisible="{Binding IsLoading}"
-            ZIndex="1">
+                  Grid.Row="0"
+                  Background="#80000000"
+                  IsVisible="{Binding IsLoading}"
+                  ZIndex="1">
             <StackPanel
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                IsVisible="{Binding !Tracks.Count}">
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      IsVisible="{Binding !Tracks.Count}">
                 <ProgressBar Width="100" IsIndeterminate="True" />
                 <TextBlock
-                    Margin="0,10,0,0"
-                    HorizontalAlignment="Center"
-                    Text="Loading tracks..." />
+                          Margin="0,10,0,0"
+                          HorizontalAlignment="Center"
+                          Text="Loading tracks..." />
             </StackPanel>
         </Grid>
 
         <!--  Track Count Display  -->
         <Border
-            Grid.Row="1"
-            Padding="10,5"
-            Background="#1A1A1A"
-            BorderBrush="#333333"
-            BorderThickness="0,1,0,0">
+                  Grid.Row="1"
+                  Padding="10,5"
+                  Background="#1A1A1A"
+                  BorderBrush="#333333"
+                  BorderThickness="0,1,0,0">
             <StackPanel
-                HorizontalAlignment="Center"
-                Orientation="Horizontal"
-                Spacing="5">
+                      HorizontalAlignment="Center"
+                      Orientation="Horizontal"
+                      Spacing="5">
                 <TextBlock Opacity="0.7">
                     <Run Text="{Binding Tracks.Count}" />
                     <Run Text="tracks loaded" />
                 </TextBlock>
                 <TextBlock
-                    IsVisible="{Binding HasMoreItems}"
-                    Opacity="0.7"
-                    Text="� Load more available" />
+                          IsVisible="{Binding HasMoreItems}"
+                          Opacity="0.7"
+                          Text="� Load more available" />
             </StackPanel>
         </Border>
     </Grid>

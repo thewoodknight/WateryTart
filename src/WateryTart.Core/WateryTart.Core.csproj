@@ -55,9 +55,12 @@
 		<PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
 		<PackageReference Include="Deadpikle.AvaloniaProgressRing" />
+		<PackageReference Include="IconPacks.Avalonia.Core" />
+		<PackageReference Include="IconPacks.Avalonia.FontAwesome" />
+		<PackageReference Include="IconPacks.Avalonia.Material" />
+		<PackageReference Include="IconPacks.Avalonia.MaterialDesign" />
 		<PackageReference Include="Iot.Device.Bindings" />
 		<PackageReference Include="Karambolo.Extensions.Logging.File" />
-		<PackageReference Include="Material.Icons.Avalonia" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="ReactiveUI.Avalonia" />
 		<PackageReference Include="ReactiveUI.SourceGenerators">
@@ -85,7 +88,7 @@
 		<Compile Update="Controls\ResponsiveColumnPanel.axaml.cs">
 			<DependentUpon>ResponsiveColumnPanel.axaml</DependentUpon>
 		</Compile>
-		<Compile Update="Views\KeyboardVolumeKeyBindingsView.axaml.cs">
+		<Compile Update="Views\Settings\KeyboardVolumeKeyBindingsView.axaml.cs">
 			<DependentUpon>KeyboardVolumeKeyBindingsView.axaml</DependentUpon>
 		</Compile>
 		<Compile Update="Views\Popups\TrackInfoView.axaml.cs">

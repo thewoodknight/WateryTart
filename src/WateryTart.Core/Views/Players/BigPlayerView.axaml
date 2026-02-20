@@ -8,6 +8,7 @@
           xmlns:controls="clr-namespace:WateryTart.Core.Controls"
           xmlns:converters="using:WateryTart.Core.Converters"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
           xmlns:loc="using:WateryTart.Core.Views.Players"
           xmlns:materialIcons="using:Material.Icons.Avalonia"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -45,7 +46,7 @@
         <!--  Normal Display Mode  -->
         <controls:ResponsiveColumnPanel Breakpoint="600" IsVisible="{Binding !IsSmallDisplay}">
             <controls:ResponsiveColumnPanel.FirstColumn>
-                <StackPanel Margin="10,0,10,10">
+                <StackPanel Margin="10,0,10,10" Spacing="5">
                     <Border
                               MaxWidth="300"
                               MaxHeight="300"
@@ -141,32 +142,26 @@
                         </StackPanel>
                     </StackPanel>
 
-                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <Button
-                                  Margin="3,0,3,0"
-                                  Classes="iconButton navButton"
-                                  Command="{Binding PlayPreviousCommand}">
-                            <materialIcons:MaterialIcon
-                                      Width="45"
-                                      Height="45"
+                    <StackPanel
+                              HorizontalAlignment="Center"
+                              Orientation="Horizontal"
+                              Spacing="23">
+                        <Button Classes="iconButton navButton" Command="{Binding PlayPreviousCommand}">
+                            <iconPacks:PackIconMaterial
+                                      Width="30"
+                                      Height="30"
                                       Kind="SkipPrevious" />
                         </Button>
-                        <Button
-                                  Margin="3,0,3,0"
-                                  Classes="iconButton navButton"
-                                  Command="{Binding PlayerPlayPauseCommand}">
-                            <materialIcons:MaterialIcon
-                                      Width="45"
-                                      Height="45"
+                        <Button Classes="iconButton navButton" Command="{Binding PlayerPlayPauseCommand}">
+                            <iconPacks:PackIconMaterial
+                                      Width="30"
+                                      Height="30"
                                       Kind="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}}" />
                         </Button>
-                        <Button
-                                  Margin="3,0,0,0"
-                                  Classes="iconButton navButton"
-                                  Command="{Binding PlayerNextCommand}">
-                            <materialIcons:MaterialIcon
-                                      Width="45"
-                                      Height="45"
+                        <Button Classes="iconButton navButton" Command="{Binding PlayerNextCommand}">
+                            <iconPacks:PackIconMaterial
+                                      Width="30"
+                                      Height="30"
                                       Kind="SkipNext" />
                         </Button>
                     </StackPanel>
@@ -176,11 +171,11 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <materialIcons:MaterialIcon
+                        <iconPacks:PackIconMaterial
                                   Name="VolumeIcon"
                                   Grid.Column="0"
-                                  Width="25"
-                                  Height="25"
+                                  Width="20"
+                                  Height="20"
                                   Kind="{Binding PlayersService.SelectedPlayer.VolumeLevel, Converter={StaticResource VolumeLevelToIconConverter}}" />
                         <Slider
                                   Grid.Column="1"
@@ -206,21 +201,21 @@
                               Orientation="Horizontal"
                               Spacing="10">
                         <Button Classes="iconButton navButton">
-                            <materialIcons:MaterialIcon
-                                      Width="25"
-                                      Height="25"
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="22"
                                       Kind="ShuffleDisabled" />
                         </Button>
                         <Button Classes="iconButton navButton">
-                            <materialIcons:MaterialIcon
-                                      Width="25"
-                                      Height="25"
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="22"
                                       Kind="ShuffleVariant" />
                         </Button>
                         <Button Classes="iconButton navButton" Command="{Binding ToggleFavoriteCommand}">
-                            <materialIcons:MaterialIcon
-                                      Width="25"
-                                      Height="25"
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="22"
                                       Kind="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Favorite, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='HeartOutline,Heart'}" />
                         </Button>
                     </StackPanel>
@@ -371,19 +366,19 @@
                           Orientation="Horizontal"
                           Spacing="10">
                     <Button Classes="iconButton navButton" Command="{Binding PlayPreviousCommand}">
-                        <materialIcons:MaterialIcon
+                        <iconPacks:PackIconMaterial
                                   Width="45"
                                   Height="45"
                                   Kind="SkipPrevious" />
                     </Button>
                     <Button Classes="iconButton navButton" Command="{Binding PlayerPlayPauseCommand}">
-                        <materialIcons:MaterialIcon
+                        <iconPacks:PackIconMaterial
                                   Width="45"
                                   Height="45"
                                   Kind="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}}" />
                     </Button>
                     <Button Classes="iconButton navButton" Command="{Binding PlayerNextCommand}">
-                        <materialIcons:MaterialIcon
+                        <iconPacks:PackIconMaterial
                                   Width="45"
                                   Height="45"
                                   Kind="SkipNext" />
@@ -399,10 +394,10 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <materialIcons:MaterialIcon
+                    <iconPacks:PackIconMaterial
                               Grid.Column="0"
-                              Width="25"
-                              Height="25"
+                              Width="20"
+                              Height="22"
                               Kind="{Binding PlayersService.SelectedPlayer.VolumeLevel, Converter={StaticResource VolumeLevelToIconConverter}}" />
                     <Slider
                               Grid.Column="1"

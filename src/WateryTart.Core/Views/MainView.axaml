@@ -5,7 +5,7 @@
           xmlns:converters="using:WateryTart.Core.Converters"
           xmlns:core="clr-namespace:WateryTart.Core"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-          xmlns:materialIcons="using:Material.Icons.Avalonia"
+          xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:menus="using:WateryTart.Core.Views.Menus"
           xmlns:players1="using:WateryTart.Core.Views.Players"
@@ -94,9 +94,9 @@
                       Padding="0"
                       Classes="iconButton"
                       Command="{Binding GoBack}">
-                <materialIcons:MaterialIcon
-                          Width="30"
-                          Height="30"
+                <iconPacks:PackIconMaterial
+                          Width="20"
+                          Height="20"
                           Kind="ChevronLeft" />
             </Button>
             <TextBlock
@@ -145,9 +145,11 @@
                               Height="45"
                               Classes="iconButton navButton"
                               Command="{Binding GoHome}">
-                        <materialIcons:MaterialIcon
-                                  Width="25"
-                                  Height="25"
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="20"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
                                   Kind="Home" />
                     </Button>
                     <Button
@@ -155,9 +157,11 @@
                               Height="45"
                               Classes="iconButton navButton"
                               Command="{Binding GoMusic}">
-                        <materialIcons:MaterialIcon
-                                  Width="25"
-                                  Height="25"
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="20"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
                                   Kind="Music" />
                     </Button>
                     <Button
@@ -165,19 +169,23 @@
                               Height="45"
                               Classes="iconButton navButton"
                               Command="{Binding GoSearch}">
-                        <materialIcons:MaterialIcon
-                                  Width="25"
-                                  Height="25"
-                                  Kind="Search" />
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="20"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Kind="Magnify" />
                     </Button>
                     <Button
                               Grid.Column="3"
                               Height="45"
                               Classes="iconButton navButton"
                               Command="{Binding GoPlayers}">
-                        <materialIcons:MaterialIcon
-                                  Width="25"
-                                  Height="25"
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="20"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
                                   Kind="Speaker" />
                     </Button>
                     <Button
@@ -185,10 +193,12 @@
                               Height="45"
                               Classes="iconButton navButton"
                               Command="{Binding GoSettings}">
-                        <materialIcons:MaterialIcon
-                                  Width="25"
-                                  Height="25"
-                                  Kind="Settings" />
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="20"
+                                  HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Kind="Cog" />
                     </Button>
                 </Grid>
             </Grid>

@@ -1,4 +1,4 @@
-﻿using Material.Icons;
+﻿using IconPacks.Avalonia.Material;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -18,7 +18,7 @@ namespace WateryTart.Core.ViewModels
         private UpdateManager _um;
         private UpdateInfo _update;
         public IScreen HostScreen => null;
-        public MaterialIconKind Icon => MaterialIconKind.Cog;
+        public PackIconMaterialKind Icon => PackIconMaterialKind.Cog;
         [Reactive] public partial string InstalledVersion { get; set; }
         [Reactive] public partial bool IsLoading { get; set; } = false;
         [Reactive] public partial string LatestVersion { get; set; }

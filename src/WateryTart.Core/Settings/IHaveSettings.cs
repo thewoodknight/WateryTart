@@ -1,9 +1,9 @@
-﻿using Material.Icons;
+﻿using IconPacks.Avalonia.Material;
 
 namespace WateryTart.Core.Settings;
 
 public interface IHaveSettings
 {
-    public MaterialIconKind Icon { get; }
+    public PackIconMaterialKind Icon { get; }
 
 }

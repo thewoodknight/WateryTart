@@ -6,6 +6,7 @@
     xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:converters="clr-namespace:WateryTart.Core.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:WateryTart.MusicAssistant.Models;assembly=WateryTart.MusicAssistant"
     xmlns:vm="using:WateryTart.Core.ViewModels.Menus"
@@ -36,7 +37,7 @@
                         <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <avalonia:MaterialIcon
+                    <iconPacks:PackIconMaterial
                         Width="30"
                         Height="30"
                         Kind="{Binding Icon}" />
@@ -62,7 +63,7 @@
                         <ColumnDefinition Width="50" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <avalonia:MaterialIcon
+                    <iconPacks:PackIconMaterial
                         Width="30"
                         Height="30"
                         Kind="{Binding Icon}" />

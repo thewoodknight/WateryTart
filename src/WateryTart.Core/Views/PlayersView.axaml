@@ -4,9 +4,9 @@
           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
           xmlns:app="clr-namespace:WateryTart.Core"
           xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-          xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
           xmlns:converters="clr-namespace:WateryTart.Core.Converters"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
           xmlns:materialIcons="using:Material.Icons.Avalonia"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
@@ -44,7 +44,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!--  Album art  -->
-                    <avalonia:MaterialIcon
+                    <iconPacks:PackIconMaterial
                               Grid.Row="0"
                               Grid.Column="0"
                               Width="50"
@@ -78,19 +78,19 @@
                                   Classes="iconButton navButton"
                                   Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerTogglePlayPauseCommand}"
                                   CommandParameter="{Binding Path=.}">
-                            <materialIcons:MaterialIcon
+                            <iconPacks:PackIconMaterial
                                       Width="25"
-                                      Height="25"
+                                      Height="22"
                                       Kind="{Binding PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}}" />
                         </Button>
                         <Button
                                   Classes="iconButton navButton"
                                   Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerAltCommand}"
                                   CommandParameter="{Binding Path=.}">
-                            <materialIcons:MaterialIcon
+                            <iconPacks:PackIconMaterial
                                       Width="25"
-                                      Height="25"
-                                      Kind="MoreVert" />
+                                      Height="22"
+                                      Kind="DotsVertical" />
                         </Button>
                     </StackPanel>
 

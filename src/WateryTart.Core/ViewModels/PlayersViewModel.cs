@@ -2,7 +2,7 @@
 using System.Reactive.Linq;
 using Avalonia.Controls.Primitives;
 using CommunityToolkit.Mvvm.Input;
-using Material.Icons;
+using IconPacks.Avalonia.Material;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
@@ -93,37 +93,37 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
             var menu = new MenuViewModel();
 #pragma warning disable CS4014
             if (p.PlaybackState == MusicAssistant.Models.Enums.PlaybackState.Playing)
-                menu.AddMenuItem(new MenuItemViewModel("Stop Playback", MaterialIconKind.Stop, new RelayCommand(() => _playersService.PlayerPlayPause(p))));
+                menu.AddMenuItem(new MenuItemViewModel("Stop Playback", PackIconMaterialKind.Stop, new RelayCommand(() => _playersService.PlayerPlayPause(p))));
 
             var queue = _playersService.Queues.FirstOrDefault(q => q.QueueId == p.ActiveSource);
             if (queue != null)
             {
                 if (!queue.ShuffleEnabled)
-                    menu.AddMenuItem(new MenuItemViewModel("Enable shuffle", MaterialIconKind.Shuffle, new RelayCommand(() => _playersService.PlayerShuffle(p))));
+                    menu.AddMenuItem(new MenuItemViewModel("Enable shuffle", PackIconMaterialKind.Shuffle, new RelayCommand(() => _playersService.PlayerShuffle(p))));
                 else
-                    menu.AddMenuItem(new MenuItemViewModel("Disable shuffle", MaterialIconKind.Shuffle, new RelayCommand(() => _playersService.PlayerShuffle(p, false))));
+                    menu.AddMenuItem(new MenuItemViewModel("Disable shuffle", PackIconMaterialKind.Shuffle, new RelayCommand(() => _playersService.PlayerShuffle(p, false))));
                 var items = new List<MenuItemViewModel>()
                 { 
-                    //new MenuItemViewModel("Syncronize with another player", MaterialIconKind.Link, null),
-                    new MenuItemViewModel("Repeat Mode", MaterialIconKind.Repeat, null),
-                    new MenuItemViewModel("Repeat Off", MaterialIconKind.RepeatOff, new RelayCommand(() => _playersService.PlayerSetRepeatMode(RepeatMode.Off, p)), true),
-                    new MenuItemViewModel("Repeat Entire Queue", MaterialIconKind.RepeatVariant, new RelayCommand(() => _playersService.PlayerSetRepeatMode(RepeatMode.All, p)), true),
-                    new MenuItemViewModel("Repeat Single Track", MaterialIconKind.Repeat, new RelayCommand(() => _playersService.PlayerSetRepeatMode(RepeatMode.One, p)), true),
-                    //  new MenuItemViewModel("Transfer queue", MaterialIconKind.Transfer, null),
-                    new MenuItemViewModel("Clear queue", MaterialIconKind.Cancel, new RelayCommand(() => _playersService.PlayerClearQueue(p)))
-                    // new MenuItemViewModel("Select source", MaterialIconKind.Import, null)
+                    //new MenuItemViewModel("Syncronize with another player", PackIconMaterialKind.Link, null),
+                    new MenuItemViewModel("Repeat Mode", PackIconMaterialKind.Repeat, null),
+                    new MenuItemViewModel("Repeat Off", PackIconMaterialKind.RepeatOff, new RelayCommand(() => _playersService.PlayerSetRepeatMode(RepeatMode.Off, p)), true),
+                    new MenuItemViewModel("Repeat Entire Queue", PackIconMaterialKind.RepeatVariant, new RelayCommand(() => _playersService.PlayerSetRepeatMode(RepeatMode.All, p)), true),
+                    new MenuItemViewModel("Repeat Single Track", PackIconMaterialKind.Repeat, new RelayCommand(() => _playersService.PlayerSetRepeatMode(RepeatMode.One, p)), true),
+                    //  new MenuItemViewModel("Transfer queue", PackIconMaterialKind.Transfer, null),
+                    new MenuItemViewModel("Clear queue", PackIconMaterialKind.Cancel, new RelayCommand(() => _playersService.PlayerClearQueue(p)))
+                    // new MenuItemViewModel("Select source", PackIconMaterialKind.Import, null)
                 };
 
                 if (!queue.DontStopTheMusicEnabled)
-                    menu.AddMenuItem(new MenuItemViewModel("Enable 'Don't stop the music'", MaterialIconKind.Infinity, new RelayCommand(() => _playersService.PlayerDontStopTheMusic(p))));
+                    menu.AddMenuItem(new MenuItemViewModel("Enable 'Don't stop the music'", PackIconMaterialKind.Infinity, new RelayCommand(() => _playersService.PlayerDontStopTheMusic(p))));
                 else
-                    menu.AddMenuItem(new MenuItemViewModel("Disable 'Don't stop the music'", MaterialIconKind.Infinity, new RelayCommand(() => _playersService.PlayerDontStopTheMusic(p, false))));
+                    menu.AddMenuItem(new MenuItemViewModel("Disable 'Don't stop the music'", PackIconMaterialKind.Infinity, new RelayCommand(() => _playersService.PlayerDontStopTheMusic(p, false))));
 
                 menu.AddMenuItem(items);
             }
 #pragma warning restore CS4014
-            //deep links don't seem to work  new MenuItemViewModel("Open settings", MaterialIconKind.Cog,  new RelayCommand(() => App.Launcher.LaunchUriAsync(new System.Uri("http://10.0.1.20:8095/#/settings/editplayer/sendspin-windows-magni")))),
-            //new MenuItemViewModel("Open DSP settings", MaterialIconKind.Equaliser, null),
+            //deep links don't seem to work  new MenuItemViewModel("Open settings", PackIconMaterialKind.Cog,  new RelayCommand(() => App.Launcher.LaunchUriAsync(new System.Uri("http://10.0.1.20:8095/#/settings/editplayer/sendspin-windows-magni")))),
+            //new MenuItemViewModel("Open DSP settings", PackIconMaterialKind.Equaliser, null),
 
             
             MessageBus.Current.SendMessage<IPopupViewModel>(menu);

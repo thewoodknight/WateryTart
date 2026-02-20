@@ -1,4 +1,4 @@
-﻿using Material.Icons;
+﻿using IconPacks.Avalonia.Material;
 using ReactiveUI;
 
 namespace WateryTart.Core.ViewModels;
@@ -6,7 +6,7 @@ namespace WateryTart.Core.ViewModels;
 public interface ISmallViewModelBase
 {
     string Title { get;}
-    MaterialIconKind Icon { get; }
+    PackIconMaterialKind Icon { get; }
 }
 public interface IViewModelBase : IRoutableViewModel
 {

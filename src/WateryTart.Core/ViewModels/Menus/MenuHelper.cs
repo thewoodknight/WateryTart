@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using Material.Icons;
+using IconPacks.Avalonia.Material;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using System.Collections.Generic;
@@ -46,7 +46,7 @@ public static class MenuHelper
 
             });
 
-            players.Add(new MenuItemViewModel($"Play on {displayName}", MaterialIconKind.Speaker, playerCommand, true));
+            players.Add(new MenuItemViewModel($"Play on {displayName}", PackIconMaterialKind.Speaker, playerCommand, true));
         }
 
         return players;
@@ -79,10 +79,10 @@ public static class MenuHelper
 
         var menu = new MenuViewModel(
         [
-            new MenuItemViewModel("Add to library", MaterialIconKind.LibraryAdd, addToLibraryCommand),
-            new MenuItemViewModel("Add to favourites", MaterialIconKind.FavoriteAdd, addToFavouritesCommand),
-            new MenuItemViewModel("Add to playlist",MaterialIconKind.PlaylistAdd, addToPlaylistCommand),
-            new MenuItemViewModel("Play", MaterialIconKind.Play, playCommand)
+            new MenuItemViewModel("Add to library", PackIconMaterialKind.BookPlusMultiple, addToLibraryCommand),
+            new MenuItemViewModel("Add to favourites", PackIconMaterialKind.HeartPlus, addToFavouritesCommand),
+            new MenuItemViewModel("Add to playlist",PackIconMaterialKind.PlaylistPlus, addToPlaylistCommand),
+            new MenuItemViewModel("Play", PackIconMaterialKind.Play, playCommand)
         ]);
 
         if (addPlayers)

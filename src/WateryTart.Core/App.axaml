@@ -5,7 +5,7 @@
           xmlns:app="clr-namespace:WateryTart.Core"
           xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
           xmlns:converters="using:WateryTart.Core.Converters"
-          xmlns:materialIcons="using:Material.Icons.Avalonia"
+          xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
           xmlns:menus="using:WateryTart.Core.Views.Menus"
           xmlns:viewModels="clr-namespace:WateryTart.Core.ViewModels"
           xmlns:views="using:WateryTart.Core"
@@ -83,10 +83,10 @@
                               Grid.Column="2"
                               Classes="iconButton navButton"
                               Command="{Binding AlbumAltMenuCommand}">
-                        <materialIcons:MaterialIcon
-                                  Width="25"
-                                  Height="25"
-                                  Kind="MoreVert" />
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="22"
+                                  Kind="DotsVertical" />
                     </Button>
                 </Grid>
             </DataTemplate>
@@ -121,7 +121,7 @@
                               Grid.Column="1"
                               Margin="0,0,0,0"
                               ColumnDefinitions="Auto,*">
-                        <materialIcons:MaterialIcon
+                        <iconPacks:PackIconMaterial
                                   Grid.Column="0"
                                   Width="20"
                                   Height="20"
@@ -142,10 +142,10 @@
                               Grid.Column="2"
                               Classes="iconButton navButton"
                               Command="{Binding TrackAltMenuCommand}">
-                        <materialIcons:MaterialIcon
-                                  Width="25"
-                                  Height="25"
-                                  Kind="MoreVert" />
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="22"
+                                  Kind="DotsVertical" />
                     </Button>
                 </Grid>
 
@@ -193,10 +193,10 @@
                               Grid.Column="2"
                               Classes="iconButton navButton"
                               Command="{Binding PlaylistAltMenuCommand}">
-                        <materialIcons:MaterialIcon
-                                  Width="25"
-                                  Height="25"
-                                  Kind="MoreVert" />
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="22"
+                                  Kind="DotsVertical" />
                     </Button>
                 </Grid>
             </DataTemplate>
@@ -240,10 +240,10 @@
                               Grid.Column="2"
                               Classes="iconButton navButton"
                               Command="{Binding AltMenuCommand}">
-                        <materialIcons:MaterialIcon
-                                  Width="25"
-                                  Height="25"
-                                  Kind="MoreVert" />
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="22"
+                                  Kind="DotsVertical" />
                     </Button>
                 </Grid>
             </DataTemplate>
@@ -292,39 +292,25 @@
 
     <Application.Styles>
         <FluentTheme />
-        <materialIcons:MaterialIconStyles />
         <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
         <StyleInclude Source="avares://AvaloniaProgressRing/Styles/ProgressRing.xaml" />
-        <Style Selector="materialIcons|MaterialIcon.spinner">
-            <Style.Animations>
-                <Animation IterationCount="INFINITE" Duration="0:0:2">
-                    <KeyFrame Cue="0%">
-                        <Setter Property="RotateTransform.Angle" Value="0" />
-                    </KeyFrame>
-                    <KeyFrame Cue="100%">
-                        <Setter Property="RotateTransform.Angle" Value="360" />
-                    </KeyFrame>
-                </Animation>
-            </Style.Animations>
-        </Style>
+        <StyleInclude Source="avares://IconPacks.Avalonia.Material/Material.axaml" />
+        <StyleInclude Source="avares://IconPacks.Avalonia.FontAwesome/FontAwesome.axaml" />
 
-        <!--  Loading spinner animation  -->
-        <Style Selector="materialIcons|MaterialIcon.spinner">
-            <Style.Animations>
-                <Animation IterationCount="INFINITE" Duration="0:0:2">
-                    <KeyFrame Cue="0%">
-                        <Setter Property="RotateTransform.Angle" Value="0" />
-                    </KeyFrame>
-                    <KeyFrame Cue="100%">
-                        <Setter Property="RotateTransform.Angle" Value="360" />
-                    </KeyFrame>
-                </Animation>
-            </Style.Animations>
+        <Style Selector="iconPacks|PackIconMaterial">
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
-
         <Style Selector="Button.iconButton">
             <Setter Property="Background" Value="Transparent" />
             <!--  Transparent is still a touch/click target, but x:x:Null is not  -->
+            <Style Selector="^ iconPacks|PackIconMaterial">
+                <Setter Property="Opacity" Value="0.7" />
+                <Setter Property="Background" Value="Transparent" />
+            </Style>
+            <Style Selector="^ iconPacks|PackIconMaterial:pointerover">
+                <Setter Property="Opacity" Value="1" />
+            </Style>
         </Style>
         <Style Selector="Button.iconButton:disabled /template/ ContentPresenter">
             <Setter Property="Background" Value="Transparent" />

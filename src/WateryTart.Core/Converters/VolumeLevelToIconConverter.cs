@@ -1,5 +1,5 @@
 ﻿using Avalonia.Data.Converters;
-using Material.Icons;
+using IconPacks.Avalonia.Material;
 using System;
 using System.Globalization;
 
@@ -13,14 +13,14 @@ public class VolumeLevelToIconConverter : IValueConverter
             if (value is int volume)
             {
                 if (volume >= 66)
-                    return MaterialIconKind.VolumeHigh;
+                    return PackIconMaterialKind.VolumeHigh;
                 if (volume >= 33)
-                    return MaterialIconKind.VolumeMedium;
+                    return PackIconMaterialKind.VolumeMedium;
                 if (volume > 0)
-                    return MaterialIconKind.VolumeLow;
-                return MaterialIconKind.VolumeOff;
+                    return PackIconMaterialKind.VolumeLow;
+                return PackIconMaterialKind.VolumeOff;
             }
-        return MaterialIconKind.VolumeOff;
+        return PackIconMaterialKind.VolumeOff;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

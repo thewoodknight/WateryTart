@@ -1,4 +1,4 @@
-﻿using Material.Icons;
+﻿using IconPacks.Avalonia.Material;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ public partial class MenuViewModel : ReactiveObject, IPopupViewModel
     public bool ShowMiniPlayer => false;
     public bool ShowNavigation => false;
     public string Title { get; set; } = string.Empty;
-    public MaterialIconKind Icon { get; } = MaterialIconKind.Sword;
+    public PackIconMaterialKind Icon { get; } = PackIconMaterialKind.Sword;
     public string? UrlPathSegment { get; } = string.Empty;
 
     public string Message => throw new System.NotImplementedException();

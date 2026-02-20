@@ -1,4 +1,4 @@
-﻿using Material.Icons;
+﻿using IconPacks.Avalonia.Material;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using WateryTart.Core.Settings;
@@ -16,7 +16,7 @@ namespace WateryTart.Platform.Windows.ViewModels
         public string Title { get; set; } = "wasapisettings";
         public bool ShowMiniPlayer { get; } = false;
         public bool ShowNavigation { get; } = false;
-        public MaterialIconKind Icon => MaterialIconKind.Speaker;
+        public PackIconMaterialKind Icon => PackIconMaterialKind.Speaker;
         [Reactive] public partial bool IsLoading { get; set; } = false;
     }
 }

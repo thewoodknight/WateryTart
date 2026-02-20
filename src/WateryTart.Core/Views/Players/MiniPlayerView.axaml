@@ -7,8 +7,7 @@
           xmlns:converters="using:WateryTart.Core.Converters"
           xmlns:core="clr-namespace:WateryTart.Core"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-          xmlns:icons="clr-namespace:Material.Icons;assembly=Material.Icons"
-          xmlns:materialIcons="using:Material.Icons.Avalonia"
+          xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:players="using:WateryTart.Core.ViewModels.Players"
           xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
@@ -60,27 +59,27 @@
                           Margin="3,0,3,0"
                           Classes="iconButton navButton"
                           Command="{Binding PlayPreviousCommand}">
-                    <materialIcons:MaterialIcon
+                    <iconPacks:PackIconMaterial
                               Width="25"
-                              Height="25"
+                              Height="22"
                               Kind="SkipPrevious" />
                 </Button>
                 <Button
                           Margin="3,0,3,0"
                           Classes="iconButton navButton"
                           Command="{Binding PlayerPlayPauseCommand}">
-                    <materialIcons:MaterialIcon
+                    <iconPacks:PackIconMaterial
                               Width="25"
-                              Height="25"
-                              Kind="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}, FallbackValue={x:Static icons:MaterialIconKind.Play}}" />
+                              Height="22"
+                              Kind="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}, FallbackValue={x:Static iconPacks:PackIconMaterialKind.Play}}" />
                 </Button>
                 <Button
                           Margin="3,0,20,0"
                           Classes="iconButton navButton"
                           Command="{Binding PlayerNextCommand}">
-                    <materialIcons:MaterialIcon
+                    <iconPacks:PackIconMaterial
                               Width="25"
-                              Height="25"
+                              Height="22"
                               Kind="SkipNext" />
                 </Button>
             </StackPanel>

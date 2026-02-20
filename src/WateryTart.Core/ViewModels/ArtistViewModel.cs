@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using Material.Icons;
+using IconPacks.Avalonia.Material;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System.Collections.ObjectModel;
@@ -63,8 +63,8 @@ namespace WateryTart.Core.ViewModels
             {
                 var menu = new MenuViewModel(
                 [
-                    new MenuItemViewModel("Artist Radio", MaterialIconKind.Radio, new RelayCommand(() => {})),
-                    new MenuItemViewModel("Play", MaterialIconKind.Play, new RelayCommand(() => { }))
+                    new MenuItemViewModel("Artist Radio", PackIconMaterialKind.Radio, new RelayCommand(() => {})),
+                    new MenuItemViewModel("Play", PackIconMaterialKind.Play, new RelayCommand(() => { }))
                 ]);
 
                 menu.AddMenuItem(MenuHelper.AddPlayers(_playersService, Artist));
@@ -87,8 +87,8 @@ namespace WateryTart.Core.ViewModels
 
             var menu = new MenuViewModel(
             [
-            new MenuItemViewModel("Artist Radio", MaterialIconKind.Radio, new RelayCommand(() => {})),
-                new MenuItemViewModel("Play", MaterialIconKind.Play, new RelayCommand(() => { }))
+            new MenuItemViewModel("Artist Radio", PackIconMaterialKind.Radio, new RelayCommand(() => {})),
+                new MenuItemViewModel("Play", PackIconMaterialKind.Play, new RelayCommand(() => { }))
             ]);
 
             menu.AddMenuItem(MenuHelper.AddPlayers(_playersService, Artist));

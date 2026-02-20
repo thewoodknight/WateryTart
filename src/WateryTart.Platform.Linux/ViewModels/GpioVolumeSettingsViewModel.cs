@@ -1,4 +1,4 @@
-﻿using Material.Icons;
+﻿using IconPacks.Avalonia.Material;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using WateryTart.Core.Settings;
@@ -43,6 +43,6 @@ public partial class GpioVolumeSettingsViewModel : ReactiveObject, IViewModelBas
         set => this.RaiseAndSetIfChanged(ref _pulsesPerTurn, value);
     }
 
-    public MaterialIconKind Icon => MaterialIconKind.DeveloperBoard;
+    public PackIconMaterialKind Icon => PackIconMaterialKind.DeveloperBoard;
 }
         

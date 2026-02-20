@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
     d:DesignHeight="450"
@@ -29,9 +30,9 @@
                         FontSize="16"
                         FontWeight="Bold"
                         Text="Artists" />
-                    <avalonia:MaterialIcon
+                    <iconPacks:PackIconMaterial
                         Width="25"
-                        Height="25"
+                        Height="20"
                         HorizontalAlignment="Right"
                         Kind="ChevronRight" />
                 </Grid>
@@ -56,9 +57,9 @@
                         FontSize="16"
                         FontWeight="Bold"
                         Text="Albums" />
-                    <avalonia:MaterialIcon
+                    <iconPacks:PackIconMaterial
                         Width="25"
-                        Height="25"
+                        Height="20"
                         HorizontalAlignment="Right"
                         Kind="ChevronRight" />
                 </Grid>
@@ -83,9 +84,9 @@
                         FontSize="16"
                         FontWeight="Bold"
                         Text="Tracks" />
-                    <avalonia:MaterialIcon
+                    <iconPacks:PackIconMaterial
                         Width="25"
-                        Height="25"
+                        Height="20"
                         HorizontalAlignment="Right"
                         Kind="ChevronRight" />
                 </Grid>
@@ -110,9 +111,9 @@
                         FontSize="16"
                         FontWeight="Bold"
                         Text="Playlists" />
-                    <avalonia:MaterialIcon
+                    <iconPacks:PackIconMaterial
                         Width="25"
-                        Height="25"
+                        Height="20"
                         HorizontalAlignment="Right"
                         Kind="ChevronRight" />
                 </Grid>

@@ -259,11 +259,6 @@
           "Tmds.LibC": "0.2.0"
         }
       },
-      "Material.Icons": {
-        "type": "Transitive",
-        "resolved": "2.4.1",
-        "contentHash": "5/8ekF4GXqpluBF+kPfv3TytBpV5Z+h4CUU5iNCDC7+A9hPQvtn08ZUjMUXtcRGxGyfScHYDqzshzTvYiPTCdA=="
-      },
       "MicroCom.Runtime": {
         "type": "Transitive",
         "resolved": "0.11.0",
@@ -658,9 +653,12 @@
           "AvaloniaUI.DiagnosticsSupport": "[2.1.1, )",
           "CommunityToolkit.Mvvm": "[8.4.0, )",
           "Deadpikle.AvaloniaProgressRing": "[0.10.10, )",
+          "IconPacks.Avalonia.Core": "[1.3.1, )",
+          "IconPacks.Avalonia.FontAwesome": "[1.3.1, )",
+          "IconPacks.Avalonia.Material": "[1.3.1, )",
+          "IconPacks.Avalonia.MaterialDesign": "[1.3.1, )",
           "Iot.Device.Bindings": "[4.1.0, )",
           "Karambolo.Extensions.Logging.File": "[4.1.0, )",
-          "Material.Icons.Avalonia": "[2.4.1, )",
           "Microsoft.Extensions.Logging.Console": "[10.0.3, )",
           "ReactiveUI.Avalonia": "[11.3.8, )",
           "Sendspin.SDK": "[6.3.5, )",
@@ -746,6 +744,45 @@
           "Avalonia": "11.2.1"
         }
       },
+      "IconPacks.Avalonia.Core": {
+        "type": "CentralTransitive",
+        "requested": "[1.3.1, )",
+        "resolved": "1.3.1",
+        "contentHash": "S3EmujVvd7f6a7W927QqiAfe9tWorXJ5N6rvfnuHvIO1nptbFZdiiECkpnVGmmsVLBTkpy+59k8M45h8q0vjJg==",
+        "dependencies": {
+          "Avalonia": "11.0.13"
+        }
+      },
+      "IconPacks.Avalonia.FontAwesome": {
+        "type": "CentralTransitive",
+        "requested": "[1.3.1, )",
+        "resolved": "1.3.1",
+        "contentHash": "mLq0STeFwho21xO4CFFyBba8RkfaqHd8wx+gBAvamKmUHafpp8Q/ZKNNHOLfTFvFRT/+2MlbCqHq62TnLraUjw==",
+        "dependencies": {
+          "Avalonia": "11.0.13",
+          "IconPacks.Avalonia.Core": "1.3.1"
+        }
+      },
+      "IconPacks.Avalonia.Material": {
+        "type": "CentralTransitive",
+        "requested": "[1.3.1, )",
+        "resolved": "1.3.1",
+        "contentHash": "HUwHUDCFNBBZitUmENGKG0W21Im6pBAMPpxdMUL55dt/OyawyAVlpGr6ANBQGJ24DFVm8SwP/Pcn+wWriPvv5Q==",
+        "dependencies": {
+          "Avalonia": "11.0.13",
+          "IconPacks.Avalonia.Core": "1.3.1"
+        }
+      },
+      "IconPacks.Avalonia.MaterialDesign": {
+        "type": "CentralTransitive",
+        "requested": "[1.3.1, )",
+        "resolved": "1.3.1",
+        "contentHash": "6o/hpXyXtGLCELGS3ULBYI/s1xy7tB41gm1zB8sjfznpdE5pUyG8vqTBEVc/01iqpMNYXmu2VgenSN1BLe7qLQ==",
+        "dependencies": {
+          "Avalonia": "11.0.13",
+          "IconPacks.Avalonia.Core": "1.3.1"
+        }
+      },
       "Iot.Device.Bindings": {
         "type": "CentralTransitive",
         "requested": "[4.1.0, )",
@@ -769,16 +806,6 @@
           "Microsoft.Extensions.FileProviders.Physical": "10.0.0",
           "Microsoft.Extensions.Logging.Configuration": "10.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "10.0.0"
-        }
-      },
-      "Material.Icons.Avalonia": {
-        "type": "CentralTransitive",
-        "requested": "[2.4.1, )",
-        "resolved": "2.4.1",
-        "contentHash": "bJZzJCHfZDBg33ZyiSxvexMs2qMGkkv1XEgkAJkqLK9I8WNIUGLCnXcjoBrpSh2Sd2ytoD1IEjV72Zy54St3zA==",
-        "dependencies": {
-          "Avalonia": "11.0.0",
-          "Material.Icons": "2.4.1"
         }
       },
       "Microsoft.Extensions.DependencyInjection": {

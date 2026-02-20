@@ -2,7 +2,8 @@
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Material.Icons;
+using IconPacks.Avalonia.Material;
+using IconPacks.Avalonia.MaterialDesign;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
@@ -193,13 +194,13 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
             var menu = new MenuViewModel(
             [
-                new TwoLineMenuItemViewModel("Go to Album", item.Album.Name, MaterialIconKind.Album, GoToAlbum),
-                new TwoLineMenuItemViewModel("Go to Artist", item.Artists.FirstOrDefault().Name, MaterialIconKind.Artist, GoToArtist),
-                new MenuItemViewModel("Similar tracks", MaterialIconKind.MusicClefTreble, GoToSimilarTracks),
-                new MenuItemViewModel("Repeat Mode", MaterialIconKind.Repeat, null),
-                new MenuItemViewModel("Repeat Off", MaterialIconKind.RepeatOff, PlayerRepeatOff, true),
-                new MenuItemViewModel("Repeat Entire Queue", MaterialIconKind.RepeatVariant, PlayerRepeatQueue, true),
-                new MenuItemViewModel("Repeat Single Track", MaterialIconKind.Repeat, PlayerRepeatTrack, true),
+                new TwoLineMenuItemViewModel("Go to Album", item.Album.Name, PackIconMaterialKind.Album, GoToAlbum),
+                new TwoLineMenuItemViewModel("Go to Artist", item.Artists.FirstOrDefault().Name, PackIconMaterialKind.AccountMusic, GoToArtist),
+                new MenuItemViewModel("Similar tracks", PackIconMaterialKind.MusicClefTreble, GoToSimilarTracks),
+                new MenuItemViewModel("Repeat Mode", PackIconMaterialKind.Repeat, null),
+                new MenuItemViewModel("Repeat Off", PackIconMaterialKind.RepeatOff, PlayerRepeatOff, true),
+                new MenuItemViewModel("Repeat Entire Queue", PackIconMaterialKind.RepeatVariant, PlayerRepeatQueue, true),
+                new MenuItemViewModel("Repeat Single Track", PackIconMaterialKind.Repeat, PlayerRepeatTrack, true),
 
             ], PlayersService.SelectedQueue.CurrentItem);
             MessageBus.Current.SendMessage<IPopupViewModel>(menu);

@@ -7,6 +7,7 @@
           xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
           xmlns:converters="clr-namespace:WateryTart.Core.Converters"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
           xmlns:wateryTart="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
@@ -73,7 +74,7 @@
 
                         <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
                             <!--  Now Playing Indicator  -->
-                            <avalonia:MaterialIcon
+                            <iconPacks:PackIconMaterial
                                       Width="24"
                                       Height="24"
                                       Margin="5,0,5,0"
@@ -93,10 +94,10 @@
                                   Grid.Column="2"
                                   Classes="iconButton navButton"
                                   Command="{Binding TrackAltMenuCommand}">
-                            <avalonia:MaterialIcon
-                                      Width="25"
-                                      Height="25"
-                                      Kind="MoreVert" />
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="20"
+                                      Kind="DotsVertical" />
                         </Button>
                     </Grid>
                 </DataTemplate>

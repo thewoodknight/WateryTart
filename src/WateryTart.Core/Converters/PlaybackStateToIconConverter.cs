@@ -1,5 +1,5 @@
 using Avalonia.Data.Converters;
-using Material.Icons;
+using IconPacks.Avalonia.Material;
 using System;
 using System.Globalization;
 using WateryTart.MusicAssistant.Models.Enums;
@@ -15,10 +15,10 @@ public class PlaybackStateToIconConverter : IValueConverter
         {
             return playbackState switch
             {
-                PlaybackState.Playing => MaterialIconKind.Pause,
-                PlaybackState.Paused => MaterialIconKind.Play,
-                PlaybackState.Idle => MaterialIconKind.Play,
-                _ => MaterialIconKind.Play
+                PlaybackState.Playing => PackIconMaterialKind.Pause,
+                PlaybackState.Paused => PackIconMaterialKind.Play,
+                PlaybackState.Idle => PackIconMaterialKind.Play,
+                _ => PackIconMaterialKind.Play
             };
         }
 
@@ -27,15 +27,15 @@ public class PlaybackStateToIconConverter : IValueConverter
         {
             return state?.ToLowerInvariant() switch
             {
-                "playing" => MaterialIconKind.Pause,
-                "paused" => MaterialIconKind.Play,
-                "stopped" => MaterialIconKind.Play,
-                "idle" => MaterialIconKind.Play,
-                _ => MaterialIconKind.Play
+                "playing" => PackIconMaterialKind.Pause,
+                "paused" => PackIconMaterialKind.Play,
+                "stopped" => PackIconMaterialKind.Play,
+                "idle" => PackIconMaterialKind.Play,
+                _ => PackIconMaterialKind.Play
             };
         }
 
-        return MaterialIconKind.Play;
+        return PackIconMaterialKind.Play;
     }
 
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
