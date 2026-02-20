@@ -26,6 +26,7 @@
 
         <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
         <converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
+        <converters:TitleToMarginConverter x:Key="TitleToMarginConverter" />
     </UserControl.Resources>
     <UserControl.GestureRecognizers>
         <ScrollGestureRecognizer CanVerticallyScroll="True" />
@@ -82,9 +83,11 @@
 
         <!--  Top Navigation  -->
         <Grid
+                  Name="grdNav"
                   Grid.Row="0"
                   Margin="15,10,10,0"
-                  Background="{x:Null}">
+                  Background="{x:Null}"
+                  ZIndex="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50" />
                 <ColumnDefinition Width="*" />
@@ -111,7 +114,7 @@
         <ScrollViewer
                   x:Name="sv"
                   Grid.Row="1"
-                  Margin="10,0,10,0"
+                  Margin="{Binding Title, Converter={StaticResource TitleToMarginConverter}}"
                   Background="Transparent">
             <ScrollViewer.GestureRecognizers>
                 <ScrollGestureRecognizer CanVerticallyScroll="True" />
