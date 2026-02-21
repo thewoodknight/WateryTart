@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.3.0](https://github.com/TemuWolverine/WateryTart/compare/v1.2.0...v1.3.0) (2026-02-20)
+
+
+### Features
+
+* **volume:** volume now should debounce enough that it doesn't get into weird race conditions ([b03b6b8](https://github.com/TemuWolverine/WateryTart/commit/b03b6b8a7e26b0547ce0cab5bf5041f05d67776c))
+
+
+### Bug Fixes
+
+* Lambda Registrations actually apply properly now ([9280887](https://github.com/TemuWolverine/WateryTart/commit/92808877db0ecbad8d99719ad3dace0b9f07465d))
+* Logger now sets a default folder ([a3a1ed5](https://github.com/TemuWolverine/WateryTart/commit/a3a1ed59e9a966f905432d97f2bcefa1f94ecf21))
+* Settings reorganised ([306f950](https://github.com/TemuWolverine/WateryTart/commit/306f950255986cc677b9d1b165b3e72df195f0a6))
+* Settings view now loads without issue ([02493d3](https://github.com/TemuWolverine/WateryTart/commit/02493d3f77a64da5f19f523141a4aa00a66c2ce7))
+* switched to IconPacks.Avalonia ([a6802b8](https://github.com/TemuWolverine/WateryTart/commit/a6802b80f8409d35709fdca9150e6e9c289b14b2))
+* Tray icon now optional ([5589fde](https://github.com/TemuWolverine/WateryTart/commit/5589fdee1871900d0c08eb6166b559ac481993e5))
+
 ## [1.2.0](https://github.com/TemuWolverine/WateryTart/compare/v1.1.0...v1.2.0) (2026-02-19)
 
 
