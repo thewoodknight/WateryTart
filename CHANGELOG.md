@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/TemuWolverine/WateryTart/compare/v1.3.0...v1.3.1) (2026-02-21)
+
+
+### Bug Fixes
+
+* nuked macOS build as it keeps failing due to space constraints ([758a873](https://github.com/TemuWolverine/WateryTart/commit/758a8731335c805dbd73a5a76e153f91fa3e89ab))
+
 ## [1.3.0](https://github.com/TemuWolverine/WateryTart/compare/v1.2.0...v1.3.0) (2026-02-20)
 
 
