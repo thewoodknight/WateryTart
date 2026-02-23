@@ -53,4 +53,8 @@
 	<PropertyGroup>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-arm64'">
+	  <DefineConstants>LINUX_ARM64;$(DefineConstants)</DefineConstants>
+	</PropertyGroup>
 </Project>
