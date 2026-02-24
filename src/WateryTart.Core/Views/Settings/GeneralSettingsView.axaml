@@ -26,7 +26,10 @@
                       BorderBrush="#2D2D2D"
                       BorderThickness="0,0,0,1">
                 <StackPanel Spacing="8">
-                    <ToggleSwitch Content="Minimise to tray" />
+                    <ToggleSwitch
+                              Command="{Binding TrayIconCommand}"
+                              Content="Minimise to tray"
+                              IsChecked="{Binding TrayIcon}" />
                     <!--<ToggleSwitch Content="Start on login" />-->
                 </StackPanel>
             </Border>

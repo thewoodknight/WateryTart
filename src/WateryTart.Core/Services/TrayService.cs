@@ -10,6 +10,7 @@ namespace WateryTart.Core.Services;
 
 public interface ITrayService
 {
+    void CreateTrayIcon();
     void Initialize(Window mainWindow);
     void Dispose();
 }
@@ -33,9 +34,9 @@ public class TrayService : ITrayService
         HookWindowEvents();
     }
 
-    private void CreateTrayIcon()
+    public void CreateTrayIcon()
     {
-        if (!settings.TrayIcon)
+        if (!settings.TrayIcon || _trayIcon != null)
             return;
 
         WindowIcon? icon = null;

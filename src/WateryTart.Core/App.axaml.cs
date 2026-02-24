@@ -182,6 +182,7 @@ public partial class App : Application
         builder.RegisterType<MusicAssistantClient>().As<MusicAssistantClient>().SingleInstance();
         builder.RegisterType<PlayersService>().As<PlayersService>().As<IAsyncReaper>().SingleInstance();
         builder.RegisterType<ColourService>().As<ColourService>().SingleInstance();
+        builder.RegisterType<TrayService>().As<ITrayService>().SingleInstance();
 
         //View models that are singleton
         builder.RegisterType<SettingsViewModel>().SingleInstance();

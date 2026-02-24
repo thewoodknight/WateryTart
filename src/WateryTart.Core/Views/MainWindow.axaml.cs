@@ -10,6 +10,7 @@ using WateryTart.Core.Settings;
 using WateryTart.Core.ViewModels;
 
 namespace WateryTart.Core.Views;
+
 public partial class MainWindow : Window
 {
     private ISettings? _settings;
@@ -47,11 +48,12 @@ public partial class MainWindow : Window
             // Initialize tray service
             try
             {
-                if (_trayService == null)
+                if(_trayService == null)
                 {
-                    _trayService = new TrayService(_settings);
+                    _trayService = App.Container.GetRequiredService<ITrayService>();
                     _trayService.Initialize(this);
                 }
+
             }
             catch (Exception ex)
             {

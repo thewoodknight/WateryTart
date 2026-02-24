@@ -190,6 +190,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
                     VolumeEventControl = loaded.VolumeEventControl;
                     LoggerSettings = loaded.LoggerSettings;
                     CustomSettings = loaded.CustomSettings;
+                    TrayIcon = loaded.TrayIcon;
                 }
 
                 // Initialize if not loaded
