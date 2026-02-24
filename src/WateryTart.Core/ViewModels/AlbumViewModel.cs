@@ -91,6 +91,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
 
     private async Task LoadAlbumDataAsync(string id, string provider)
     {
+        IsLoading = true;
         try
         {
             var albumResponse = await _massClient.WithWs().GetMusicAlbumAsync(id, provider);
@@ -114,5 +115,6 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         {
             Debug.WriteLine($"Error loading tracks: {ex.Message}");
         }
+        IsLoading = false;
     }
 }
