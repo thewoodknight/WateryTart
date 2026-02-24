@@ -916,9 +916,9 @@
       },
       "WateryTart.MusicAssistant": {
         "type": "CentralTransitive",
-        "requested": "[3.1.0, )",
-        "resolved": "3.1.0",
-        "contentHash": "x0IsMCB87BaunVJht754aF5QcreVRSZtyu6qpKMUlfxsj0GNQg9j1nLBgstgOU5BmPGFgUkQktreomDIUNLp+Q==",
+        "requested": "[4.0.0, )",
+        "resolved": "4.0.0",
+        "contentHash": "mutotyggW6m732YPFG3Az+8H+nqrJFIG2zPac+yljFHH62tFSKADIlX8tVLv2Vg0Ip8ggezCKdZg+77p9LSg6g==",
         "dependencies": {
           "Microsoft.Extensions.Logging": "10.0.2",
           "Microsoft.Extensions.Logging.Console": "10.0.2",
