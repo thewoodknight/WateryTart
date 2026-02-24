@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.4.0](https://github.com/TemuWolverine/WateryTart/compare/v1.3.1...v1.4.0) (2026-02-24)
+
+
+### Features
+
+* Added shuffle from BigPlayerView ([c19f0b8](https://github.com/TemuWolverine/WateryTart/commit/c19f0b8e7a83d464c8a9845970d6ddde473b4271))
+* **AlbumView:** Album view now lets you play album radio, shows the provider source icon, and tapping artist name takes you to the artist page ([038829a](https://github.com/TemuWolverine/WateryTart/commit/038829ab0dbb8f9db4dd382075e32bdf57c04b9a))
+* **AlbumView:** Loading animation for visual feedback when loading album data ([9015c4a](https://github.com/TemuWolverine/WateryTart/commit/9015c4aae7e9ec033c3321aecb28ea09ad4aa768))
+* **ArtistView:** Artist view now uses tabs for album list and bio, as long discographies made finding the bio impossible. ([13fd160](https://github.com/TemuWolverine/WateryTart/commit/13fd160c713a80ee678cf01e3e84175aeff022e8))
+* Cycle repeat mode in big player, ([15fae06](https://github.com/TemuWolverine/WateryTart/commit/15fae0625032b74ace8b2a6468f30ba843bd63ea))
+
+
+### Bug Fixes
+
+* **ArtistView:** Corrected radio icon to radiotower ([56d8892](https://github.com/TemuWolverine/WateryTart/commit/56d88925edc570ed76dfc2cea459f59cccdce142))
+* **GPIOVolume:** (Hopefully) have settings being saved/recalled for GPIO volume service so pins, rotation steps, enabled can all work properly. ([667dfbf](https://github.com/TemuWolverine/WateryTart/commit/667dfbf4a721b7a08af7ce3e09e04e2b436bcbbe))
+* **GPIOVolume:** Linux x64 shouldn't be effected by Linux Arm64's GPIO service now ([f115729](https://github.com/TemuWolverine/WateryTart/commit/f115729ced1752bada42beb4e32dc0a2ac17c1e2))
+* Solves [#28](https://github.com/TemuWolverine/WateryTart/issues/28), Volume changes to 100% when switching back to player drawer if currently selected player ([3591f4e](https://github.com/TemuWolverine/WateryTart/commit/3591f4e61dbc3d06fc8f194cdc5f5dc975e4574e))
+* **TrayIcon:** Tray icon now correctly saves if its enabled state ([e94b554](https://github.com/TemuWolverine/WateryTart/commit/e94b554143914dd9444462693dc280f3c061b437))
+
 ## [1.3.1](https://github.com/TemuWolverine/WateryTart/compare/v1.3.0...v1.3.1) (2026-02-21)
 
 
