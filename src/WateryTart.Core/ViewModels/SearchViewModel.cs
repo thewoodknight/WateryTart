@@ -155,7 +155,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
 
         // Debounce SearchTerm changes and trigger search after 1.5 seconds of inactivity
         this.WhenAnyValue(x => x.SearchTerm)
-            .Throttle(TimeSpan.FromSeconds(1.5), RxApp.MainThreadScheduler)
+            .Throttle(TimeSpan.FromSeconds(1.5), RxSchedulers.MainThreadScheduler)
             .Select(_ => Unit.Default)
             .Subscribe(_ => SearchCommand.Execute(null))
             .DisposeWith(_disposables);

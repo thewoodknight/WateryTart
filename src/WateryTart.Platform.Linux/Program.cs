@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Avalonia;
+using ReactiveUI;
 using ReactiveUI.Avalonia;
 using System;
 using System.Reflection;
@@ -50,14 +51,18 @@ sealed class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>(() =>
         {
-            ViewLocator.RegisterView<GpioVolumeSettingsViewModel, GpioVolumeSettingsView>();
+            Core.ViewLocator.RegisterView<GpioVolumeSettingsViewModel, GpioVolumeSettingsView>();
 
 
             var x = new App(
                 [
                     new InstancePlatformSpecificRegistration<IPlayerFactory>(new LinuxAudioPlayerFactory()),
                     new LambdaRegistration<IVolumeService>(c => new GpioVolumeService(c.Resolve<ISettings>(),c.Resolve<PlayersService>())),
-                    new LambdaRegistration<IHaveSettings>(c => new GpioVolumeSettingsViewModel()),
+                    new LambdaRegistration<IHaveSettings>(c =>
+                        new GpioVolumeSettingsViewModel(
+                            c.Resolve<ISettings>(),
+                            c.Resolve<IScreen>(),
+                            c.Resolve<GpioVolumeService>())),
                 ]);
 
             return x;
