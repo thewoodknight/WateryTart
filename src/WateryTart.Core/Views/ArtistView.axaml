@@ -32,7 +32,10 @@
                 </Ellipse.Fill>
             </Ellipse>
 
-            <StackPanel Grid.Column="1" Margin="20,0,20,20">
+            <StackPanel
+                      Grid.Column="1"
+                      Margin="20,0,20,20"
+                      Spacing="10">
                 <asyncImageLoader:AdvancedImage
                           MaxWidth="350"
                           Loader="{x:Static app:App.ImageLoaderInstance}"
@@ -42,10 +45,8 @@
                               Width="35"
                               Height="35"
                               HorizontalAlignment="Right"
-                              Kind="Radio" />
+                              Kind="RadioTower" />
                 </Button>
-                <Button />
-                <Button />
             </StackPanel>
         </Grid>
 

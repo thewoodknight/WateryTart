@@ -63,7 +63,7 @@ namespace WateryTart.Core.ViewModels
             {
                 var menu = new MenuViewModel(
                 [
-                    new MenuItemViewModel("Artist Radio", PackIconMaterialKind.Radio, new RelayCommand(() => {})),
+                    new MenuItemViewModel("Artist Radio", PackIconMaterialKind.RadioTower, new RelayCommand(() => {})),
                     new MenuItemViewModel("Play", PackIconMaterialKind.Play, new RelayCommand(() => { }))
                 ]);
 
@@ -87,7 +87,7 @@ namespace WateryTart.Core.ViewModels
 
             var menu = new MenuViewModel(
             [
-            new MenuItemViewModel("Artist Radio", PackIconMaterialKind.Radio, new RelayCommand(() => {})),
+            new MenuItemViewModel("Artist Radio", PackIconMaterialKind.RadioTower, new RelayCommand(() => {})),
                 new MenuItemViewModel("Play", PackIconMaterialKind.Play, new RelayCommand(() => { }))
             ]);
 
