@@ -8,6 +8,13 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.Services
 {
+    public static class ProviderServiceExtensions
+    {
+        public static ProviderManifest? GetProvider(this ProviderService service, string domain)
+        {
+            return service.ProviderManifests.Find(p => p.Domain == domain);
+        }
+    }
     public class ProviderService
     {
         public List<ProviderManifest> ProviderManifests { get; set; } = new List<ProviderManifest>();

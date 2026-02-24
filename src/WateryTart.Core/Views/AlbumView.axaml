@@ -44,9 +44,32 @@
                     </Border>
                 </Border>
                 <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                    <TextBlock Text="{Binding Album.Artists[0].Name}" />
+                    <TextBlock Background="Transparent" Text="{Binding Album.Artists[0].Name}">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="Tapped">
+                                <InvokeCommandAction Command="{Binding ArtistViewCommand}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+                    </TextBlock>
                     <TextBlock Opacity="0.7" Text="{Binding Album.Year}" />
-                    <Button Command="{Binding PlayAlbumCommand}">Play</Button>
+
+                    <StackPanel
+                              Margin="0,10,0,0"
+                              Orientation="Horizontal"
+                              Spacing="10">
+                        <Button Command="{Binding PlayAlbumCommand}">Play</Button>
+                        <Button Command="{Binding AlbumAltCommand}"> 
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="22"
+                                      Kind="DotsVertical" />
+                        </Button>
+                        <Svg
+                                  Width="30"
+                                  Height="30"
+                                  Source="{Binding InputProviderIcon}" />
+                    </StackPanel>
+
                 </StackPanel>
             </Grid>
         </Border>

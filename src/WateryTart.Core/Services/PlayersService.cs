@@ -534,6 +534,11 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         _ = PlayItem(artist, RadioMode: true);
     }
 
+    public async Task PlayAlbumRadio(Album album)
+    {
+        _ = PlayItem(album, RadioMode: true);
+    }
+
     public async Task ReapAsync()
     {
         _timer?.Stop();
