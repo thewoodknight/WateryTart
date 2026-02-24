@@ -1,5 +1,4 @@
-﻿
-<UserControl
+﻿<UserControl
           x:Class="WateryTart.Core.Views.Players.BigPlayerView"
           xmlns="https://github.com/avaloniaui"
           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -200,11 +199,11 @@
                               HorizontalAlignment="Center"
                               Orientation="Horizontal"
                               Spacing="10">
-                        <Button Classes="iconButton navButton">
+                        <Button Classes="iconButton navButton" Command="{Binding ToggleShuffleCommand}">
                             <iconPacks:PackIconMaterial
                                       Width="20"
                                       Height="22"
-                                      Kind="ShuffleDisabled" />
+                                      Kind="{Binding PlayersService.SelectedQueue.ShuffleEnabled, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='ShuffleDisabled,ShuffleVariant'}" />
                         </Button>
                         <Button Classes="iconButton navButton">
                             <iconPacks:PackIconMaterial

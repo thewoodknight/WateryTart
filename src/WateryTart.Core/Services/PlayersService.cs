@@ -298,6 +298,8 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
                 queueEvent = (PlayerQueueEventResponse)e;
                 if (SelectedQueue != null && queueEvent?.data?.QueueId == SelectedQueue.QueueId)
                 {
+                    SelectedQueue.ShuffleEnabled = queueEvent.data.ShuffleEnabled;
+                    SelectedQueue.RepeatMode = queueEvent.data.RepeatMode;
                     SelectedQueue.CurrentIndex = queueEvent.data.CurrentIndex;
                     SelectedQueue.CurrentItem = queueEvent.data.CurrentItem;
                     var currentItem = SelectedQueue.CurrentItem;

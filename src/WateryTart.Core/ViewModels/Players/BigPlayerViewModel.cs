@@ -1,9 +1,6 @@
-﻿using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Threading;
+﻿using Avalonia.Controls.Primitives;
 using CommunityToolkit.Mvvm.Input;
 using IconPacks.Avalonia.Material;
-using IconPacks.Avalonia.MaterialDesign;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
@@ -11,10 +8,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Windows.Input;
 using System.Threading;
 using System.Threading.Tasks;
-using UnitsNet;
+using System.Windows.Input;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Core.ViewModels.Popups;
@@ -88,6 +84,9 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
     public bool ShowNavigation => false;
     public string Title { get; set; } = "";
     public ICommand ToggleFavoriteCommand { get; set; }
+
+    public ICommand ToggleShuffleCommand { get; set; }
+    
     public string? UrlPathSegment { get; } = "BigPlayer";
 
     public BigPlayerViewModel(PlayersService playersService, IScreen screen, ColourService colourService)
@@ -103,48 +102,60 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         // When a server update drives the player model, update the VM's Volume but suppress sending it back to server.
         this.WhenAnyValue(x => x.PlayersService.SelectedPlayer.VolumeLevel)
             .ObserveOn(RxApp.MainThreadScheduler)
-            .Subscribe(serverVol =>
+            .Subscribe(
+                serverVol =>
+                {
+                    try
+                    {
+                        _suppressVolumeUpdate = true;
+                        Volume = (int)serverVol;
+                    } finally
+                    {
+                        _suppressVolumeUpdate = false;
+                    }
+                });
+
+        ShowTrackInfo = new RelayCommand(
+            () =>
             {
-                try
-                {
-                    _suppressVolumeUpdate = true;
-                    Volume = (int)serverVol;
-                }
-                finally
-                {
-                    _suppressVolumeUpdate = false;
-                }
+                if(PlayersService != null &&
+                    PlayersService.SelectedQueue != null &&
+                    PlayersService.SelectedQueue.CurrentItem != null &&
+                    PlayersService.SelectedPlayer != null)
+                    MessageBus.Current
+                        .SendMessage<IPopupViewModel>(
+                            new TrackInfoViewModel(
+                                PlayersService.SelectedQueue.CurrentItem,
+                                PlayersService.SelectedPlayer));
             });
 
-        ShowTrackInfo = new RelayCommand(() =>
-        {
-            if (PlayersService != null && PlayersService.SelectedQueue != null && PlayersService.SelectedQueue.CurrentItem != null && PlayersService.SelectedPlayer != null)
-                MessageBus.Current.SendMessage<IPopupViewModel>(new TrackInfoViewModel(PlayersService.SelectedQueue.CurrentItem, PlayersService.SelectedPlayer));
-        });
+        SeekCommand = new RelayCommand<double>(
+            (s) =>
+            {
+                if(s == 0)
+                    return;
+                var duration = _playersService?.SelectedQueue?.CurrentItem?.Duration;
+                var newPosition = duration * (s / 100);
+                if(newPosition != null)
+                    _playersService?.PlayerSeek(null, (int)newPosition);
+            });
 
-        SeekCommand = new RelayCommand<double>((s) =>
-        {
-            if (s == 0)
-                return;
-            var duration = _playersService?.SelectedQueue?.CurrentItem?.Duration;
-            var newPosition = duration * (s / 100);
-            if (newPosition != null)
-                _playersService?.PlayerSeek(null, (int)newPosition);
-        });
+        ToggleFavoriteCommand = new RelayCommand(
+            () =>
+            {
+                var item = PlayersService?.SelectedQueue?.CurrentItem?.MediaItem;
+                if(item == null)
+                    return;
 
-        ToggleFavoriteCommand = new RelayCommand(() =>
-        {
-            var item = PlayersService?.SelectedQueue?.CurrentItem?.MediaItem;
-            if (item == null)
-                return;
+                if(item.Favorite)
+                    PlayersService?.PlayerRemoveFromFavorites(item);
+    else
+                    PlayersService?.PlayerAddToFavorites(item);
+            });
 
-            if (item.Favorite)
-                PlayersService?.PlayerRemoveFromFavorites(item);
-            else
-                PlayersService?.PlayerAddToFavorites(item);
-        });
 
 #pragma warning disable CS4014
+        ToggleShuffleCommand = new RelayCommand(() => PlayersService.PlayerShuffle(null, !PlayersService.SelectedQueue.ShuffleEnabled));
         PlayerRepeatQueue = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.All));
         PlayerRepeatOff = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.Off));
         PlayerRepeatTrack = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.One));
