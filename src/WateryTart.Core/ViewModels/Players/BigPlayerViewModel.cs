@@ -87,6 +87,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
     public ICommand ToggleShuffleCommand { get; set; }
     
+    public ICommand CycleRepeatCommand { get; set; }
     public string? UrlPathSegment { get; } = "BigPlayer";
 
     public BigPlayerViewModel(PlayersService playersService, IScreen screen, ColourService colourService)
@@ -155,6 +156,22 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
 
 #pragma warning disable CS4014
+        CycleRepeatCommand = new RelayCommand(() =>
+        {
+            var mode = PlayersService.SelectedQueue.RepeatMode;
+            switch (mode)
+            {
+                case RepeatMode.Off:
+                    PlayersService.PlayerSetRepeatMode(RepeatMode.All);
+                    break;
+                case RepeatMode.All:
+                    PlayersService.PlayerSetRepeatMode(RepeatMode.One);
+                    break;
+                case RepeatMode.One:
+                    PlayersService.PlayerSetRepeatMode(RepeatMode.Off);
+                    break;
+            }
+        });
         ToggleShuffleCommand = new RelayCommand(() => PlayersService.PlayerShuffle(null, !PlayersService.SelectedQueue.ShuffleEnabled));
         PlayerRepeatQueue = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.All));
         PlayerRepeatOff = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.Off));

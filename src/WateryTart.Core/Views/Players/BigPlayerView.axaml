@@ -28,6 +28,7 @@
         <converters:VolumeLevelToIconConverter x:Key="VolumeLevelToIconConverter" />
         <converters:QualityToBackgroundBrushConverter x:Key="QualityToBackgroundBrushConverter" />
         <converters:BoolToIconKindConverter x:Key="BoolToIconKindConverter" />
+        <converters:RepeatModeToIconKindConverter x:Key="RepeatModeToIconKindConverter" />
     </UserControl.Resources>
     <UserControl.Styles>
 
@@ -205,11 +206,11 @@
                                       Height="22"
                                       Kind="{Binding PlayersService.SelectedQueue.ShuffleEnabled, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='ShuffleDisabled,ShuffleVariant'}" />
                         </Button>
-                        <Button Classes="iconButton navButton">
+                        <Button Classes="iconButton navButton" Command="{Binding CycleRepeatCommand}">
                             <iconPacks:PackIconMaterial
                                       Width="20"
                                       Height="22"
-                                      Kind="ShuffleVariant" />
+                                      Kind="{Binding PlayersService.SelectedQueue.RepeatMode, Converter={StaticResource RepeatModeToIconKindConverter}}" />
                         </Button>
                         <Button Classes="iconButton navButton" Command="{Binding ToggleFavoriteCommand}">
                             <iconPacks:PackIconMaterial

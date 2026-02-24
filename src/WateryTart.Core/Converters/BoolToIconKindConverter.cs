@@ -2,9 +2,9 @@
 using IconPacks.Avalonia.Material;
 using System;
 using System.Globalization;
+using WateryTart.MusicAssistant.Models.Enums;
 
 namespace WateryTart.Core.Converters;
-
 public class BoolToIconKindConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
