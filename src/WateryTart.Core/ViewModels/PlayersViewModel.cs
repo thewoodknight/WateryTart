@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using CommunityToolkit.Mvvm.Input;
 using IconPacks.Avalonia.Material;
@@ -152,12 +153,18 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
             var ct = _volumeCts.Token;
             var pending = _pendingVolume;
 
+            // Determine which player this slider belongs to (sender.DataContext). If not available,
+            // fall back to PlayersService.SelectedPlayer in the service method.
+            Player? player = null;
+            if (sender is Control c && c.DataContext is Player dp)
+                player = dp;
+
             _ = Task.Run(async () =>
             {
                 try
                 {
                     await Task.Delay(200, ct).ConfigureAwait(false);
-                    await _playersService.PlayerVolume((int)pending).ConfigureAwait(false);
+                    await _playersService.PlayerVolume((int)pending, player).ConfigureAwait(false);
                 }
                 catch (System.OperationCanceledException) { }
                 catch (Exception ex)
