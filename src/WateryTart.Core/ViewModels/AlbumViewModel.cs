@@ -160,10 +160,13 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
 
         try
         {
-            var tracksResponse = await _massClient.WithWs().GetMusicAlbumTracksAsync(id, provider);
-            if (tracksResponse.Result != null)
-                foreach (var t in tracksResponse.Result)
-                    Tracks.Add(new TrackViewModel(_massClient, HostScreen, _playersService, t));
+            if(Tracks.Count == 0)
+            {
+                var tracksResponse = await _massClient.WithWs().GetMusicAlbumTracksAsync(id, provider);
+                if(tracksResponse.Result != null)
+                    foreach(var t in tracksResponse.Result)
+                        Tracks.Add(new TrackViewModel(_massClient, HostScreen, _playersService, t));
+            }
         }
         catch (Exception ex)
         {
