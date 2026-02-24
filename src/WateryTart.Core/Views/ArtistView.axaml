@@ -40,7 +40,7 @@
                           MaxWidth="350"
                           Loader="{x:Static app:App.ImageLoaderInstance}"
                           Source="{Binding Path=ArtistLogo, Converter={StaticResource MassImageImageConverter}}" />
-                <Button Command="{Binding PlayArtistRadioCommand}">
+                <Button Classes="iconButton navButton" Command="{Binding PlayArtistRadioCommand}">
                     <iconPacks:PackIconMaterial
                               Width="35"
                               Height="35"

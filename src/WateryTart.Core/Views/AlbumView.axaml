@@ -58,7 +58,7 @@
                               Orientation="Horizontal"
                               Spacing="10">
                         <Button Command="{Binding PlayAlbumCommand}">Play</Button>
-                        <Button Command="{Binding AlbumAltCommand}"> 
+                        <Button Classes="iconButton navButton" Command="{Binding AlbumAltCommand}">
                             <iconPacks:PackIconMaterial
                                       Width="20"
                                       Height="22"

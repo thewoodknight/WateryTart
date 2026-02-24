@@ -142,43 +142,92 @@
                         </StackPanel>
                     </StackPanel>
 
+                    <!--  Controls  -->
                     <StackPanel
                               HorizontalAlignment="Center"
                               Orientation="Horizontal"
-                              Spacing="23">
+                              Spacing="15">
+
+                        <!--  shuffle  -->
+                        <Button Classes="iconButton navButton" Command="{Binding ToggleShuffleCommand}">
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="20"
+                                      Kind="{Binding PlayersService.SelectedQueue.ShuffleEnabled, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='ShuffleDisabled,ShuffleVariant'}" />
+                        </Button>
+
+                        <!--  previous  -->
                         <Button Classes="iconButton navButton" Command="{Binding PlayPreviousCommand}">
                             <iconPacks:PackIconMaterial
-                                      Width="30"
-                                      Height="30"
+                                      Width="20"
+                                      Height="20"
                                       Kind="SkipPrevious" />
                         </Button>
-                        <Button Classes="iconButton navButton" Command="{Binding PlayerPlayPauseCommand}">
+
+                        <!--  play/pause  -->
+                        <Button
+                                  Width="50"
+                                  Height="50"
+                                  HorizontalContentAlignment="Center"
+                                  VerticalContentAlignment="Center"
+                                  Background="White"
+                                  Classes="iconButton navButton"
+                                  Command="{Binding PlayerPlayPauseCommand}"
+                                  CornerRadius="25">
                             <iconPacks:PackIconMaterial
-                                      Width="30"
-                                      Height="30"
+                                      Width="25"
+                                      Height="25"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Foreground="Black"
                                       Kind="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}}" />
                         </Button>
+
+                        <!--  next  -->
                         <Button Classes="iconButton navButton" Command="{Binding PlayerNextCommand}">
                             <iconPacks:PackIconMaterial
-                                      Width="30"
-                                      Height="30"
+                                      Width="20"
+                                      Height="20"
                                       Kind="SkipNext" />
+                        </Button>
+
+                        <!--  cycle repeat mode  -->
+                        <Button Classes="iconButton navButton" Command="{Binding CycleRepeatCommand}">
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="20"
+                                      Kind="{Binding PlayersService.SelectedQueue.RepeatMode, Converter={StaticResource RepeatModeToIconKindConverter}}" />
                         </Button>
                     </StackPanel>
 
+                    <!--  Volume  -->
                     <Grid MaxWidth="400" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
+
+                        <Button
+                                  Grid.Column="0"
+                                  Margin="0,0,20,0"
+                                  HorizontalAlignment="Left"
+                                  Classes="iconButton navButton"
+                                  Command="{Binding ToggleFavoriteCommand}">
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="20"
+                                      Kind="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Favorite, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='HeartOutline,Heart'}" />
+                        </Button>
+
                         <iconPacks:PackIconMaterial
                                   Name="VolumeIcon"
-                                  Grid.Column="0"
+                                  Grid.Column="1"
                                   Width="20"
                                   Height="20"
                                   Kind="{Binding PlayersService.SelectedPlayer.VolumeLevel, Converter={StaticResource VolumeLevelToIconConverter}}" />
                         <Slider
-                                  Grid.Column="1"
+                                  Grid.Column="2"
                                   Margin="10,0,10,0"
                                   HorizontalAlignment="Stretch"
                                   Foreground="{Binding ColourService.ColourAccent}"
@@ -194,31 +243,6 @@
                             </Interaction.Behaviors>
                         </Slider>
                     </Grid>
-
-                    <StackPanel
-                              Margin="10"
-                              HorizontalAlignment="Center"
-                              Orientation="Horizontal"
-                              Spacing="10">
-                        <Button Classes="iconButton navButton" Command="{Binding ToggleShuffleCommand}">
-                            <iconPacks:PackIconMaterial
-                                      Width="20"
-                                      Height="22"
-                                      Kind="{Binding PlayersService.SelectedQueue.ShuffleEnabled, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='ShuffleDisabled,ShuffleVariant'}" />
-                        </Button>
-                        <Button Classes="iconButton navButton" Command="{Binding CycleRepeatCommand}">
-                            <iconPacks:PackIconMaterial
-                                      Width="20"
-                                      Height="22"
-                                      Kind="{Binding PlayersService.SelectedQueue.RepeatMode, Converter={StaticResource RepeatModeToIconKindConverter}}" />
-                        </Button>
-                        <Button Classes="iconButton navButton" Command="{Binding ToggleFavoriteCommand}">
-                            <iconPacks:PackIconMaterial
-                                      Width="20"
-                                      Height="22"
-                                      Kind="{Binding PlayersService.SelectedQueue.CurrentItem.MediaItem.Favorite, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='HeartOutline,Heart'}" />
-                        </Button>
-                    </StackPanel>
                 </StackPanel>
             </controls:ResponsiveColumnPanel.FirstColumn>
 
