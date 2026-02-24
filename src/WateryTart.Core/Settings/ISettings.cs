@@ -1,4 +1,5 @@
-﻿using WateryTart.MusicAssistant.Models.Auth;
+﻿using System.Collections;
+using WateryTart.MusicAssistant.Models.Auth;
 
 namespace WateryTart.Core.Settings;
 
@@ -19,5 +20,7 @@ public interface ISettings
     public bool TrayIcon { get; set;  }
     LoggerSettings LoggerSettings { get; set; }
 
+
+    public Hashtable CustomSettings { get; set; }
     public void Save();
 }

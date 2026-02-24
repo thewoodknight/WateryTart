@@ -12,27 +12,45 @@ namespace WateryTart.Platform.Linux;
 
 public partial class GpioVolumeService : ReactiveObject, IVolumeService, IReaper
 {
-    const int PinA = 17;
-    const int PinB = 27;
-    const int PulsesPerTurn = 20;
     private readonly PlayersService playersService;
-    double oldValue = 0;
+    private double oldValue = 0;
     private QuadratureRotaryEncoder? rotaryEncoder;
 
     // Rx debounce subscription
-    private IDisposable? _pulseSubscription;    
+    private IDisposable? _pulseSubscription;
+
     private const int DebounceIntervalMs = 100;
     private const int MaxStepsPerDebounce = 20;
 
-    private readonly object _oldValueLock = new();  
-    
+    private readonly object _oldValueLock = new();
+    private ISettings _settings;
+
     public GpioVolumeService(ISettings settings, PlayersService playersService)
     {
 #if !LINUX_ARM64
         return;
 #endif
+
+        _settings = settings;
         this.playersService = playersService;
         // Ensure pin order matches the QuadratureRotaryEncoder constructor (pinA, pinB)
+
+        if (settings.CustomSettings.ContainsKey("GpioEnable") &&
+    settings.CustomSettings["GpioEnable"] is bool enabled &&
+    !enabled)
+        {
+            return;
+        }
+
+        Enable();
+    }
+
+    private void Enable()
+    {
+        var PinA = (int)_settings.CustomSettings["GpioPinA"];
+        var PinB = (int)_settings.CustomSettings["GpioPinB"];
+        var PulsesPerTurn = (int)_settings.CustomSettings["GpioPulsesPerTurn"];
+
         rotaryEncoder = new QuadratureRotaryEncoder(PinA, PinB, PulsesPerTurn);
         oldValue = rotaryEncoder.PulseCount;
 
@@ -103,6 +121,21 @@ public partial class GpioVolumeService : ReactiveObject, IVolumeService, IReaper
 
         _pulseSubscription?.Dispose();
         _pulseSubscription = null;
+    }
+
+    public void SetEnable(bool status)
+    {
+        if (status)
+        {
+            if (rotaryEncoder == null)
+            {
+                Enable();
+            }
+        }
+        else
+        {
+            Reap();
+        }
     }
 
     [Reactive] public partial bool IsEnabled { get; set; }

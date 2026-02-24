@@ -1,8 +1,7 @@
-﻿using Avalonia.Logging;
-using System;
+﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.IO;
-using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -147,6 +146,15 @@ public partial class Settings : INotifyPropertyChanged, ISettings
         }
     }
 
+    public Hashtable CustomSettings
+    {
+        get => field ??= new Hashtable();
+        set
+        {
+            field = value;
+            NotifyPropertyChanged();
+        }
+    }
     private bool _suppressSave = true;
 
     public Settings(string path)
@@ -181,6 +189,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
                     LoggerSettings = loaded.LoggerSettings;
                     VolumeEventControl = loaded.VolumeEventControl;
                     LoggerSettings = loaded.LoggerSettings;
+                    CustomSettings = loaded.CustomSettings;
                 }
 
                 // Initialize if not loaded
