@@ -1,174 +1,171 @@
 ﻿<UserControl
-    x:Class="WateryTart.Platform.Linux.Views.GpioVolumeSettingsView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:WateryTart.Platform.Linux.ViewModels"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="vm:GpioVolumeSettingsViewModel"
-    mc:Ignorable="d">
+          x:Class="WateryTart.Platform.Linux.Views.GpioVolumeSettingsView"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:vm="clr-namespace:WateryTart.Platform.Linux.ViewModels"
+          d:DesignHeight="450"
+          d:DesignWidth="800"
+          x:DataType="vm:GpioVolumeSettingsViewModel"
+          mc:Ignorable="d">
 
-    <ScrollViewer>
-        <StackPanel Spacing="20">
-            <!--  Header  -->
-            <TextBlock
-                FontSize="24"
-                FontWeight="Bold"
-                Text="GPIO Settings" />
+    <StackPanel Spacing="20">
+        <!--  Header  -->
+        <TextBlock
+                  FontSize="24"
+                  FontWeight="Bold"
+                  Text="GPIO Settings" />
 
-            <!--  Enable/Disable Toggle  -->
+        <!--  Enable/Disable Toggle  -->
+        <Border
+                  Padding="16"
+                  BorderBrush="#E0E0E0"
+                  BorderThickness="1"
+                  CornerRadius="4">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock
+                              FontSize="14"
+                              FontWeight="SemiBold"
+                              Text="Enable GPIO Volume Control" />
+                    <TextBlock
+                              FontSize="12"
+                              Foreground="#666666"
+                              Text="Use GPIO pins to control volume levels" />
+                </StackPanel>
+                <ToggleSwitch
+                          Grid.Column="1"
+                          VerticalAlignment="Center"
+                          IsChecked="{Binding IsEnabled}" />
+            </Grid>
+        </Border>
+
+        <!--  GPIO Configuration Section (Disabled when not enabled)  -->
+        <StackPanel IsEnabled="{Binding IsEnabled}" Spacing="16">
+
+            <!--  Pin A Configuration  -->
             <Border
-                Padding="16"
-                BorderBrush="#E0E0E0"
-                BorderThickness="1"
-                CornerRadius="4">
-                <Grid ColumnDefinitions="*,Auto">
-                    <StackPanel Grid.Column="0" Spacing="4">
-                        <TextBlock
-                            FontSize="14"
-                            FontWeight="SemiBold"
-                            Text="Enable GPIO Volume Control" />
-                        <TextBlock
-                            FontSize="12"
-                            Foreground="#666666"
-                            Text="Use GPIO pins to control volume levels" />
-                    </StackPanel>
-                    <ToggleSwitch
-                        Grid.Column="1"
-                        VerticalAlignment="Center"
-                        IsChecked="{Binding IsEnabled}" />
-                </Grid>
+                      Padding="16"
+                      BorderBrush="#E0E0E0"
+                      BorderThickness="1"
+                      CornerRadius="4">
+                <StackPanel Spacing="8">
+                    <TextBlock
+                              FontSize="14"
+                              FontWeight="SemiBold"
+                              Text="Pin A (CLK)" />
+                    <TextBlock FontSize="11" Text="GPIO pin for clock signal" />
+                    <NumericUpDown
+                              FormatString="0"
+                              Increment="1"
+                              Maximum="27"
+                              Minimum="0"
+                              Watermark="GPIO Pin Number"
+                              Value="{Binding PinA}" />
+                </StackPanel>
             </Border>
 
-            <!--  GPIO Configuration Section (Disabled when not enabled)  -->
-            <StackPanel IsEnabled="{Binding IsEnabled}" Spacing="16">
+            <!--  Pin B Configuration  -->
+            <Border
+                      Padding="16"
+                      BorderBrush="#E0E0E0"
+                      BorderThickness="1"
+                      CornerRadius="4">
+                <StackPanel Spacing="8">
+                    <TextBlock
+                              FontSize="14"
+                              FontWeight="SemiBold"
+                              Text="Pin B (DT)" />
+                    <TextBlock FontSize="11" Text="GPIO pin for data signal" />
+                    <NumericUpDown
+                              FormatString="0"
+                              Increment="1"
+                              Maximum="27"
+                              Minimum="0"
+                              Watermark="GPIO Pin Number"
+                              Value="{Binding PinB}" />
+                </StackPanel>
+            </Border>
 
-                <!--  Pin A Configuration  -->
-                <Border
-                    Padding="16"
-                    BorderBrush="#E0E0E0"
-                    BorderThickness="1"
-                    CornerRadius="4">
-                    <StackPanel Spacing="8">
+            <!--  Pulses Per Turn Configuration  -->
+            <Border
+                      Padding="16"
+                      BorderBrush="#E0E0E0"
+                      BorderThickness="1"
+                      CornerRadius="4">
+                <StackPanel Spacing="8">
+                    <TextBlock
+                              FontSize="14"
+                              FontWeight="SemiBold"
+                              Text="Pulses Per Turn" />
+                    <TextBlock FontSize="11" Text="Number of pulses for one full rotation" />
+                    <NumericUpDown
+                              FormatString="0"
+                              Increment="1"
+                              Maximum="200"
+                              Minimum="1"
+                              Watermark="Pulses"
+                              Value="{Binding PulsesPerTurn}" />
+                </StackPanel>
+            </Border>
+
+            <!--  Current Configuration Display  -->
+            <Border
+                      Padding="12"
+                      BorderBrush="#0078D4"
+                      BorderThickness="1"
+                      CornerRadius="4">
+                <StackPanel Spacing="8">
+                    <TextBlock
+                              FontSize="12"
+                              FontWeight="SemiBold"
+                              Text="Current Configuration" />
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
                         <TextBlock
-                            FontSize="14"
-                            FontWeight="SemiBold"
-                            Text="Pin A (CLK)" />
-                        <TextBlock FontSize="11" Text="GPIO pin for clock signal" />
-                        <NumericUpDown
-                            FormatString="0"
-                            Increment="1"
-                            Maximum="27"
-                            Minimum="0"
-                            Watermark="GPIO Pin Number"
-                            Value="{Binding PinA}" />
-                    </StackPanel>
-                </Border>
-
-                <!--  Pin B Configuration  -->
-                <Border
-                    Padding="16"
-                    BorderBrush="#E0E0E0"
-                    BorderThickness="1"
-                    CornerRadius="4">
-                    <StackPanel Spacing="8">
+                                  Grid.Row="0"
+                                  Grid.Column="0"
+                                  FontSize="11"
+                                  Text="Pin A:" />
                         <TextBlock
-                            FontSize="14"
-                            FontWeight="SemiBold"
-                            Text="Pin B (DT)" />
-                        <TextBlock FontSize="11" Text="GPIO pin for data signal" />
-                        <NumericUpDown
-                            FormatString="0"
-                            Increment="1"
-                            Maximum="27"
-                            Minimum="0"
-                            Watermark="GPIO Pin Number"
-                            Value="{Binding PinB}" />
-                    </StackPanel>
-                </Border>
+                                  Grid.Row="0"
+                                  Grid.Column="1"
+                                  FontSize="11"
+                                  Text="{Binding PinA}" />
 
-                <!--  Pulses Per Turn Configuration  -->
-                <Border
-                    Padding="16"
-                    BorderBrush="#E0E0E0"
-                    BorderThickness="1"
-                    CornerRadius="4">
-                    <StackPanel Spacing="8">
                         <TextBlock
-                            FontSize="14"
-                            FontWeight="SemiBold"
-                            Text="Pulses Per Turn" />
-                        <TextBlock FontSize="11" Text="Number of pulses for one full rotation" />
-                        <NumericUpDown
-                            FormatString="0"
-                            Increment="1"
-                            Maximum="200"
-                            Minimum="1"
-                            Watermark="Pulses"
-                            Value="{Binding PulsesPerTurn}" />
-                    </StackPanel>
-                </Border>
-
-                <!--  Current Configuration Display  -->
-                <Border
-                    Padding="12"
-                    BorderBrush="#0078D4"
-                    BorderThickness="1"
-                    CornerRadius="4">
-                    <StackPanel Spacing="8">
+                                  Grid.Row="1"
+                                  Grid.Column="0"
+                                  FontSize="11"
+                                  Text="Pin B:" />
                         <TextBlock
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Text="Current Configuration" />
-                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto">
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                FontSize="11"
-                                Text="Pin A:" />
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                FontSize="11"
-                                Text="{Binding PinA}" />
+                                  Grid.Row="1"
+                                  Grid.Column="1"
+                                  FontSize="11"
+                                  Text="{Binding PinB}" />
 
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                FontSize="11"
-                                Text="Pin B:" />
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                FontSize="11"
-                                Text="{Binding PinB}" />
-
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                FontSize="11"
-                                Text="Pulses/Turn:" />
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                FontSize="11"
-                                Text="{Binding PulsesPerTurn}" />
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-            </StackPanel>
-
-            <!--  Disabled State Message  -->
-            <TextBlock
-                FontSize="12"
-                IsVisible="{Binding !IsEnabled}"
-                Text="GPIO settings are disabled. Enable the toggle above to configure."
-                TextWrapping="Wrap" />
+                        <TextBlock
+                                  Grid.Row="2"
+                                  Grid.Column="0"
+                                  FontSize="11"
+                                  Text="Pulses/Turn:" />
+                        <TextBlock
+                                  Grid.Row="2"
+                                  Grid.Column="1"
+                                  FontSize="11"
+                                  Text="{Binding PulsesPerTurn}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
 
         </StackPanel>
-    </ScrollViewer>
 
+        <!--  Disabled State Message  -->
+        <TextBlock
+                  FontSize="12"
+                  IsVisible="{Binding !IsEnabled}"
+                  Text="GPIO settings are disabled. Enable the toggle above to configure."
+                  TextWrapping="Wrap" />
+
+    </StackPanel>
 </UserControl>

@@ -26,7 +26,7 @@ public partial class KeyboardVolumeKeyBindingsViewModel : ReactiveObject, IViewM
     public string Title { get; } = "Keyboard Bindings";
     public string Description => "Keyboard bindings";
     public bool ShowMiniPlayer => false;
-    public bool ShowNavigation => false;
+    public bool ShowNavigation => true;
     [Reactive] public partial bool IsLoading { get; set; } = false;
     public string PlayBinding
     {

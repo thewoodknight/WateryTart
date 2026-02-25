@@ -61,9 +61,11 @@ public partial class GpioVolumeSettingsViewModel : ReactiveObject, IViewModelBas
     }
 
     public bool ShowMiniPlayer => false;
-    public bool ShowNavigation => false;
+    public bool ShowNavigation => true;
     public string Title { get; set; } = "GPIO Settings";
     public string? UrlPathSegment => null;
+
+    public string Description => "GPIO pin settings for rotary encoders for volume control";
 
     private GpioVolumeService _gpioVolumeService;
     public GpioVolumeSettingsViewModel(ISettings settings, IScreen hostScreen, GpioVolumeService gpioVolumeService)

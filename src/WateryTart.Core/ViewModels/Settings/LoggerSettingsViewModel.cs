@@ -41,8 +41,8 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
     [Reactive] public partial string LogFileSize { get; set; }
     public RelayCommand OpenLogFolderCommand { get; }
     [Reactive] public partial LogLevel SelectedLogLevel { get; set; }
-    public bool ShowMiniPlayer { get; } = true;
-    public bool ShowNavigation { get; } = true;
+    public bool ShowMiniPlayer => false;
+    public bool ShowNavigation => true;
     [Reactive] public partial string StatusMessage { get; set; } = string.Empty;
     public string Title => "Logging";
     public string Description => "Logging settings for debugging WateryTart";
