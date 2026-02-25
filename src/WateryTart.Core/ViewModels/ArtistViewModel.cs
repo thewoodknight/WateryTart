@@ -29,7 +29,7 @@ namespace WateryTart.Core.ViewModels
         public Image? ArtistLogo { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.Type == ImageType.Logo); } }
         public Image? ArtistThumb { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.Type == ImageType.Thumb); } }
         public IScreen HostScreen { get; }
-        [Reactive] public partial string InputProviderIcon { get; set; } = string.Empty;
+        [Reactive] public partial string InputProviderIcon { get; set; } = null;
         [Reactive] public partial bool IsLoading { get; set; }
         public RelayCommand PlayArtistCommand { get; }
         public RelayCommand PlayArtistRadioCommand { get; }

@@ -20,65 +20,112 @@
         <converters:SecondsToMinutesConverter x:Key="SecondsToMinutesConverter" />
 
     </UserControl.Resources>
-    <StackPanel>
-        <Border
-                  Margin="0,0,10,20"
-                  BorderBrush="#66FFFFFF"
-                  BorderThickness="0,0,0,1">
-            <Grid Margin="0,0,0,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Border
-                          Grid.Column="0"
-                          Width="200"
-                          Height="200"
-                          BoxShadow="0 0 10 0 Black">
-                    <Border ClipToBounds="True" CornerRadius="5">
-                        <asyncImageLoader1:AdvancedImage
-                                  FallbackImage="{x:Static app:App.FallbackImage}"
-                                  Loader="{x:Static app:App.ImageLoaderInstance}"
-                                  Source="{Binding Album, Converter={StaticResource MetadataImageConverter}}"
-                                  Stretch="UniformToFill" />
-                    </Border>
+    <StackPanel Margin="10" Spacing="20">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border
+                      Grid.Column="0"
+                      Width="150"
+                      Height="150"
+                      BoxShadow="0 0 10 0 Black">
+                <Border ClipToBounds="True" CornerRadius="5">
+                    <asyncImageLoader1:AdvancedImage
+                              FallbackImage="{x:Static app:App.FallbackImage}"
+                              Loader="{x:Static app:App.ImageLoaderInstance}"
+                              Source="{Binding Album, Converter={StaticResource MetadataImageConverter}}"
+                              Stretch="UniformToFill" />
                 </Border>
-                <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                    <TextBlock Background="Transparent" Text="{Binding Album.Artists[0].Name}">
-                        <Interaction.Behaviors>
-                            <EventTriggerBehavior EventName="Tapped">
-                                <InvokeCommandAction Command="{Binding ArtistViewCommand}" />
-                            </EventTriggerBehavior>
-                        </Interaction.Behaviors>
-                    </TextBlock>
-                    <TextBlock Opacity="0.7" Text="{Binding Album.Year}" />
+            </Border>
+            <StackPanel Grid.Column="1" Margin="20,0,0,0">
+                <TextBlock
+                          FontSize="20"
+                          FontWeight="Bold"
+                          Text="{Binding Album.Name}" />
 
-                    <StackPanel
-                              Margin="0,10,0,0"
-                              Orientation="Horizontal"
-                              Spacing="10">
-                        <Button Command="{Binding PlayAlbumCommand}">Play</Button>
-                        <Button Classes="iconButton navButton" Command="{Binding AlbumAltCommand}">
-                            <iconPacks:PackIconMaterial
-                                      Width="20"
-                                      Height="22"
-                                      Kind="DotsVertical" />
-                        </Button>
-                        <Svg
-                                  Width="30"
-                                  Height="30"
-                                  Source="{Binding InputProviderIcon}" />
-                    </StackPanel>
+                <TextBlock Background="Transparent" Text="{Binding Album.Artists[0].Name}">
+                    <Interaction.Behaviors>
+                        <EventTriggerBehavior EventName="Tapped">
+                            <InvokeCommandAction Command="{Binding ArtistViewCommand}" />
+                        </EventTriggerBehavior>
+                    </Interaction.Behaviors>
+                </TextBlock>
 
+                <TextBlock Foreground="{StaticResource FadedTextColour}" Text="{Binding Album.Year}" />
+
+                <ItemsControl HorizontalAlignment="Left" ItemsSource="{Binding Album.Metadata.Genres}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel
+                  Margin="0,10,0,0"
+                  Orientation="Horizontal"
+                  Spacing="10">
+            <Button Width="150" Command="{Binding PlayAlbumCommand}">
+                <StackPanel
+                          HorizontalAlignment="Center"
+                          Orientation="Horizontal"
+                          Spacing="10">
+                    <iconPacks:PackIconMaterial
+                              Width="15"
+                              Height="15"
+                              Kind="Play" />
+                    <TextBlock>Play</TextBlock>
                 </StackPanel>
-            </Grid>
-        </Border>
+            </Button>
+
+            <Button Width="150" Command="{Binding PlayAlbumCommand}">
+                <StackPanel
+                          HorizontalAlignment="Center"
+                          Orientation="Horizontal"
+                          Spacing="10">
+                    <iconPacks:PackIconMaterial
+                              Width="15"
+                              Height="15"
+                              Kind="Shuffle" />
+                    <TextBlock>Shuffle</TextBlock>
+                </StackPanel>
+            </Button>
+
+
+            <Button
+                      Classes="iconButton navButton"
+                      Command="{Binding ToggleFavoriteCommand}"
+                      ToolTip.Tip="(Un)mark Favourite Album">
+
+                <iconPacks:PackIconMaterial
+                          Width="20"
+                          Height="20"
+                          Kind="{Binding Album.Favorite, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='HeartOutline,Heart'}" />
+            </Button>
+
+            <Svg
+                      Width="30"
+                      Height="30"
+                      Source="{Binding InputProviderIcon}" />
+        </StackPanel>
 
         <!--  Tracks  -->
         <ListBox
                   x:Name="lbTracks"
                   Background="Transparent"
                   ItemsSource="{Binding Tracks}">
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Padding" Value="0,10,0,10" />
+                </Style>
+            </ListBox.Styles>
+
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="vm:TrackViewModel">
                     <Grid Background="Transparent">
@@ -88,12 +135,15 @@
                             </EventTriggerBehavior>
                         </Interaction.Behaviors>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Opacity="0.7" Text="{Binding Track.TrackNumber}" />
+                        <TextBlock
+                                  HorizontalAlignment="Left"
+                                  Foreground="{StaticResource FadedTextColour}"
+                                  Text="{Binding Track.TrackNumber}" />
 
                         <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
                             <!--  Now Playing Indicator  -->

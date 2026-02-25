@@ -84,26 +84,7 @@
                       Height="25"
                       Source="{Binding InputProviderIcon}" />
         </StackPanel>
-        <!--
 
-            <StackPanel
-                      Grid.Column="1"
-                      Margin="20,0,20,20"
-                      Spacing="10">
-                <asyncImageLoader:AdvancedImage
-                          MaxWidth="350"
-                          Loader="{x:Static app:App.ImageLoaderInstance}"
-                          Source="{Binding Path=ArtistLogo, Converter={StaticResource MassImageImageConverter}}" />
-                <Button Classes="iconButton navButton" Command="{Binding PlayArtistRadioCommand}">
-                    <iconPacks:PackIconMaterial
-                              Width="35"
-                              Height="35"
-                              HorizontalAlignment="Right"
-                              Kind="RadioTower" />
-                </Button>
-            </StackPanel>
-        </Grid>
-        -->
         <TabControl>
             <TabControl.Styles>
                 <Style Selector="TabControl">

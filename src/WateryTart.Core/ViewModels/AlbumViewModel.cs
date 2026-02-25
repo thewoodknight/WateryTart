@@ -40,7 +40,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
     [Reactive] public partial ObservableCollection<TrackViewModel> Tracks { get; set; }
     public AsyncRelayCommand<Item?> TrackTappedCommand { get; }
     public string? UrlPathSegment { get; } = "Album/ID";
-
+    public ICommand ToggleFavoriteCommand { get; set; }
     public AlbumViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, Album? a = null)
     {
         _providerservice = App.Container.GetRequiredService<ProviderService>();
@@ -49,6 +49,16 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         HostScreen = screen;
         Album = a;
         Tracks = new ObservableCollection<TrackViewModel>();
+
+        ToggleFavoriteCommand = new RelayCommand(() =>
+        {
+            if (!Album!.Favorite)
+                _ = _massClient.WithWs().AddFavoriteItemAsync(Album);
+            else
+                _ = _massClient.WithWs().RemoveFavoriteItemAsync(Album);
+
+            Album.Favorite = !Album.Favorite;
+        });
 
         AlbumAltCommand = new RelayCommand(() =>
         {
