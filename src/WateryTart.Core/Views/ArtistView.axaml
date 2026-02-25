@@ -19,18 +19,72 @@
         <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
         <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
     </UserControl.Resources>
-    <StackPanel>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Ellipse Width="150" Height="150">
-                <Ellipse.Fill>
-                    <ImageBrush asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />
+    <StackPanel Spacing="10">
 
-                </Ellipse.Fill>
-            </Ellipse>
+        <Ellipse Width="250" Height="250">
+            <Ellipse.Fill>
+                <ImageBrush asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <TextBlock
+                  HorizontalAlignment="Center"
+                  FontSize="28"
+                  FontWeight="Bold"
+                  Text="{Binding Artist.Name}" />
+
+        <ItemsControl HorizontalAlignment="Center" ItemsSource="{Binding Artist.Metadata.Genres}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+        <StackPanel
+                  HorizontalAlignment="Center"
+                  Orientation="Horizontal"
+                  Spacing="20">
+
+            <Button
+                      Classes="iconButton navButton"
+                      Command="{Binding PlayArtistCommand}"
+                      ToolTip.Tip="Play Artist">
+                <iconPacks:PackIconMaterial
+                          Width="25"
+                          Height="25"
+                          HorizontalAlignment="Right"
+                          Kind="Play" />
+            </Button>
+
+            <Button
+                      Classes="iconButton navButton"
+                      Command="{Binding PlayArtistRadioCommand}"
+                      ToolTip.Tip="Play Artist Radio">
+                <iconPacks:PackIconMaterial
+                          Width="25"
+                          Height="25"
+                          HorizontalAlignment="Right"
+                          Kind="RadioTower" />
+            </Button>
+
+            <Button
+                      Classes="iconButton navButton"
+                      Command="{Binding ToggleFavoriteCommand}"
+                      ToolTip.Tip="(Un)mark Favourite Artist">
+
+                <iconPacks:PackIconMaterial
+                          Width="20"
+                          Height="20"
+                          Kind="{Binding Artist.Favorite, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='HeartOutline,Heart'}" />
+            </Button>
+
+            <Svg
+                      Width="25"
+                      Height="25"
+                      Source="{Binding InputProviderIcon}" />
+        </StackPanel>
+        <!--
 
             <StackPanel
                       Grid.Column="1"
@@ -49,8 +103,41 @@
                 </Button>
             </StackPanel>
         </Grid>
-
+        -->
         <TabControl>
+            <TabControl.Styles>
+                <Style Selector="TabControl">
+                    <Setter Property="ItemsPanel">
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="{Binding $parent[TabControl].Items.Count}" />
+                        </ItemsPanelTemplate>
+                    </Setter>
+                </Style>
+                <Style Selector="TabItem">
+                    <Setter Property="HeaderTemplate">
+                        <DataTemplate>
+                            <TextBlock
+                                      FontSize="16"
+                                      FontWeight="Bold"
+                                      Text="{Binding Converter={StaticResource ToUpperValueConverter}}"
+                                      TextAlignment="Center" />
+                        </DataTemplate>
+                    </Setter>
+                </Style>
+
+                <Style Selector="TabItem">
+                    <Setter Property="Padding" Value="0" />
+                </Style>
+
+                <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
+                    <Setter Property="Background" Value="White" />
+                </Style>
+
+                <Style Selector="TabItem:not(:selected) /template/ Border#PART_SelectedPipe">
+                    <Setter Property="Background" Value="#70FFFFFF" />
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
+            </TabControl.Styles>
             <TabItem Header="Albums">
                 <ListBox
                           Padding="0"

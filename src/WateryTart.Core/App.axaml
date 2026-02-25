@@ -19,6 +19,13 @@
             <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
             <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
             <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
+            <converters:BoolToIconKindConverter x:Key="BoolToIconKindConverter" />
+
+            <!--  Static Colours  -->
+
+            <Color x:Key="FadedTextColour">#FF969696</Color>
+            <SolidColorBrush x:Key="FadedTextColourBrush" Color="{StaticResource FadedTextColour}" />
+
 
             <app:WateryTartSmallViewSelector x:Key="smallViewSelector">
                 <StaticResource x:Key="AlbumViewModel" ResourceKey="albumSmallReusableTemplate" />
@@ -77,6 +84,7 @@
                             </EventTriggerBehavior>
                         </Interaction.Behaviors>
                         <TextBlock Text="{Binding Album.Name}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Foreground="{StaticResource FadedTextColourBrush}" Text="{Binding Album.Year}" />
                     </StackPanel>
 
                     <Button

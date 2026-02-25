@@ -13,6 +13,7 @@ using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
 using Xaml.Behaviors.SourceGenerators;
 using WateryTart.Core.ViewModels.Popups;
+using System.Windows.Input;
 
 namespace WateryTart.Core.ViewModels
 {
@@ -20,6 +21,7 @@ namespace WateryTart.Core.ViewModels
     {
         private readonly MusicAssistantClient _massClient;
         private readonly PlayersService _playersService;
+        private ProviderService _providerservice;
         [Reactive] public partial ObservableCollection<AlbumViewModel> Albums { get; set; } = new();
         public RelayCommand<Artist> AltMenuCommand { get; }
         [Reactive] public partial Artist? Artist { get; set; }
@@ -27,23 +29,37 @@ namespace WateryTart.Core.ViewModels
         public Image? ArtistLogo { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.Type == ImageType.Logo); } }
         public Image? ArtistThumb { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.Type == ImageType.Thumb); } }
         public IScreen HostScreen { get; }
-        [Reactive] public partial bool IsBioExpanded { get; set; } = false;
+        [Reactive] public partial string InputProviderIcon { get; set; } = string.Empty;
         [Reactive] public partial bool IsLoading { get; set; }
+        public RelayCommand PlayArtistCommand { get; }
         public RelayCommand PlayArtistRadioCommand { get; }
+        [Reactive] public partial ProviderManifest? Provider { get; set; } = null;
         public bool ShowMiniPlayer => true;
         public bool ShowNavigation => true;
         [Reactive] public partial string Title { get; set; }
-        public RelayCommand ToggleBioCommand { get; }
+        public ICommand ToggleFavoriteCommand { get; set; }
         public ObservableCollection<Item>? Tracks { get; set; }
         public string? UrlPathSegment { get; } = "Artist/ID";
 
         public ArtistViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, Artist? artist = null)
         {
+            _providerservice = App.Container.GetRequiredService<ProviderService>();
+
             _massClient = massClient;
             _playersService = playersService;
             HostScreen = screen;
             Title = "";
             Artist = artist;
+
+            ToggleFavoriteCommand = new RelayCommand(() =>
+            {
+                if (!Artist!.Favorite)
+                    _ = _massClient.WithWs().AddFavoriteItemAsync(Artist);
+                else
+                    _ = _massClient.WithWs().RemoveFavoriteItemAsync(Artist);
+
+                Artist.Favorite = !Artist.Favorite;
+            });
 
             ArtistFullViewCommand = new RelayCommand(() =>
             {
@@ -52,11 +68,6 @@ namespace WateryTart.Core.ViewModels
 
                 LoadFromId(Artist.ItemId, Artist.Provider);
                 screen.Router.Navigate.Execute(this);
-            });
-
-            ToggleBioCommand = new RelayCommand(() =>
-            {
-                IsBioExpanded = !IsBioExpanded;
             });
 
             AltMenuCommand = new RelayCommand<Artist>(i =>
@@ -75,7 +86,13 @@ namespace WateryTart.Core.ViewModels
             PlayArtistRadioCommand = new RelayCommand(() =>
             {
                 if (Artist != null)
-                    _playersService.PlayArtistRadio(Artist);
+                    _ = _playersService.PlayArtistRadio(Artist);
+            });
+
+            PlayArtistCommand = new RelayCommand(() =>
+            {
+                if (Artist != null)
+                   _ = _playersService.PlayItem(Artist);
             });
         }
 
@@ -114,12 +131,6 @@ namespace WateryTart.Core.ViewModels
             _ = LoadArtist(id, provider);
         }
 
-        [GenerateTypedAction]
-        public void ToggleBioClicked()
-        {
-            IsBioExpanded = !IsBioExpanded;
-        }
-
         private async Task LoadArtist(string id, string provider)
         {
             var artistResponse = await _massClient.WithWs().GetArtistAsync(id, provider);
@@ -138,6 +149,16 @@ namespace WateryTart.Core.ViewModels
             if (albumArtistResponse.Result != null)
                 foreach (var r in albumArtistResponse.Result.OrderByDescending(a => a.Year ?? 0).ThenBy(a => a.Name))
                     Albums.Add(new AlbumViewModel(_massClient, HostScreen, _playersService, r));
+
+            var domain = Artist?.ProviderMappings?.FirstOrDefault()?.ProviderDomain;
+
+            if (!string.IsNullOrEmpty(domain))
+                Provider = _providerservice.GetProvider(domain);
+
+            if (Provider != null)
+                if (!string.IsNullOrEmpty(Provider.IconSvgDark))
+                    InputProviderIcon = Provider.IconSvgDark;
+                else InputProviderIcon = Provider.IconSvg;
         }
     }
 }
