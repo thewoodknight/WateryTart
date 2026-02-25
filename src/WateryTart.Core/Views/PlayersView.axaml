@@ -59,11 +59,11 @@
                           CornerRadius="8"
                           Loader="{x:Static core:App.ImageLoaderInstance}"
                           Source="{Binding Path=PlayersService.SelectedPlayer.CurrentMedia.ImageUrl}">
-                    <!--<Interaction.Behaviors>
-					<EventTriggerBehavior EventName="Tapped">
-					<InvokeCommandAction Command="{Binding ClickedCommand}" />
-					</EventTriggerBehavior>
-					</Interaction.Behaviors>-->
+                    <Interaction.Behaviors>
+                        <EventTriggerBehavior EventName="Tapped">
+                            <InvokeCommandAction Command="{Binding ClickedCommand}" />
+                        </EventTriggerBehavior>
+                    </Interaction.Behaviors>
                 </asyncImageLoader:AdvancedImage>
 
                 <!--  Player Controls  -->

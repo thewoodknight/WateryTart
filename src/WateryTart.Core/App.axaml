@@ -21,6 +21,7 @@
             <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
             <converters:BoolToIconKindConverter x:Key="BoolToIconKindConverter" />
 
+            <x:Double x:Key="AltMenuSize">18</x:Double>
             <!--  Static Colours  -->
 
             <Color x:Key="FadedTextColour">#FF969696</Color>
@@ -92,8 +93,8 @@
                               Classes="iconButton navButton"
                               Command="{Binding AlbumAltMenuCommand}">
                         <iconPacks:PackIconMaterial
-                                  Width="20"
-                                  Height="22"
+                                  Width="{StaticResource AltMenuSize}"
+                                  Height="{StaticResource AltMenuSize}"
                                   Kind="DotsVertical" />
                     </Button>
                 </Grid>
@@ -148,7 +149,7 @@
                                   Grid.Column="1"
                                   Margin="10,20,0,0"
                                   FontSize="14"
-                                  Opacity="0.7"
+                                  Foreground="{StaticResource FadedTextColourBrush}"
                                   Text="{Binding Track.Artists[0].Name}"
                                   TextTrimming="CharacterEllipsis" />
                     </Grid>
@@ -156,11 +157,12 @@
 
                     <Button
                               Grid.Column="2"
+                              VerticalAlignment="Top"
                               Classes="iconButton navButton"
                               Command="{Binding TrackAltMenuCommand}">
                         <iconPacks:PackIconMaterial
-                                  Width="20"
-                                  Height="22"
+                                  Width="{StaticResource AltMenuSize}"
+                                  Height="{StaticResource AltMenuSize}"
                                   Kind="DotsVertical" />
                     </Button>
                 </Grid>
@@ -210,8 +212,8 @@
                               Classes="iconButton navButton"
                               Command="{Binding PlaylistAltMenuCommand}">
                         <iconPacks:PackIconMaterial
-                                  Width="20"
-                                  Height="22"
+                                  Width="{StaticResource AltMenuSize}"
+                                  Height="{StaticResource AltMenuSize}"
                                   Kind="DotsVertical" />
                     </Button>
                 </Grid>
@@ -257,8 +259,8 @@
                               Classes="iconButton navButton"
                               Command="{Binding AltMenuCommand}">
                         <iconPacks:PackIconMaterial
-                                  Width="20"
-                                  Height="22"
+                                  Width="{StaticResource AltMenuSize}"
+                                  Height="{StaticResource AltMenuSize}"
                                   Kind="DotsVertical" />
                     </Button>
                 </Grid>

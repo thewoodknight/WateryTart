@@ -26,7 +26,7 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
     public AlbumViewModel? SelectedAlbum { get; set; }
     public bool ShowMiniPlayer => true;
     public bool ShowNavigation => true;
-    [Reactive] public partial string Title { get; set; } = string.Empty;
+    [Reactive] public partial string Title { get; set; } = "Albums";
     public string? UrlPathSegment { get; } = "AlbumsList";
 
     public AlbumsListViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService)

@@ -1,36 +1,51 @@
 ﻿<UserControl
-    x:Class="WateryTart.Core.Views.AlbumsListView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:app="clr-namespace:WateryTart.Core"
-    xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-    xmlns:behaviors="clr-namespace:WateryTart.Core.Behaviors"
-    xmlns:converters="clr-namespace:WateryTart.Core.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:loaders="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="vm:AlbumsListViewModel"
-    Background="{x:Null}"
-    mc:Ignorable="d">
+          x:Class="WateryTart.Core.Views.AlbumsListView"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:app="clr-namespace:WateryTart.Core"
+          xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+          xmlns:behaviors="clr-namespace:WateryTart.Core.Behaviors"
+          xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:loaders="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+          d:DesignHeight="450"
+          d:DesignWidth="800"
+          x:DataType="vm:AlbumsListViewModel"
+          Background="{x:Null}"
+          mc:Ignorable="d">
     <UserControl.Resources>
         <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
         <converters:ArtistsToStringConverter x:Key="ArtistsToStringConverter" />
     </UserControl.Resources>
 
-    <DockPanel>
+    <StackPanel>
+        <StackPanel
+                  Margin="0,0,0,10"
+                  Orientation="Horizontal"
+                  Spacing="10">
+            <TextBlock>Sort By</TextBlock>
+
+            <ComboBox Width="150" SelectedIndex="0">
+                <ComboBoxItem>A-Z</ComboBoxItem>
+                <ComboBoxItem>Recent</ComboBoxItem>
+                <ComboBoxItem>Release Date</ComboBoxItem>
+            </ComboBox>
+
+            <ToggleButton>Favourite Only</ToggleButton>
+        </StackPanel>
+
         <ListBox
-            x:Name="albumsListBox"
-            Background="Transparent"
-            ItemsSource="{Binding Albums}"
-            SelectedItem="{Binding SelectedAlbum}">
+                  x:Name="albumsListBox"
+                  Background="Transparent"
+                  ItemsSource="{Binding Albums}"
+                  SelectedItem="{Binding SelectedAlbum}">
             <Interaction.Behaviors>
                 <behaviors:GridScrollBehavior
-                    HasMoreItems="{Binding HasMoreItems}"
-                    IsLoading="{Binding IsLoading}"
-                    LoadMoreCommand="{Binding LoadMoreCommand}" />
+                          HasMoreItems="{Binding HasMoreItems}"
+                          IsLoading="{Binding IsLoading}"
+                          LoadMoreCommand="{Binding LoadMoreCommand}" />
                 <EventTriggerBehavior EventName="SelectionChanged" SourceObject="albumsListBox">
                     <InvokeCommandAction Command="{Binding GoNext}" />
                 </EventTriggerBehavior>
@@ -44,31 +59,31 @@
                 <DataTemplate>
                     <StackPanel>
                         <Border
-                            Width="195"
-                            Height="195"
-                            Margin="0,0,0,5"
-                            BoxShadow="0 0 10 0 Black">
+                                  Width="195"
+                                  Height="195"
+                                  Margin="0,0,0,5"
+                                  BoxShadow="0 0 10 0 Black">
                             <Border ClipToBounds="True" CornerRadius="5">
                                 <asyncImageLoader:AdvancedImage
-                                    Width="195"
-                                    Height="195"
-                                    FallbackImage="{x:Static app:App.FallbackImage}"
-                                    Loader="{x:Static app:App.ImageLoaderInstance}"
-                                    Source="{Binding Path=Album, Converter={StaticResource MetadataImageConverter}}" />
+                                          Width="195"
+                                          Height="195"
+                                          FallbackImage="{x:Static app:App.FallbackImage}"
+                                          Loader="{x:Static app:App.ImageLoaderInstance}"
+                                          Source="{Binding Path=Album, Converter={StaticResource MetadataImageConverter}}" />
                             </Border>
                         </Border>
                         <TextBlock
-                            Margin="-10,0,0,0"
-                            Text="{Binding Album.Name}"
-                            TextTrimming="CharacterEllipsis" />
+                                  Margin="-10,0,0,0"
+                                  Text="{Binding Album.Name}"
+                                  TextTrimming="CharacterEllipsis" />
                         <TextBlock
-                            Margin="-10,0,0,0"
-                            Opacity="0.7"
-                            Text="{Binding Album.Artists, Converter={StaticResource ArtistsToStringConverter}}"
-                            TextTrimming="CharacterEllipsis" />
+                                  Margin="-10,0,0,0"
+                                  Opacity="0.7"
+                                  Text="{Binding Album.Artists, Converter={StaticResource ArtistsToStringConverter}}"
+                                  TextTrimming="CharacterEllipsis" />
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </DockPanel>
+    </StackPanel>
 </UserControl>

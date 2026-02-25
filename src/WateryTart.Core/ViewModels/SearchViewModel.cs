@@ -131,6 +131,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
         // Create a debounced search command
         SearchCommand = new AsyncRelayCommand(async () =>
         {
+            IsLoading = true;
             IsSearching = true;
             try
             {
@@ -150,6 +151,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
             finally
             {
                 IsSearching = false;
+                IsLoading = false;
             }
         });
 

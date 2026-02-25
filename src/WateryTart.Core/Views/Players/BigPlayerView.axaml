@@ -68,7 +68,7 @@
                                               Name="imgAlbumArt"
                                               Loader="{x:Static app:App.ImageLoaderInstance}"
                                               Source="{Binding Path=PlayersService.SelectedQueue.CurrentItem.Image, Converter={StaticResource MassImageImageConverter}}"
-                                              Stretch="UniformToFill" />
+                                              Stretch="Uniform" />
                                 </Grid>
                             </Panel>
                         </Border>
@@ -146,7 +146,7 @@
                     <StackPanel
                               HorizontalAlignment="Center"
                               Orientation="Horizontal"
-                              Spacing="15">
+                              Spacing="25">
 
                         <!--  shuffle  -->
                         <Button Classes="iconButton navButton" Command="{Binding ToggleShuffleCommand}">
@@ -247,7 +247,7 @@
             </controls:ResponsiveColumnPanel.FirstColumn>
 
             <controls:ResponsiveColumnPanel.SecondColumn>
-                <TabControl>
+                <TabControl Padding="0">
                     <TabControl.Styles>
                         <Style Selector="TabControl">
                             <Setter Property="ItemsPanel">
@@ -256,6 +256,7 @@
                                 </ItemsPanelTemplate>
                             </Setter>
                         </Style>
+
                         <Style Selector="TabItem">
                             <Setter Property="HeaderTemplate">
                                 <DataTemplate>
@@ -280,6 +281,8 @@
                             <Setter Property="Background" Value="#70FFFFFF" />
                             <Setter Property="IsVisible" Value="True" />
                         </Style>
+
+
                     </TabControl.Styles>
                     <TabItem Header="Queue">
                         <ItemsControl
@@ -293,6 +296,7 @@
                                   ItemTemplate="{StaticResource trackSmallReusableTemplate}"
                                   ItemsSource="{Binding PlayersService.PlayedQueue}" />
                     </TabItem>
+                    <TabItem Header="Lyrics" />
                 </TabControl>
             </controls:ResponsiveColumnPanel.SecondColumn>
         </controls:ResponsiveColumnPanel>

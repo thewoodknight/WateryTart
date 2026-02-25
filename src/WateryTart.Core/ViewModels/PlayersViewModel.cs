@@ -1,6 +1,4 @@
-﻿using System.Reactive.Concurrency;
-using System.Reactive.Linq;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using CommunityToolkit.Mvvm.Input;
 using IconPacks.Avalonia.Material;
@@ -11,16 +9,19 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
+using WateryTart.Core.ViewModels.Players;
 using WateryTart.Core.ViewModels.Popups;
 using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
 using Xaml.Behaviors.SourceGenerators;
-using System.Windows.Input;
 namespace WateryTart.Core.ViewModels;
 
 public partial class PlayersViewModel : ReactiveObject, IViewModelBase
@@ -45,6 +46,8 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
 
     [Reactive] public partial RelayCommand<Player> PlayerAltCommand { get; set; }
     [Reactive] public partial RelayCommand<Player> PlayerTogglePlayPauseCommand { get; set; }
+
+    [Reactive] public partial RelayCommand<Player> ClickedCommand { get; set; }
     [Reactive] public partial ColourService ColourService { get; set; }
 
     public ICommand ToggleFavoriteCommand { get; set; }
@@ -81,6 +84,12 @@ public partial class PlayersViewModel : ReactiveObject, IViewModelBase
         SelectedPlayer = playersService.SelectedPlayer;
         ColourService = colourService;
 
+        ClickedCommand = new RelayCommand<Player>(p =>
+        {
+            var vm = App.Container?.GetRequiredService<BigPlayerViewModel>();
+            if (vm != null)
+                HostScreen.Router.Navigate.Execute(vm);
+        });
         // Initialize from selected player if available
         Volume = PlayersService?.SelectedPlayer?.VolumeLevel ?? 0;
 
