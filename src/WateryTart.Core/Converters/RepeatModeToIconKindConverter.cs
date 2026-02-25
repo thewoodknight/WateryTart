@@ -10,6 +10,7 @@ namespace WateryTart.Core.Converters
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
+            if (value == null) return null;
             var state = (RepeatMode)value;
 
             switch (state)

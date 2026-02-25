@@ -13,25 +13,84 @@
           x:DataType="vm:SettingsViewModel"
           mc:Ignorable="d">
 
-    <TabControl ItemsSource="{Binding SettingsProviders}" TabStripPlacement="Left">
-        <TabControl.ItemTemplate>
+    <UserControl.Styles>
+        <!--  This cascades to all children  -->
+        <Style Selector="#lbSettings ContentPresenter#PART_ContentPresenter:pointerover">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <!--  this 'undoes' the cascading  -->
+        <Style Selector="ListBox.hoverable ContentPresenter#PART_ContentPresenter:pointerover">
+            <Setter Property="Background" Value="#11FFFFFF" />
+        </Style>
+    </UserControl.Styles>
+
+    <ListBox
+              Name="lbSettings"
+              Margin="10"
+              Background="Transparent"
+              ItemsSource="{Binding SettingsProviders}">
+        <ListBox.ItemTemplate>
             <DataTemplate>
-                <iconPacks:PackIconMaterial
-                          Width="30"
-                          Height="30"
-                          Kind="{Binding Icon}" />
+                <Border Margin="3" Classes="GroupingBorderStyle">
+                    <Grid Margin="15,15,15,15" Background="Transparent">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="Tapped">
+                                <InvokeCommandAction Command="{Binding #lbSettings.((vm:SettingsViewModel)DataContext).GoToSettings}" CommandParameter="{Binding Path=.}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <iconPacks:PackIconMaterial
+                                  Grid.RowSpan="2"
+                                  Grid.Column="0"
+                                  Width="30"
+                                  Height="30"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top"
+                                  Kind="{Binding Icon}" />
+                        <TextBlock
+                                  Grid.Row="0"
+                                  Grid.Column="1"
+                                  FontSize="16"
+                                  FontWeight="Bold"
+                                  Text="{Binding Title}" />
+
+                        <TextBlock
+                                  Grid.Row="1"
+                                  Grid.Column="1"
+                                  FontSize="14"
+                                  Foreground="#FF969696"
+                                  Text="{Binding Description}"
+                                  TextWrapping="Wrap" />
+
+                        <iconPacks:PackIconMaterial
+                                  Grid.Row="1"
+                                  Grid.Column="2"
+                                  Width="18"
+                                  Height="18"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Top"
+                                  Kind="ChevronRight"
+                                  Opacity="0.7" />
+                    </Grid>
+                </Border>
             </DataTemplate>
-        </TabControl.ItemTemplate>
-        <TabControl.ContentTemplate>
-            <DataTemplate>
-                <ContentControl Content="{Binding}">
-                    <ContentControl.DataTemplates>
-                        <DataTemplate DataType="vm:ServerSettingsViewModel">
-                            <views:ServerSettingsView HorizontalAlignment="Left" />
-                        </DataTemplate>
-                    </ContentControl.DataTemplates>
-                </ContentControl>
-            </DataTemplate>
-        </TabControl.ContentTemplate>
-    </TabControl>
+        </ListBox.ItemTemplate>
+    </ListBox>
 </UserControl>

@@ -38,7 +38,8 @@ namespace WateryTart.Core.ViewModels
 
         public bool ShowMiniPlayer => false;
         public bool ShowNavigation => false;
-        public string Title => string.Empty;
+        public string Title => "General Settings";
+        public string Description => "Tray, updates, and other general settings.";
         [Reactive] public partial bool TrayIcon { get; set; } = false;
         public ICommand TrayIconCommand { get; set; }
         public string? UrlPathSegment => string.Empty;

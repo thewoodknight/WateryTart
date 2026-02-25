@@ -1,78 +1,78 @@
 ﻿<UserControl
-    x:Class="WateryTart.Core.Views.LoggerSettingsView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:WateryTart.Core.Converters"
-    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-    x:DataType="vm:LoggerSettingsViewModel">
+          x:Class="WateryTart.Core.Views.LoggerSettingsView"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+          xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+          x:DataType="vm:LoggerSettingsViewModel">
     <UserControl.Resources>
         <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter" />
     </UserControl.Resources>
-    <Grid>
-        <StackPanel Spacing="20">
-            <TextBlock
-                FontSize="18"
-                FontWeight="Bold"
-                Text="Logging Settings" />
+    <StackPanel Margin="20" Spacing="20">
 
-            <!--  Log Level Selection  -->
-            <StackPanel Spacing="8">
-                <TextBlock FontWeight="SemiBold" Text="Log Level:" />
-                <ComboBox ItemsSource="{Binding AvailableLogLevels}" SelectedItem="{Binding SelectedLogLevel}" />
-                <TextBlock
-                    FontSize="12"
-                    Opacity="0.7"
-                    Text="Controls the verbosity of logging output" />
-            </StackPanel>
-
+        <Border Classes="GroupingBorderStyle">
             <!--  File Logging Toggle  -->
             <StackPanel Spacing="8">
                 <CheckBox
-                    Content="Enable file logging"
-                    FontWeight="SemiBold"
-                    IsChecked="{Binding EnableFileLogging}" />
+                          Content="Enable file logging"
+                          FontWeight="SemiBold"
+                          IsChecked="{Binding EnableFileLogging}" />
                 <TextBlock
-                    FontSize="12"
-                    IsVisible="{Binding !EnableFileLogging}"
-                    Opacity="0.7"
-                    Text="Write logs to a file for persistent storage" />
+                          FontSize="12"
+                          Opacity="0.7"
+                          Text="Write logs to a file for persistent storage" />
             </StackPanel>
+        </Border>
 
-            <!--  Log File Path  -->
-            <StackPanel IsVisible="{Binding EnableFileLogging}" Spacing="8">
-                <TextBlock FontWeight="SemiBold" Text="Log File Path:" />
-                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
-                    <TextBox Grid.Column="0" Text="{Binding LogFilePath}" />
+        <TextBlock
+                  FontSize="16"
+                  FontWeight="Bold"
+                  IsVisible="{Binding EnableFileLogging}"
+                  Text="LOGGING SETTINGS" />
+        <Border Classes="GroupingBorderStyle" IsVisible="{Binding EnableFileLogging}">
+            <StackPanel>
+
+                <!--  Log Level Selection  -->
+                <StackPanel Spacing="8">
+                    <TextBlock FontWeight="SemiBold" Text="Log Level:" />
+                    <ComboBox ItemsSource="{Binding AvailableLogLevels}" SelectedItem="{Binding SelectedLogLevel}" />
+                    <TextBlock
+                              FontSize="12"
+                              Opacity="0.7"
+                              Text="Controls the verbosity of logging output" />
+                </StackPanel>
+
+
+
+                <!--  Log File Path  -->
+                <StackPanel Spacing="8">
+                    <TextBlock FontWeight="SemiBold" Text="Log Folder Path" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <TextBox Grid.Column="0" Text="{Binding LogFilePath}" />
+                        <Button
+                                  Grid.Column="1"
+                                  Width="100"
+                                  Command="{Binding BrowseLogFileCommand}"
+                                  Content="Browse" />
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                        <TextBlock FontWeight="SemiBold" Text="File Size:" />
+                        <TextBlock Grid.Column="1" Text="{Binding LogFileSize}" />
+                    </Grid>
                     <Button
-                        Grid.Column="1"
-                        Width="100"
-                        Command="{Binding BrowseLogFileCommand}"
-                        Content="Browse" />
-                </Grid>
-                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
-                    <TextBlock FontWeight="SemiBold" Text="File Size:" />
-                    <TextBlock Grid.Column="1" Text="{Binding LogFileSize}" />
-                </Grid>
-                <Button
-                    Width="150"
-                    Command="{Binding OpenLogFolderCommand}"
-                    Content="Open Log Folder" />
+                              Width="150"
+                              Command="{Binding OpenLogFolderCommand}"
+                              Content="Open Log Folder" />
+                </StackPanel>
+
+                <!--  Status Message  -->
+                <TextBlock
+                          FontSize="12"
+                          Foreground="Green"
+                          IsVisible="{Binding StatusMessage, Converter={StaticResource StringNullOrEmptyToBoolConverter}}"
+                          Text="{Binding StatusMessage}" />
+
             </StackPanel>
-
-            <!--  Status Message  -->
-            <TextBlock
-                FontSize="12"
-                Foreground="Green"
-                IsVisible="{Binding StatusMessage, Converter={StaticResource StringNullOrEmptyToBoolConverter}}"
-                Text="{Binding StatusMessage}" />
-
-            <!--  Save Button  -->
-            <Button
-                Width="200"
-                Margin="0,20,0,0"
-                Command="{Binding SaveSettingsCommand}"
-                Content="Save Settings"
-                IsEnabled="{Binding !IsSaving}" />
-        </StackPanel>
-    </Grid>
+        </Border>
+    </StackPanel>
 </UserControl>

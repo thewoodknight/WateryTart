@@ -23,7 +23,8 @@ public partial class KeyboardVolumeKeyBindingsViewModel : ReactiveObject, IViewM
 
     public string? UrlPathSegment => null;
     public IScreen HostScreen { get; }
-    public string Title { get; set; } = "Keyboard Bindings";
+    public string Title { get; } = "Keyboard Bindings";
+    public string Description => "Keyboard bindings";
     public bool ShowMiniPlayer => false;
     public bool ShowNavigation => false;
     [Reactive] public partial bool IsLoading { get; set; } = false;

@@ -1,3 +1,7 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using IconPacks.Avalonia.Material;
 using Microsoft.Extensions.Logging;
@@ -6,6 +10,7 @@ using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using WateryTart.Core.Settings;
 
@@ -26,7 +31,7 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
         LogLevel.None
     };
 
-    public RelayCommand BrowseLogFileCommand { get; }
+    public AsyncRelayCommand BrowseLogFileCommand { get; }
     [Reactive] public partial bool EnableFileLogging { get; set; }
     public IScreen HostScreen { get; }
     public PackIconMaterialKind Icon => PackIconMaterialKind.History;
@@ -35,12 +40,12 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
     [Reactive] public partial string LogFilePath { get; set; }
     [Reactive] public partial string LogFileSize { get; set; }
     public RelayCommand OpenLogFolderCommand { get; }
-    public AsyncRelayCommand SaveSettingsCommand { get; }
     [Reactive] public partial LogLevel SelectedLogLevel { get; set; }
     public bool ShowMiniPlayer { get; } = true;
     public bool ShowNavigation { get; } = true;
     [Reactive] public partial string StatusMessage { get; set; } = string.Empty;
     public string Title => "Logging";
+    public string Description => "Logging settings for debugging WateryTart";
     public string? UrlPathSegment { get; } = string.Empty;
 
     public LoggerSettingsViewModel(ISettings settings, IScreen screen)
@@ -54,21 +59,38 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
         LogFilePath = _settings.LoggerSettings?.LogFilePath ?? GetDefaultLogPath();
         UpdateLogFileSize();
 
-        BrowseLogFileCommand = new RelayCommand(BrowseLogFile);
-        SaveSettingsCommand = new AsyncRelayCommand(SaveSettings);
+        BrowseLogFileCommand = new AsyncRelayCommand(BrowseLogFile);
         OpenLogFolderCommand = new RelayCommand(OpenLogFolder);
     }
 
-    private void BrowseLogFile()
+    private async Task BrowseLogFile()
     {
-        // You can use a file dialog here - for now we'll just show the folder
-        OpenLogFolder();
+        var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null;
+        // Get top level from the current control. Alternatively, you can use Window reference instead.
+        var topLevel = TopLevel.GetTopLevel(mainWindow);
+
+        // Start async operation to open the dialog.
+        var folder = await topLevel.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+        {
+            Title = "Select Log Folder",
+            AllowMultiple = false,
+
+        });
+
+        if (folder == null || folder.Count == 0)
+        {
+            StatusMessage = "No folder selected.";
+            return;
+        }
+
+        LogFilePath =  folder[0].Path.LocalPath;
+        SaveSettings();
     }
 
     private string GetDefaultLogPath()
     {
         var appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "WateryTart");
-        return Path.Combine(appDataPath, "watertart.log");
+        return Path.Combine(appDataPath, "waterytart.log");
     }
 
     private void OpenLogFolder()
@@ -89,6 +111,8 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
         {
             StatusMessage = $"Error opening folder: {ex.Message}";
         }
+
+        
     }
 
     private async Task SaveSettings()
@@ -130,9 +154,10 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
     {
         try
         {
-            if (File.Exists(LogFilePath))
+            var filepath = Path.Combine(LogFilePath, "default.log");
+            if (File.Exists(filepath))
             {
-                var fileInfo = new FileInfo(LogFilePath);
+                var fileInfo = new FileInfo(filepath);
                 var sizeMb = fileInfo.Length / (1024.0 * 1024.0);
                 LogFileSize = $"{sizeMb:F2} MB";
             }
@@ -145,5 +170,7 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
         {
             LogFileSize = "Unable to read file size";
         }
+
+        SaveSettings();
     }
 }

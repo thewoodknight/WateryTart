@@ -1,229 +1,228 @@
 ﻿<UserControl
-    x:Class="WateryTart.Core.Views.ServerSettingsView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:discovery="clr-namespace:WateryTart.Core.Services.Discovery"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-    d:DesignHeight="600"
-    d:DesignWidth="500"
-    x:DataType="vm:ServerSettingsViewModel"
-    mc:Ignorable="d">
+          x:Class="WateryTart.Core.Views.ServerSettingsView"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:discovery="clr-namespace:WateryTart.Core.Services.Discovery"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+          d:DesignHeight="600"
+          d:DesignWidth="500"
+          x:DataType="vm:ServerSettingsViewModel"
+          mc:Ignorable="d">
 
-    <ScrollViewer>
-        <StackPanel
-            MaxWidth="400"
-            Margin="20"
-            Spacing="16">
+    <StackPanel
+              MaxWidth="400"
+              Margin="20"
+              HorizontalAlignment="Left"
+              Spacing="16">
 
-            <!--  Current Connection Section  -->
-            <TextBlock
-                FontSize="18"
-                FontWeight="Bold"
-                Text="Current Connection" />
+        <!--  Current Connection Section  -->
+        <TextBlock
+                  FontSize="18"
+                  FontWeight="Bold"
+                  Text="Current Connection" />
 
-            <Border
-                Padding="16"
-                Background="#33FFFFFF"
-                CornerRadius="8">
-                <StackPanel Spacing="12">
-                    <StackPanel Spacing="4">
-                        <TextBlock
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Foreground="Gray"
-                            Text="Server" />
-                        <TextBlock FontSize="14" Text="{Binding CurrentServer}" />
-                    </StackPanel>
-
-                    <StackPanel Spacing="4">
-                        <TextBlock
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Foreground="Gray"
-                            Text="Username" />
-                        <TextBlock FontSize="14" Text="{Binding CurrentUsername}" />
-                    </StackPanel>
-
-                    <StackPanel Spacing="4">
-                        <TextBlock
-                            FontSize="12"
-                            FontWeight="SemiBold"
-                            Foreground="Gray"
-                            Text="Password" />
-                        <TextBlock FontSize="14" Text="{Binding MaskedPassword}" />
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-
-            <Separator Margin="0,8" />
-
-            <!--  Reconfigure Section  -->
-            <TextBlock
-                FontSize="18"
-                FontWeight="Bold"
-                Text="Change Server" />
-
-            <!--  Success Message  -->
-            <Border
-                Padding="12"
-                Background="#1E7E34"
-                BorderBrush="#28A745"
-                BorderThickness="1"
-                CornerRadius="4"
-                IsVisible="{Binding ShowSuccess}">
-                <TextBlock
-                    FontSize="12"
-                    Foreground="White"
-                    Text="Server configuration updated successfully!" />
-            </Border>
-
-            <!--  Error Message  -->
-            <Border
-                Padding="12"
-                Background="#FFF7CCCF"
-                BorderBrush="#FFE81123"
-                BorderThickness="1"
-                CornerRadius="4"
-                IsVisible="{Binding HasError}">
-                <TextBlock
-                    FontSize="12"
-                    Foreground="#E81123"
-                    Text="{Binding ErrorMessage}"
-                    TextWrapping="Wrap" />
-            </Border>
-
-            <!--  Loading Message  -->
-            <Border
-                Padding="12"
-                Background="#F7FFF7"
-                BorderBrush="#107C10"
-                BorderThickness="1"
-                CornerRadius="4"
-                IsVisible="{Binding IsLoading}">
-                <TextBlock
-                    FontSize="12"
-                    Foreground="#107C10"
-                    Text="Connecting..." />
-            </Border>
-
-            <!--  Home Assistant Addon Warning  -->
-            <Border
-                Padding="8"
-                Background="#FFF8E6"
-                BorderBrush="#FFA500"
-                BorderThickness="1"
-                CornerRadius="4"
-                IsVisible="{Binding IsHomeAssistantAddon}">
-                <TextBlock
-                    FontSize="11"
-                    Foreground="#996300"
-                    TextWrapping="Wrap">
-                    HA Addon detected. Create a user in Music Assistant (Settings - Users) and use those credentials here.
-                </TextBlock>
-            </Border>
-
-            <!--  Discovered Servers  -->
-            <StackPanel Spacing="4">
-                <Grid ColumnDefinitions="*,Auto">
+        <Border
+                  Padding="16"
+                  Background="#33FFFFFF"
+                  CornerRadius="8">
+            <StackPanel Spacing="12">
+                <StackPanel Spacing="4">
                     <TextBlock
-                        Grid.Column="0"
-                        FontWeight="SemiBold"
-                        Text="Discovered Servers" />
-                    <StackPanel
-                        Grid.Column="1"
-                        Orientation="Horizontal"
-                        Spacing="8">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="11"
-                            Foreground="Gray"
-                            IsVisible="{Binding IsScanning}"
-                            Text="Scanning..." />
-                        <Button
-                            Padding="8,4"
-                            Command="{Binding RefreshServersCommand}"
-                            FontSize="11"
-                            IsEnabled="{Binding !IsScanning}">
-                            Refresh
-                        </Button>
-                    </StackPanel>
-                </Grid>
-                <ComboBox
-                    Height="36"
-                    HorizontalAlignment="Stretch"
-                    IsEnabled="{Binding !IsLoading}"
-                    ItemsSource="{Binding DiscoveredServers}"
-                    SelectedItem="{Binding SelectedServer}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate x:DataType="discovery:DiscoveredServer">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBlock FontWeight="SemiBold" Text="{Binding DisplayName}" />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontSize="10"
-                                    Foreground="Gray"
-                                    IsVisible="{Binding Version, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                    Text="{Binding Version, StringFormat='v{0}'}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                              FontSize="12"
+                              FontWeight="SemiBold"
+                              Foreground="Gray"
+                              Text="Server" />
+                    <TextBlock FontSize="14" Text="{Binding CurrentServer}" />
+                </StackPanel>
+
+                <StackPanel Spacing="4">
+                    <TextBlock
+                              FontSize="12"
+                              FontWeight="SemiBold"
+                              Foreground="Gray"
+                              Text="Username" />
+                    <TextBlock FontSize="14" Text="{Binding CurrentUsername}" />
+                </StackPanel>
+
+                <StackPanel Spacing="4">
+                    <TextBlock
+                              FontSize="12"
+                              FontWeight="SemiBold"
+                              Foreground="Gray"
+                              Text="Password" />
+                    <TextBlock FontSize="14" Text="{Binding MaskedPassword}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Separator Margin="0,8" />
+
+        <!--  Reconfigure Section  -->
+        <TextBlock
+                  FontSize="18"
+                  FontWeight="Bold"
+                  Text="Change Server" />
+
+        <!--  Success Message  -->
+        <Border
+                  Padding="12"
+                  Background="#1E7E34"
+                  BorderBrush="#28A745"
+                  BorderThickness="1"
+                  CornerRadius="4"
+                  IsVisible="{Binding ShowSuccess}">
+            <TextBlock
+                      FontSize="12"
+                      Foreground="White"
+                      Text="Server configuration updated successfully!" />
+        </Border>
+
+        <!--  Error Message  -->
+        <Border
+                  Padding="12"
+                  Background="#FFF7CCCF"
+                  BorderBrush="#FFE81123"
+                  BorderThickness="1"
+                  CornerRadius="4"
+                  IsVisible="{Binding HasError}">
+            <TextBlock
+                      FontSize="12"
+                      Foreground="#E81123"
+                      Text="{Binding ErrorMessage}"
+                      TextWrapping="Wrap" />
+        </Border>
+
+        <!--  Loading Message  -->
+        <Border
+                  Padding="12"
+                  Background="#F7FFF7"
+                  BorderBrush="#107C10"
+                  BorderThickness="1"
+                  CornerRadius="4"
+                  IsVisible="{Binding IsLoading}">
+            <TextBlock
+                      FontSize="12"
+                      Foreground="#107C10"
+                      Text="Connecting..." />
+        </Border>
+
+        <!--  Home Assistant Addon Warning  -->
+        <Border
+                  Padding="8"
+                  Background="#FFF8E6"
+                  BorderBrush="#FFA500"
+                  BorderThickness="1"
+                  CornerRadius="4"
+                  IsVisible="{Binding IsHomeAssistantAddon}">
+            <TextBlock
+                      FontSize="11"
+                      Foreground="#996300"
+                      TextWrapping="Wrap">
+                HA Addon detected. Create a user in Music Assistant (Settings - Users) and use those credentials here.
+            </TextBlock>
+        </Border>
+
+        <!--  Discovered Servers  -->
+        <StackPanel Spacing="4">
+            <Grid ColumnDefinitions="*,Auto">
                 <TextBlock
-                    FontSize="11"
-                    Foreground="Gray"
-                    IsVisible="{Binding !DiscoveredServers.Count}"
-                    Text="No servers found. Click Refresh or enter address manually below."
-                    TextWrapping="Wrap" />
-            </StackPanel>
-
-            <!--  Server Address  -->
-            <StackPanel Spacing="4">
-                <TextBlock FontWeight="SemiBold" Text="Server Address" />
-                <TextBox
-                    Height="36"
-                    IsEnabled="{Binding !IsLoading}"
-                    Text="{Binding Server}"
-                    Watermark="192.168.1.100:8095" />
-                <TextBlock
-                    FontSize="11"
-                    Foreground="Gray"
-                    Text="Auto-filled from selection above, or enter manually" />
-            </StackPanel>
-
-            <!--  Username  -->
-            <StackPanel Spacing="4">
-                <TextBlock FontWeight="SemiBold" Text="Username" />
-                <TextBox
-                    Height="36"
-                    IsEnabled="{Binding !IsLoading}"
-                    Text="{Binding Username}"
-                    Watermark="Username" />
-            </StackPanel>
-
-            <!--  Password  -->
-            <StackPanel Spacing="4">
-                <TextBlock FontWeight="SemiBold" Text="Password" />
-                <TextBox
-                    Height="36"
-                    IsEnabled="{Binding !IsLoading}"
-                    PasswordChar="*"
-                    Text="{Binding Password}"
-                    Watermark="Password" />
-            </StackPanel>
-
-            <!--  Save Button  -->
-            <Button
-                Height="40"
-                HorizontalAlignment="Stretch"
-                Command="{Binding SaveCommand}"
-                FontSize="14"
-                FontWeight="SemiBold"
-                IsEnabled="{Binding !IsLoading}">
-                Save Changes
-            </Button>
-
+                          Grid.Column="0"
+                          FontWeight="SemiBold"
+                          Text="Discovered Servers" />
+                <StackPanel
+                          Grid.Column="1"
+                          Orientation="Horizontal"
+                          Spacing="8">
+                    <TextBlock
+                              VerticalAlignment="Center"
+                              FontSize="11"
+                              Foreground="Gray"
+                              IsVisible="{Binding IsScanning}"
+                              Text="Scanning..." />
+                    <Button
+                              Padding="8,4"
+                              Command="{Binding RefreshServersCommand}"
+                              FontSize="11"
+                              IsEnabled="{Binding !IsScanning}">
+                        Refresh
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <ComboBox
+                      Height="36"
+                      HorizontalAlignment="Stretch"
+                      IsEnabled="{Binding !IsLoading}"
+                      ItemsSource="{Binding DiscoveredServers}"
+                      SelectedItem="{Binding SelectedServer}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="discovery:DiscoveredServer">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock FontWeight="SemiBold" Text="{Binding DisplayName}" />
+                            <TextBlock
+                                      VerticalAlignment="Center"
+                                      FontSize="10"
+                                      Foreground="Gray"
+                                      IsVisible="{Binding Version, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                      Text="{Binding Version, StringFormat='v{0}'}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock
+                      FontSize="11"
+                      Foreground="Gray"
+                      IsVisible="{Binding !DiscoveredServers.Count}"
+                      Text="No servers found. Click Refresh or enter address manually below."
+                      TextWrapping="Wrap" />
         </StackPanel>
-    </ScrollViewer>
+
+        <!--  Server Address  -->
+        <StackPanel Spacing="4">
+            <TextBlock FontWeight="SemiBold" Text="Server Address" />
+            <TextBox
+                      Height="36"
+                      IsEnabled="{Binding !IsLoading}"
+                      Text="{Binding Server}"
+                      Watermark="192.168.1.100:8095" />
+            <TextBlock
+                      FontSize="11"
+                      Foreground="Gray"
+                      Text="Auto-filled from selection above, or enter manually" />
+        </StackPanel>
+
+        <!--  Username  -->
+        <StackPanel Spacing="4">
+            <TextBlock FontWeight="SemiBold" Text="Username" />
+            <TextBox
+                      Height="36"
+                      IsEnabled="{Binding !IsLoading}"
+                      Text="{Binding Username}"
+                      Watermark="Username" />
+        </StackPanel>
+
+        <!--  Password  -->
+        <StackPanel Spacing="4">
+            <TextBlock FontWeight="SemiBold" Text="Password" />
+            <TextBox
+                      Height="36"
+                      IsEnabled="{Binding !IsLoading}"
+                      PasswordChar="*"
+                      Text="{Binding Password}"
+                      Watermark="Password" />
+        </StackPanel>
+
+        <!--  Save Button  -->
+        <Button
+                  Height="40"
+                  HorizontalAlignment="Stretch"
+                  Command="{Binding SaveCommand}"
+                  FontSize="14"
+                  FontWeight="SemiBold"
+                  IsEnabled="{Binding !IsLoading}">
+            Save Changes
+        </Button>
+
+    </StackPanel>
 </UserControl>

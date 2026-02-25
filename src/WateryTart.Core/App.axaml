@@ -337,6 +337,21 @@
             <Setter Property="Background" Value="#33FFFFFF" />
         </Style>
 
+        <Style Selector="Border.GroupingBorderStyle">
+            <Setter Property="Background" Value="#12FFFFFF" />
+            <Setter Property="BorderBrush" Value="#2FFFFFFF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+
+
+        </Style>
+        <Style Selector="Border.GroupingBorderStyle > StackPanel">
+            <Setter Property="Margin" Value="10" />
+        </Style>
+
+        <Style Selector="Border.GroupingBorderStyle  > Grid">
+            <Setter Property="Margin" Value="10" />
+        </Style>
 
     </Application.Styles>
 </Application>

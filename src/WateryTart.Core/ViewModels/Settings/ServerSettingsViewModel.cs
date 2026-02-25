@@ -14,7 +14,7 @@ using WateryTart.MusicAssistant.Models.Auth;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class ServerSettingsViewModel : ReactiveObject, IHaveSettings, IDisposable
+public partial class ServerSettingsViewModel : ReactiveObject, IHaveSettings, IDisposable, IViewModelBase
 {
     private readonly MusicAssistantClient _massClient;
     private readonly ISettings _settings;
@@ -44,6 +44,17 @@ public partial class ServerSettingsViewModel : ReactiveObject, IHaveSettings, ID
 
     public AsyncRelayCommand SaveCommand { get; }
     public AsyncRelayCommand RefreshServersCommand { get; }
+
+    public string Title => "Server Settings";
+    public string Description => "Connected Music Assistant server settings.";
+
+    public bool ShowMiniPlayer => false;
+
+    public bool ShowNavigation => true;
+
+    public string? UrlPathSegment => throw new NotImplementedException();
+
+    public IScreen HostScreen { get; set; }
 
     public ServerSettingsViewModel(MusicAssistantClient massClient, ISettings settings, IMassServerDiscovery? discovery = null)
     {
