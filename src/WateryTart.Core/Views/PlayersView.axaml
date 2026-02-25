@@ -5,10 +5,12 @@
           xmlns:app="clr-namespace:WateryTart.Core"
           xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
           xmlns:converters="clr-namespace:WateryTart.Core.Converters"
+          xmlns:core="clr-namespace:WateryTart.Core"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
           xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
           xmlns:materialIcons="using:Material.Icons.Avalonia"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:models="using:WateryTart.MusicAssistant.Models"
           xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
           d:DesignHeight="450"
           d:DesignWidth="800"
@@ -19,103 +21,292 @@
         <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
         <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
         <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
+        <converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter" />
+        <x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
+        <converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
+        <converters:VolumeLevelToIconConverter x:Key="VolumeLevelToIconConverter" />
+        <converters:QualityToBackgroundBrushConverter x:Key="QualityToBackgroundBrushConverter" />
+        <converters:BoolToIconKindConverter x:Key="BoolToIconKindConverter" />
+        <converters:RepeatModeToIconKindConverter x:Key="RepeatModeToIconKindConverter" />
+        <converters:PlayerVisibleConverter x:Key="PlayerVisibleConverter" />
     </UserControl.Resources>
-    <ListBox
-              Name="lbPlayers"
-              Background="Transparent"
-              ItemsSource="{Binding Players}"
-              SelectedItem="{Binding SelectedPlayer}">
 
-        <ListBox.GestureRecognizers>
-            <ScrollGestureRecognizer CanVerticallyScroll="True" />
-        </ListBox.GestureRecognizers>
+    <StackPanel Margin="10" Spacing="10">
 
-        <ListBox.ItemTemplate>
-            <DataTemplate>
-                <Grid IsVisible="{Binding Available}" RowSpacing="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+        <StackPanel Spacing="10">
+            <Border
+                      Background="#1DFFFFFF"
+                      BorderBrush="#4BFFFFFF"
+                      BorderThickness="1"
+                      CornerRadius="15">
+                <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <!--  Album art  -->
-                    <iconPacks:PackIconMaterial
-                              Grid.Row="0"
-                              Grid.Column="0"
-                              Width="50"
-                              Height="50"
-                              Kind="Speaker"
-                              Opacity="0.7" />
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <!--  Album Art  -->
                     <asyncImageLoader:AdvancedImage
                               Grid.Row="0"
                               Grid.Column="0"
-                              Width="50"
-                              Height="50"
-                              Loader="{x:Static app:App.ImageLoaderInstance}"
-                              Source="{Binding CurrentMedia.ImageUrl}" />
+                              Width="150"
+                              Height="150"
+                              CornerRadius="8"
+                              Loader="{x:Static core:App.ImageLoaderInstance}"
+                              Source="{Binding Path=PlayersService.SelectedPlayer.CurrentMedia.ImageUrl}">
+                        <!--<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="Tapped">
+						<InvokeCommandAction Command="{Binding ClickedCommand}" />
+						</EventTriggerBehavior>
+						</Interaction.Behaviors>-->
+                    </asyncImageLoader:AdvancedImage>
 
-                    <!--  Info  -->
+                    <!--  Player Controls  -->
                     <StackPanel
                               Grid.Row="0"
                               Grid.Column="1"
-                              Margin="10,0,0,0">
-                        <TextBlock FontWeight="Bold" Text="{Binding DisplayName}" />
-                        <TextBlock Text="{Binding CurrentMedia.Title}" />
-                        <TextBlock Opacity="0.7" Text="{Binding CurrentMedia.Artist}" />
+                              Margin="24,0,0,0"
+                              VerticalAlignment="Top"
+                              Spacing="5">
+
+
+                        <TextBlock
+                                  Margin="0,8,0,0"
+                                  FontSize="24"
+                                  FontWeight="Bold"
+                                  Foreground="White"
+                                  Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.Title}"
+                                  TextTrimming="CharacterEllipsis" />
+
+                        <TextBlock Text="{Binding PlayersService.SelectedPlayer.CurrentMedia.Artist}" />
+
+                        <TextBlock
+                                  FontSize="12"
+                                  FontWeight="Bold"
+                                  Text="{Binding PlayersService.SelectedPlayer.Name}" />
+
                     </StackPanel>
 
-                    <!--  buttons  -->
+                    <!--  Progress Bar  -->
                     <StackPanel
-                              Grid.Row="0"
-                              Grid.Column="2"
-                              Orientation="Horizontal">
-                        <Button
-                                  Classes="iconButton navButton"
-                                  Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerTogglePlayPauseCommand}"
-                                  CommandParameter="{Binding Path=.}">
-                            <iconPacks:PackIconMaterial
-                                      Width="25"
-                                      Height="22"
-                                      Kind="{Binding PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}}" />
-                        </Button>
-                        <Button
-                                  Classes="iconButton navButton"
-                                  Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerAltCommand}"
-                                  CommandParameter="{Binding Path=.}">
-                            <iconPacks:PackIconMaterial
-                                      Width="25"
-                                      Height="22"
-                                      Kind="DotsVertical" />
-                        </Button>
-                    </StackPanel>
-
-
-                    <!--  Volume  -->
-                    <Slider
                               Grid.Row="1"
-                              Grid.Column="1"
                               Grid.ColumnSpan="2"
-                              Margin="10,-20,10,-10"
-                              HorizontalAlignment="Stretch"
-                              Foreground="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).ColourService.ColourAccent}"
-                              IsSnapToTickEnabled="True"
-                              Maximum="100"
-                              Minimum="0"
-                              TickFrequency="1"
-                              Value="{Binding VolumeLevel, FallbackValue=0, Mode=OneWay}">
-                        <Interaction.Behaviors>
-                            <EventTriggerBehavior EventName="ValueChanged">
-                                <vm:VolumeChangedAction TargetObject="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext)}" />
-                            </EventTriggerBehavior>
-                        </Interaction.Behaviors>
-                    </Slider>
+                              Margin="0,10,0,0"
+                              Spacing="10">
+
+
+                        <ProgressBar
+                                  Height="4"
+                                  Foreground="White"
+                                  Maximum="100"
+                                  Minimum="0"
+                                  Value="{Binding PlayersService.Progress}" />
+
+                        <!--  Playback Buttons  -->
+                        <StackPanel
+                                  HorizontalAlignment="Center"
+                                  Orientation="Horizontal"
+                                  Spacing="15">
+
+                            <!--  shuffle  -->
+                            <Button Classes="iconButton navButton" Command="{Binding ToggleShuffleCommand}">
+                                <iconPacks:PackIconMaterial
+                                          Width="15"
+                                          Height="15"
+                                          Kind="{Binding PlayersService.SelectedQueue.ShuffleEnabled, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='ShuffleDisabled,ShuffleVariant'}" />
+                            </Button>
+
+                            <!--  previous  -->
+                            <Button Classes="iconButton navButton" Command="{Binding PlayPreviousCommand}">
+                                <iconPacks:PackIconMaterial
+                                          Width="15"
+                                          Height="15"
+                                          Kind="SkipPrevious" />
+                            </Button>
+
+                            <!--  play/pause  -->
+                            <Button
+                                      Width="40"
+                                      Height="40"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalContentAlignment="Center"
+                                      Background="White"
+                                      Classes="iconButton navButton"
+                                      Command="{Binding PlayerPlayPauseCommand}"
+                                      CornerRadius="20">
+                                <iconPacks:PackIconMaterial
+                                          Width="15"
+                                          Height="15"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Foreground="Black"
+                                          Kind="{Binding PlayersService.SelectedPlayer.PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}}" />
+                            </Button>
+
+                            <!--  next  -->
+                            <Button Classes="iconButton navButton" Command="{Binding PlayerNextCommand}">
+                                <iconPacks:PackIconMaterial
+                                          Width="15"
+                                          Height="15"
+                                          Kind="SkipNext" />
+                            </Button>
+
+                            <!--  cycle repeat mode  -->
+                            <Button Classes="iconButton navButton" Command="{Binding CycleRepeatCommand}">
+                                <iconPacks:PackIconMaterial
+                                          Width="15"
+                                          Height="15"
+                                          Kind="{Binding PlayersService.SelectedQueue.RepeatMode, Converter={StaticResource RepeatModeToIconKindConverter}}" />
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+
                 </Grid>
-            </DataTemplate>
-        </ListBox.ItemTemplate>
-    </ListBox>
+            </Border>
+        </StackPanel>
+
+        <TextBlock
+                  Margin="0,30,0,-15"
+                  FontSize="16"
+                  FontWeight="Bold"
+                  Text="AVAILABLE DEVICES" />
+        <ListBox
+                  Name="lbPlayers"
+                  Background="Transparent"
+                  ItemsSource="{Binding Players}"
+                  SelectedItem="{Binding SelectedPlayer}">
+
+            <ListBox.GestureRecognizers>
+                <ScrollGestureRecognizer CanVerticallyScroll="True" />
+            </ListBox.GestureRecognizers>
+            <ListBox.Styles>
+                <Style x:DataType="models:Player" Selector="ListBoxItem">
+                    <Setter Property="IsVisible">
+                        <Setter.Value>
+                            <MultiBinding Converter="{StaticResource PlayerVisibleConverter}">
+                                <Binding Path="Available" />
+                                <Binding ElementName="lbPlayers" Path="DataContext.PlayersService.SelectedPlayer" />
+                                <Binding Path="PlayerId" />
+                            </MultiBinding>
+                        </Setter.Value>
+
+                    </Setter>
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Padding" Value="0,10,0,0" />
+                </Style>
+            </ListBox.Styles>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border
+                              Background="#12FFFFFF"
+                              BorderBrush="#2FFFFFFF"
+                              BorderThickness="1"
+                              CornerRadius="10">
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Album art  -->
+                            <iconPacks:PackIconMaterial
+                                      Grid.Row="0"
+                                      Grid.Column="0"
+                                      Width="50"
+                                      Height="50"
+                                      Kind="Speaker"
+                                      Opacity="0.7" />
+                            <asyncImageLoader:AdvancedImage
+                                      Grid.Row="0"
+                                      Grid.Column="0"
+                                      Width="50"
+                                      Height="50"
+                                      CornerRadius="5"
+                                      Loader="{x:Static app:App.ImageLoaderInstance}"
+                                      Source="{Binding CurrentMedia.ImageUrl}" />
+
+                            <!--  Info  -->
+                            <StackPanel
+                                      Grid.Row="0"
+                                      Grid.Column="1"
+                                      Margin="10,0,0,0">
+                                <TextBlock FontWeight="Bold" Text="{Binding DisplayName}" />
+                                <TextBlock Text="{Binding CurrentMedia.Title}" />
+                                <TextBlock Opacity="0.7" Text="{Binding CurrentMedia.Artist}" />
+                            </StackPanel>
+
+                            <!--  buttons  -->
+                            <StackPanel
+                                      Grid.Row="0"
+                                      Grid.Column="2"
+                                      Orientation="Horizontal">
+                                <Button
+                                          Classes="iconButton navButton"
+                                          Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerTogglePlayPauseCommand}"
+                                          CommandParameter="{Binding Path=.}">
+                                    <iconPacks:PackIconMaterial
+                                              Width="25"
+                                              Height="22"
+                                              Kind="{Binding PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}}" />
+                                </Button>
+                                <!--                                <Button
+                                          Classes="iconButton navButton"
+                                          Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerAltCommand}"
+                                          CommandParameter="{Binding Path=.}">
+                                    <iconPacks:PackIconMaterial
+                                              Width="25"
+                                              Height="22"
+                                              Kind="DotsVertical" />
+                                </Button>-->
+                            </StackPanel>
+
+
+                            <iconPacks:PackIconMaterial
+                                      Grid.Row="1"
+                                      Grid.Column="0"
+                                      Width="15"
+                                      Height="15"
+                                      Kind="VolumeLow" />
+
+                            <iconPacks:PackIconMaterial
+                                      Grid.Row="1"
+                                      Grid.Column="2"
+                                      Width="15"
+                                      Height="15"
+                                      Kind="VolumeHigh" />
+
+                            <!--  Volume  -->
+                            <Slider
+                                      Grid.Row="1"
+                                      Grid.Column="1"
+                                      HorizontalAlignment="Stretch"
+                                      Foreground="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).ColourService.ColourAccent}"
+                                      IsSnapToTickEnabled="True"
+                                      Maximum="100"
+                                      Minimum="0"
+                                      TickFrequency="1"
+                                      Value="{Binding VolumeLevel, FallbackValue=0, Mode=OneWay}">
+                                <Interaction.Behaviors>
+                                    <EventTriggerBehavior EventName="ValueChanged">
+                                        <vm:VolumeChangedAction TargetObject="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext)}" />
+                                    </EventTriggerBehavior>
+                                </Interaction.Behaviors>
+                            </Slider>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
 </UserControl>
