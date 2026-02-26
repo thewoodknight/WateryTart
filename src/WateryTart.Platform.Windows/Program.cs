@@ -3,7 +3,6 @@ using Avalonia;
 using Microsoft.Extensions.Logging;
 using ReactiveUI.Avalonia;
 using System;
-using System.Reflection;
 using Velopack;
 using WateryTart.Core;
 using WateryTart.Core.Playback;
@@ -28,8 +27,6 @@ sealed class Program
         => AppBuilder.Configure<App>(() =>
         {
             // Register platform-specific views BEFORE creating App
-            ViewLocator.RegisterView<SimpleWasapiPlayerSettingsViewModel, SimpleWasapiPlayerSettingsView>();
-
             ViewLocator.RegisterView<PlaybackSettingsViewModel, PlaybackSettingsView>();
 
             var x = new App(

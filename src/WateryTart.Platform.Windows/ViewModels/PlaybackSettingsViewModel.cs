@@ -16,6 +16,8 @@ namespace WateryTart.Platform.Windows.ViewModels
         private readonly ISettings _settings;
         public string Description => "Select audio backend";
         public PackIconMaterialKind Icon => PackIconMaterialKind.MusicNote;
+        public IEnumerable<PlaybackBackend> PlaybackBackendOptions { get; } = (PlaybackBackend[])Enum.GetValues(typeof(PlaybackBackend));
+
         public PlaybackBackend SelectedBackend
         {
             get => _settings.PlaybackBackend;
@@ -42,15 +44,9 @@ namespace WateryTart.Platform.Windows.ViewModels
             }
         }
 
-        public IEnumerable<PlaybackBackend> PlaybackBackendOptions { get; } = (PlaybackBackend[])Enum.GetValues(typeof(PlaybackBackend));
-
-
-        public bool ShowMiniPlayer { get; } = false;
-        public bool ShowNavigation { get; } = false;
-        public string Title { get; set; } = "Playback";
-        public string? UrlPathSegment { get; } = "Playback Settings";
-
-
+        public new bool ShowMiniPlayer { get; } = false;
+        public new bool ShowNavigation { get; } = false;
+        public new string Title => "Playback";
         public PlaybackSettingsViewModel(ISettings settings, SwitchableAudioPlayer player, ILoggerFactory factory)
             : base(factory)
         {

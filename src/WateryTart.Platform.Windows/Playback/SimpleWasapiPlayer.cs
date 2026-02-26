@@ -2,18 +2,15 @@
 // Licensed under the MIT License. See LICENSE file in the project root. https://github.com/chrisuthe/windowsSpin/.
 // </copyright>
 
-using Microsoft.VisualBasic;
 using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 using Sendspin.SDK.Audio;
 using Sendspin.SDK.Models;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using UnitsNet;
 using WateryTart.Core.Settings;
-using System.Runtime.InteropServices;
 
 namespace WateryTart.Platform.Windows.Playback;
 

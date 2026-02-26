@@ -10,16 +10,21 @@
           x:DataType="vm:PlaybackSettingsViewModel"
           mc:Ignorable="d">
     <StackPanel Margin="12" Spacing="8">
-        <TextBlock FontSize="16" Text="Audio Backend" />
+        <TextBlock
+                  FontSize="16"
+                  FontWeight="Bold"
+                  Text="AUDIO BACKEND" />
         <Border Classes="GroupingBorderStyle">
-            <StackPanel>
+            <StackPanel Spacing="10">
                 <ComboBox
                           x:Name="BackendComboBox"
                           HorizontalAlignment="Stretch"
                           ItemsSource="{Binding PlaybackBackendOptions}"
                           SelectedItem="{Binding SelectedBackend, Mode=TwoWay}" />
 
-                <TextBlock Text="Select the audio backend to use for playback. Changing this will switch the runtime player." TextWrapping="Wrap" />
+                <TextBlock TextWrapping="Wrap">
+                    Select the audio backend to use for playback. Changing this will switch the runtime player.<LineBreak /><LineBreak />
+                    SoundFlow is the newer experimental playback engine that will eventually move to all platforms</TextBlock>
             </StackPanel>
         </Border>
     </StackPanel>

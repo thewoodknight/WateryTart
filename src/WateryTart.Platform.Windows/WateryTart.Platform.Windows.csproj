@@ -58,12 +58,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="Views\SimpleWasapiPlayerSettingsView.axaml.cs">
-			<DependentUpon>SimpleWasapiPlayerSettingsView.axaml</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
 		<TrimmerRootAssembly Include="Avalonia.Controls" />
 		<TrimmerRootAssembly Include="ReactiveUI" />
 		<TrimmerRootAssembly Include="WateryTart.Core" />
