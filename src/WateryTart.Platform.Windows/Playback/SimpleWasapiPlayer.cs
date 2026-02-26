@@ -6,7 +6,6 @@ using NAudio.Wave;
 using Sendspin.SDK.Audio;
 using Sendspin.SDK.Models;
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +18,6 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
     private WasapiOut? _wasapiOut;
     private WaveFormat? _waveFormat;
     private AudioFormat? _format;
- //   private IAudioSampleSource? _sample_source;
     private AudioSampleProviderAdapter? _sampleProvider;
     private readonly object _sync = new();
 
@@ -62,7 +60,6 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
 
     public Task InitializeAsync(AudioFormat format, CancellationToken ct = default)
     {
-        Debug.WriteLine($"SimpleWasapiPlayer.InitializeAsync this={GetHashCode()}");
         _format = format;
         // Create NAudio wave format (SDK always outputs 32-bit float)
         _waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, format.Channels);
@@ -80,16 +77,11 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
 
     public void SetSampleSource(IAudioSampleSource source)
     {
-        _sampleProvider = new AudioSampleProviderAdapter(source, _format!);
-        _sampleProvider.Volume = 1f;
-        _sampleProvider.IsMuted = false;
-
-        // Log the expected format for diagnostics
-        try
+        _sampleProvider = new AudioSampleProviderAdapter(source, _format!)
         {
-            Debug.WriteLine($"SetSampleSource: format sampleRate={_format?.SampleRate} channels={_format?.Channels} this={GetHashCode()}");
-        }
-        catch { }
+            Volume = 1f,
+            IsMuted = false
+        };
 
         // Try to init, and retry a few times if device was transiently invalidated
         const int maxRetries = 3;
@@ -114,27 +106,39 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
                 }
 
                 // dispose old outside lock
-                try { old?.Dispose(); } catch { }
-
-                Debug.WriteLine($"Wasapi Init succeeded on attempt {attempt + 1}");
+                try
+                {
+                    old?.Dispose();
+                }
+                catch
+                {
+                }
                 return;
             }
             catch (COMException ex)
             {
-                Debug.WriteLine($"Wasapi Init COMException HRESULT=0x{ex.ErrorCode:X8} attempt={attempt + 1}: {ex.Message}");
-                try { candidate?.Dispose(); } catch { }
-                try { Thread.Sleep(100); } catch { }
+                try
+                {
+                    candidate?.Dispose();
+                    Thread.Sleep(100);
+                }
+                catch
+                {
+                }
                 // continue retrying
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Wasapi Init unexpected exception attempt={attempt + 1}: {ex}");
-                try { candidate?.Dispose(); } catch { }
+                try
+                {
+                    candidate?.Dispose();
+                }
+                catch
+                {
+                }
                 break;
             }
         }
-
-        Debug.WriteLine("Wasapi Init failed after retries; audio will remain inactive.");
     }
 
     public void Play()
@@ -174,8 +178,14 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
     {
         lock (_sync)
         {
-            try { _wasapiOut?.Stop(); } catch { }
-            try { _wasapiOut?.Dispose(); } catch { }
+            try
+            {
+                _wasapiOut?.Stop();
+                _wasapiOut?.Dispose();
+            }
+            catch
+            {
+            }
             _wasapiOut = null;
         }
     }

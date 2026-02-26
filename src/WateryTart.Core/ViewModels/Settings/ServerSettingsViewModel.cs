@@ -5,7 +5,6 @@ using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
 using System.Threading.Tasks;
 using WateryTart.Core.Services.Discovery;
 using WateryTart.Core.Settings;

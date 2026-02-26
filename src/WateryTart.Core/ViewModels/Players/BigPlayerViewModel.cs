@@ -193,7 +193,13 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
                 var albumVm = App.Container.GetRequiredService<AlbumViewModel>();
                 albumVm.Album = item.Album;
 
-                albumVm.LoadFromId((item.Album.ProviderMappings)[0].ItemId, item.Provider);
+                string id = string.Empty;
+                if (item.Album.ProviderMappings != null)
+                    id = item.Album.ProviderMappings[0].ItemId!;
+                else
+                    id = item.ItemId;
+
+                albumVm.LoadFromId(id, item.Provider);
                 HostScreen.Router.Navigate.Execute(albumVm);
             });
 

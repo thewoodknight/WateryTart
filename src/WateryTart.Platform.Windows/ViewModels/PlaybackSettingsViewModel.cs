@@ -44,8 +44,6 @@ namespace WateryTart.Platform.Windows.ViewModels
             }
         }
 
-        public new bool ShowMiniPlayer { get; } = false;
-        public new bool ShowNavigation { get; } = false;
         public new string Title => "Playback";
         public PlaybackSettingsViewModel(ISettings settings, SwitchableAudioPlayer player, ILoggerFactory factory)
             : base(factory)

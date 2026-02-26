@@ -213,6 +213,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
                     LoggerSettings = loaded.LoggerSettings;
                     CustomSettings = loaded.CustomSettings;
                     TrayIcon = loaded.TrayIcon;
+                    PlaybackBackend = loaded.PlaybackBackend;
                 }
 
                 // Initialize if not loaded

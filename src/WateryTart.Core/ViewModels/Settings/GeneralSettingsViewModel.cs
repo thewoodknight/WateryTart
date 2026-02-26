@@ -13,19 +13,15 @@ using WateryTart.Core.Settings;
 
 namespace WateryTart.Core.ViewModels
 {
-    public partial class GeneralSettingsViewModel : ReactiveObject, IViewModelBase, IHaveSettings
+    public partial class GeneralSettingsViewModel : ViewModelBase<GeneralSettingsViewModel>, IHaveSettings
     {
-        private readonly ILogger _logger;
         private readonly ISettings _settings;
         private ITrayService _trayService;
         private UpdateManager _um;
         private UpdateInfo _update = default!;
-        public IScreen HostScreen => null!;
         public PackIconMaterialKind Icon => PackIconMaterialKind.Cog;
         [Reactive] public partial string InstalledVersion { get; set; }
-        [Reactive] public partial bool IsLoading { get; set; } = false;
         [Reactive] public partial string LatestVersion { get; set; } = string.Empty;
-
         public VolumeEventControl SelectedVolumeEvent
         {
             get => _settings.VolumeEventControl;
@@ -35,22 +31,17 @@ namespace WateryTart.Core.ViewModels
                     _settings.VolumeEventControl = value;
             }
         }
-
-        public bool ShowMiniPlayer => false;
-        public bool ShowNavigation => true;
-        public string Title => "General Settings";
+        public new string Title => "General Settings";
         public string Description => "Tray, updates, and other general settings.";
         [Reactive] public partial bool TrayIcon { get; set; } = false;
         public ICommand TrayIconCommand { get; set; }
-        public string? UrlPathSegment => string.Empty;
         public IEnumerable<VolumeEventControl> VolumeEventOptions { get; } = (VolumeEventControl[])Enum.GetValues(typeof(VolumeEventControl));
 
-        public GeneralSettingsViewModel(ISettings settings, ILoggerFactory loggerFactory, ITrayService trayService)
+        public GeneralSettingsViewModel(ISettings settings, ILoggerFactory loggerFactory, ITrayService trayService): base(loggerFactory)
         {
             _trayService = trayService;
             _settings = settings;
             TrayIcon = _settings.TrayIcon;
-            _logger = loggerFactory.CreateLogger<GeneralSettingsViewModel>();
             _um = new UpdateManager(new GithubSource("https://github.com/TemuWolverine/WateryTart/", null, false));
 
             TrayIconCommand = ReactiveCommand.Create(() =>

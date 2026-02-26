@@ -10,13 +10,12 @@ using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using WateryTart.Core.Settings;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, IHaveSettings
+public partial class LoggerSettingsViewModel : ViewModelBase<LoggerSettingsViewModel>, IHaveSettings
 {
     private readonly ISettings _settings;
 
@@ -33,21 +32,15 @@ public partial class LoggerSettingsViewModel : ReactiveObject, IViewModelBase, I
 
     public AsyncRelayCommand BrowseLogFileCommand { get; }
     [Reactive] public partial bool EnableFileLogging { get; set; }
-    public IScreen HostScreen { get; }
     public PackIconMaterialKind Icon => PackIconMaterialKind.History;
-    [Reactive] public partial bool IsLoading { get; set; } = false;
     [Reactive] public partial bool IsSaving { get; set; }
     [Reactive] public partial string LogFilePath { get; set; }
     [Reactive] public partial string LogFileSize { get; set; }
     public RelayCommand OpenLogFolderCommand { get; }
     [Reactive] public partial LogLevel SelectedLogLevel { get; set; }
-    public bool ShowMiniPlayer => false;
-    public bool ShowNavigation => true;
     [Reactive] public partial string StatusMessage { get; set; } = string.Empty;
-    public string Title => "Logging";
+    public new string Title => "Logging";
     public string Description => "Logging settings for debugging WateryTart";
-    public string? UrlPathSegment { get; } = string.Empty;
-
     public LoggerSettingsViewModel(ISettings settings, IScreen screen)
     {
         _settings = settings;
