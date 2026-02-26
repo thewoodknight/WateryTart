@@ -4,17 +4,23 @@
           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:vm="clr-namespace:WateryTart.Platform.Windows.ViewModels"
           d:DesignHeight="200"
           d:DesignWidth="400"
+          x:DataType="vm:PlaybackSettingsViewModel"
           mc:Ignorable="d">
-
     <StackPanel Margin="12" Spacing="8">
         <TextBlock FontSize="16" Text="Audio Backend" />
+        <Border Classes="GroupingBorderStyle">
+            <StackPanel>
+                <ComboBox
+                          x:Name="BackendComboBox"
+                          HorizontalAlignment="Stretch"
+                          ItemsSource="{Binding PlaybackBackendOptions}"
+                          SelectedItem="{Binding SelectedBackend, Mode=TwoWay}" />
 
-        <!--  ComboBox populated from code-behind; selection synced in code-behind  -->
-        <ComboBox x:Name="BackendComboBox" HorizontalAlignment="Stretch" />
-
-        <TextBlock Text="Select the audio backend to use for playback. Changing this will switch the runtime player." TextWrapping="Wrap" />
+                <TextBlock Text="Select the audio backend to use for playback. Changing this will switch the runtime player." TextWrapping="Wrap" />
+            </StackPanel>
+        </Border>
     </StackPanel>
-
 </UserControl>
