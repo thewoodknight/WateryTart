@@ -205,6 +205,7 @@
                             </EventTriggerBehavior>
                         </Interaction.Behaviors>
                         <TextBlock Text="{Binding Playlist.Name}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Foreground="{StaticResource FadedTextColourBrush}" Text="Playlist" />
                     </StackPanel>
 
                     <Button

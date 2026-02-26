@@ -101,28 +101,57 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    private void RegisterServices(ContainerBuilder builder)
     {
-        // Try to acquire a filesystem lock to ensure single instance
-        try
-        {
-            var lockPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WateryTart", "watertart.lock");
-            if (!SingleInstanceLock.TryAcquire(lockPath, out _singleInstanceLock))
-            {
-                // Another instance is running - exit early
-                Console.WriteLine("WateryTart is already running. Only one instance is allowed.");
-                Environment.Exit(1);
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            // If lock acquisition fails unexpectedly, log and continue — don't prevent startup for non-critical failures
-            Console.WriteLine($"Warning acquiring single-instance lock: {ex.Message}");
-        }
-        
-        UpdateMyApp();
-        var builder = new ContainerBuilder();
+        /* Explicit interface definitions so .AsImplemented() isn't call, which isn't AOT compatible */
+        builder.Register(c => new MainWindowViewModel(
+            c.Resolve<MusicAssistantClient>(),
+            c.Resolve<PlayersService>(),
+            c.Resolve<ISettings>(),
+            c.Resolve<ColourService>(),
+            c.Resolve<SendSpinClient>(),
+            c.Resolve<ILoggerFactory>(),
+            c.Resolve<ProviderService>()
+        )).As<IScreen>().As<IActivatableViewModel>().SingleInstance();
+        builder.RegisterType<MusicAssistantClient>().As<MusicAssistantClient>().SingleInstance();
+        builder.RegisterType<PlayersService>().As<PlayersService>().As<IAsyncReaper>().SingleInstance();
+        builder.RegisterType<ColourService>().As<ColourService>().SingleInstance();
+        builder.RegisterType<TrayService>().As<ITrayService>().SingleInstance();
+    }
+
+    private void RegisterViewModels(ContainerBuilder  builder)
+    {
+        builder.RegisterType<SettingsViewModel>().SingleInstance();
+        builder.RegisterType<GeneralSettingsViewModel>().As<IHaveSettings>().SingleInstance();
+        builder.RegisterType<ServerSettingsViewModel>().As<IHaveSettings>().SingleInstance();
+        builder.RegisterType<PlayersViewModel>().SingleInstance();
+        builder.RegisterType<MiniPlayerViewModel>().AsSelf().SingleInstance();
+        builder.RegisterType<BigPlayerViewModel>().AsSelf().SingleInstance();
+        builder.RegisterType<HomeViewModel>().SingleInstance();
+        builder.RegisterType<Home2ViewModel>().SingleInstance();
+        //builder.RegisterType<KeyboardVolumeKeyBindingsViewModel>().As<IHaveSettings>().SingleInstance();
+        builder.RegisterType<SearchResultsViewModel>().AsSelf().SingleInstance();
+        builder.RegisterType<LoggerSettingsViewModel>().As<IHaveSettings>().SingleInstance();
+        builder.RegisterType<SearchViewModel>().SingleInstance();
+        builder.RegisterType<ProviderService>().SingleInstance();
+
+        //Transient viewmodels
+        builder.RegisterType<AlbumsListViewModel>();
+        builder.RegisterType<AlbumViewModel>();
+        builder.RegisterType<LoginViewModel>();
+        builder.RegisterType<PlaylistViewModel>();
+        builder.RegisterType<ArtistViewModel>();
+        builder.RegisterType<ArtistsViewModel>();
+        builder.RegisterType<LibraryViewModel>();
+        builder.RegisterType<TrackViewModel>();
+        builder.RegisterType<RecommendationViewModel>();
+        builder.RegisterType<PlaylistsViewModel>();
+        builder.RegisterType<TracksViewModel>();
+        builder.RegisterType<SimilarTracksViewModel>();
+    }
+
+    private void RegisterSetupLogger(ContainerBuilder builder)
+    {
 
         //Settings - Load first before creating logger
         var settingsPath = Path.Combine(BaseAppDataPath, "settings.json");
@@ -167,73 +196,64 @@ public partial class App : Application
 
         // Register the logger factory for DI
         builder.RegisterInstance(_loggerFactory).As<ILoggerFactory>().SingleInstance();
+    }
 
-        //Services
-        /* Explicit interface definitions so .AsImplemented() isn't call, which isn't AOT compatible */
-        builder.Register(c => new MainWindowViewModel(
-            c.Resolve<MusicAssistantClient>(),
-            c.Resolve<PlayersService>(),
-            c.Resolve<ISettings>(),
-            c.Resolve<ColourService>(),
-            c.Resolve<SendSpinClient>(),
-            c.Resolve<ILoggerFactory>(),
-            c.Resolve<ProviderService>()
-        )).As<IScreen>().As<IActivatableViewModel>().SingleInstance();
-        builder.RegisterType<MusicAssistantClient>().As<MusicAssistantClient>().SingleInstance();
-        builder.RegisterType<PlayersService>().As<PlayersService>().As<IAsyncReaper>().SingleInstance();
-        builder.RegisterType<ColourService>().As<ColourService>().SingleInstance();
-        builder.RegisterType<TrayService>().As<ITrayService>().SingleInstance();
+    private void ObtainLock()
+    {
+        // Try to acquire a filesystem lock to ensure single instance
+        try
+        {
+            var lockPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "WateryTart", "watertart.lock");
+            if (!SingleInstanceLock.TryAcquire(lockPath, out _singleInstanceLock))
+            {
+                Console.WriteLine("WateryTart is already running. Only one instance is allowed.");
+                Environment.Exit(1);
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Warning acquiring single-instance lock: {ex.Message}");
+        }
+    }
+    public override void OnFrameworkInitializationCompleted()
+    {
+        //Make sure only one copy of WateryTart is running
+        ObtainLock();
 
-        //View models that are singleton
-        builder.RegisterType<SettingsViewModel>().SingleInstance();
-        builder.RegisterType<GeneralSettingsViewModel>().As<IHaveSettings>().SingleInstance();
-        builder.RegisterType<ServerSettingsViewModel>().As<IHaveSettings>().SingleInstance();
-        builder.RegisterType<PlayersViewModel>().SingleInstance();
-        builder.RegisterType<MiniPlayerViewModel>().AsSelf().SingleInstance();
-        builder.RegisterType<BigPlayerViewModel>().AsSelf().SingleInstance();
-        builder.RegisterType<HomeViewModel>().SingleInstance();
-        //builder.RegisterType<KeyboardVolumeKeyBindingsViewModel>().As<IHaveSettings>().SingleInstance();
-        builder.RegisterType<SearchResultsViewModel>().AsSelf().SingleInstance();
-        builder.RegisterType<LoggerSettingsViewModel>().As<IHaveSettings>().SingleInstance();
-        builder.RegisterType<SearchViewModel>().SingleInstance();
-        builder.RegisterType<ProviderService>().SingleInstance();
+        //Check for updates
+        UpdateMyApp();
+
+        //Build the DI Container
+        var builder = new ContainerBuilder();
+
+        //Register the logger first
+        RegisterSetupLogger(builder);
+
+        //Register Services
+        RegisterServices(builder);
+
+        //Register all ViewModels
+        RegisterViewModels(builder);
 
         //Platform specific registrations from Platform.Linux, Platform.Windows projects
         if (PlatformSpecificRegistrations != null)
             foreach (var platformSpecificRegistration in PlatformSpecificRegistrations)
-            {
                 platformSpecificRegistration.Register(builder);
-            }
 
 
+        //SendSpin client
         builder.RegisterType<SendSpinClient>().SingleInstance();
 
-        //Volume controllers
-        
-
-        //Transient viewmodels
-        builder.RegisterType<AlbumsListViewModel>();
-        builder.RegisterType<AlbumViewModel>();
-        builder.RegisterType<LoginViewModel>();
-        builder.RegisterType<PlaylistViewModel>();
-        builder.RegisterType<ArtistViewModel>();
-        builder.RegisterType<ArtistsViewModel>();
-        builder.RegisterType<LibraryViewModel>();
-        builder.RegisterType<TrackViewModel>();
-        builder.RegisterType<RecommendationViewModel>();
-        builder.RegisterType<PlaylistsViewModel>();
-        builder.RegisterType<TracksViewModel>();
-        builder.RegisterType<SimilarTracksViewModel>();
+        //Build the container
         Container = builder.Build();
 
-        // Cache BaseUrl immediately after container is built
+        //Immediately cache some values
         _cachedBaseUrl = Container.Resolve<ISettings>().Credentials.BaseUrl;
-
-        // Cache ALL reapers - including from singleton ViewModels
         _reapers = Container.Resolve<IEnumerable<IReaper>>();
 
+        //Immediately setup items that need to be ready before the main window shows
         var vm = Container.Resolve<IScreen>();
-
         var volumeProviders = Container.Resolve<IEnumerable<IVolumeService>>();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -241,69 +261,7 @@ public partial class App : Application
             var hostView = new Views.MainWindow();
             hostView.Host.DataContext = vm;
             desktop.MainWindow = hostView;
-
-            desktop.ShutdownRequested += (s, e) =>
-            {
-                // Prevent re-entry - if we're already shutting down, let it proceed
-                if (_isShuttingDown)
-                {
-                    _logger?.LogInformation("=== SHUTDOWN PROCEEDING (cleanup already done) ===");
-                    return;
-                }
-
-                _logger?.LogInformation("=== SHUTDOWN STARTED ===");
-                _isShuttingDown = true;
-                e.Cancel = true;
-
-                foreach (var reaper in _reapers ?? [])
-                {
-                    try
-                    {
-                        _logger?.LogInformation("Reaping {ReaperType}", reaper.GetType().Name);
-                        reaper.Reap();
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger?.LogError(ex, "Error reaping {ReaperType}", reaper.GetType().Name);
-                    }
-                }
-
-                LazyImageLoader.Value?.Dispose();
-
-                System.Threading.Thread.Sleep(2000);
-
-                _logger?.LogInformation("=== REQUESTING SHUTDOWN ===");
-
-                var process = System.Diagnostics.Process.GetCurrentProcess();
-                _logger?.LogInformation("Total OS threads: {ThreadCount}", process.Threads.Count);
-
-                // Sample first 10 threads
-                int count = 0;
-                foreach (ProcessThread thread in process.Threads)
-                {
-                    if (count < 10)
-                    {
-                        _logger?.LogDebug("Thread {ThreadId}: State={ThreadState}", thread.Id, thread.ThreadState);
-                        count++;
-                    }
-                }
-
-                // If too many threads, force exit instead of normal shutdown
-                if (process.Threads.Count > 50)
-                {
-                    _logger?.LogWarning("Too many threads ({ThreadCount}) still running, forcing exit...", process.Threads.Count);
-                    // dispose single-instance lock before forcing exit
-                    _singleInstanceLock?.Dispose();
-                    Environment.Exit(0);
-                }
-                else
-                {
-                    _loggerFactory?.Dispose();
-                    // release single-instance lock before normal shutdown
-                    _singleInstanceLock?.Dispose();
-                    desktop.Shutdown(0);
-                }
-            };
+            desktop.ShutdownRequested += (s, e) => HandleShutdown(desktop, e);
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
@@ -315,6 +273,68 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
+    private void HandleShutdown(IClassicDesktopStyleApplicationLifetime desktop, ShutdownRequestedEventArgs e)
+    {
+        // Prevent re-entry - if we're already shutting down, let it proceed
+        if (_isShuttingDown)
+        {
+            _logger?.LogInformation("=== SHUTDOWN PROCEEDING (cleanup already done) ===");
+            return;
+        }
+
+        _logger?.LogInformation("=== SHUTDOWN STARTED ===");
+        _isShuttingDown = true;
+        e.Cancel = true;
+
+        foreach (var reaper in _reapers ?? [])
+        {
+            try
+            {
+                _logger?.LogInformation("Reaping {ReaperType}", reaper.GetType().Name);
+                reaper.Reap();
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Error reaping {ReaperType}", reaper.GetType().Name);
+            }
+        }
+
+        LazyImageLoader.Value?.Dispose();
+
+        System.Threading.Thread.Sleep(2000);
+
+        _logger?.LogInformation("=== REQUESTING SHUTDOWN ===");
+
+        var process = System.Diagnostics.Process.GetCurrentProcess();
+        _logger?.LogInformation("Total OS threads: {ThreadCount}", process.Threads.Count);
+
+        // Sample first 10 threads
+        int count = 0;
+        foreach (ProcessThread thread in process.Threads)
+        {
+            if (count < 10)
+            {
+                _logger?.LogDebug("Thread {ThreadId}: State={ThreadState}", thread.Id, thread.ThreadState);
+                count++;
+            }
+        }
+
+        // If too many threads, force exit instead of normal shutdown
+        if (process.Threads.Count > 50)
+        {
+            _logger?.LogWarning("Too many threads ({ThreadCount}) still running, forcing exit...", process.Threads.Count);
+            // dispose single-instance lock before forcing exit
+            _singleInstanceLock?.Dispose();
+            Environment.Exit(0);
+        }
+        else
+        {
+            _loggerFactory?.Dispose();
+            // release single-instance lock before normal shutdown
+            _singleInstanceLock?.Dispose();
+            desktop.Shutdown(0);
+        }
+    }
     private static async Task UpdateMyApp()
     {
         var gs = new GithubSource("https://github.com/TemuWolverine/WateryTart/", null, false);

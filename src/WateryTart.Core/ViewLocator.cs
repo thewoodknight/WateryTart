@@ -22,6 +22,7 @@ public class ViewLocator : IDataTemplate
     {
         // Main navigation views
         [typeof(HomeViewModel)] = () => new HomeView(),
+        [typeof(Home2ViewModel)] = () => new Home2View(),
         [typeof(LibraryViewModel)] = () => new LibraryView(),
         [typeof(SearchViewModel)] = () => new SearchView(),
         [typeof(SettingsViewModel)] = () => new SettingsView(),

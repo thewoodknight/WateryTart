@@ -1,0 +1,89 @@
+<UserControl
+          x:Class="WateryTart.Core.Views.Home2View"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:viewmodels="using:WateryTart.Core.ViewModels"
+          d:DesignHeight="450"
+          d:DesignWidth="800"
+          x:DataType="viewmodels:Home2ViewModel"
+          mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <x:Double x:Key="H1FontSize">26</x:Double>
+        <x:Double x:Key="H2FontSize">22</x:Double>
+        <x:Double x:Key="H3FontSize">18</x:Double>
+    </UserControl.Resources>
+    <UserControl.Styles>
+        <!--  This cascades to all children  -->
+        <Style Selector="#lbRecommendations ContentPresenter#PART_ContentPresenter:pointerover">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <!--  this 'undoes' the cascading  -->
+        <Style Selector="ListBox.hoverable ContentPresenter#PART_ContentPresenter:pointerover">
+            <Setter Property="Background" Value="#11FFFFFF" />
+        </Style>
+
+        <!--  Header Style  -->
+        <Style Selector="TextBlock.H1">
+            <Setter Property="FontSize" Value="{DynamicResource H1FontSize}" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+
+    </UserControl.Styles>
+    <StackPanel>
+        <!--  Recently played tracks  -->
+        <TextBlock Classes="H1" Text="Recently Played" />
+        <ListBox Background="Transparent" ItemsSource="{Binding RecentTracks}">
+            <ItemsControl.DataTemplates>
+                <StaticResource ResourceKey="smallViewSelector" />
+            </ItemsControl.DataTemplates>
+        </ListBox>
+
+        <!--  Discover Artists  -->
+        <TextBlock Classes="H1" Text="Discover Artists" />
+        <ListBox Background="Transparent" ItemsSource="{Binding DiscoverArtists}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="15" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <!--  "Medium" Artist Template  -->
+                    <StackPanel Spacing="10">
+                        <Ellipse Width="100" Height="100">
+                            <Ellipse.Fill>
+                                <ImageBrush asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+
+                        <TextBlock
+                                  HorizontalAlignment="Center"
+                                  FontSize="16"
+                                  FontWeight="Bold"
+                                  Text="{Binding Artist.Name}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!--  Discover Albums  -->
+        <TextBlock Classes="H1" Text="Discover Albums" />
+        <ListBox
+                  Margin="0,20,0,20"
+                  Background="Transparent"
+                  ItemsSource="{Binding DiscoverAlbums}">
+            <ItemsControl.DataTemplates>
+                <StaticResource ResourceKey="smallViewSelector" />
+            </ItemsControl.DataTemplates>
+        </ListBox>
+    </StackPanel>
+</UserControl>
