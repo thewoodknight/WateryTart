@@ -8,6 +8,7 @@ using NAudio.Wave.SampleProviders;
 using Sendspin.SDK.Audio;
 using Sendspin.SDK.Models;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using UnitsNet;
@@ -58,6 +59,7 @@ public sealed class SimpleWasapiPlayer : IAudioPlayer
     }
     public Task InitializeAsync(AudioFormat format, CancellationToken ct = default)
     {
+        Debug.WriteLine($"SimpleWasapiPlayer.InitializeAsync this={GetHashCode()}");
         _format = format;
         // Create NAudio wave format (SDK always outputs 32-bit float)
         _waveFormat = WaveFormat.CreateIeeeFloatWaveFormat(format.SampleRate, format.Channels);

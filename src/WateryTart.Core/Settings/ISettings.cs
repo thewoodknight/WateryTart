@@ -22,5 +22,6 @@ public interface ISettings
 
 
     public Hashtable CustomSettings { get; set; }
+    public PlaybackBackend PlaybackBackend { get; set; }
     public void Save();
 }

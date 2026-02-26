@@ -17,6 +17,12 @@ public enum VolumeEventControl
     AppVolume
 }
 
+public enum PlaybackBackend
+{
+    SimpleWasapi,
+    SoundFlow
+}
+
 public partial class Settings : INotifyPropertyChanged, ISettings
 {
     [JsonConverter(typeof(MusicAssistantCredentialsConverter))]
@@ -153,6 +159,22 @@ public partial class Settings : INotifyPropertyChanged, ISettings
         {
             field = value;
             NotifyPropertyChanged();
+        }
+    }
+
+    private PlaybackBackend _playbackBackend = PlaybackBackend.SoundFlow;
+
+    public PlaybackBackend PlaybackBackend
+    {
+        get => _playbackBackend;
+        set
+        {
+            if (_playbackBackend != value)
+            {
+                _playbackBackend = value;
+                NotifyPropertyChanged();
+                Save();
+            }
         }
     }
     private bool _suppressSave = true;

@@ -47,6 +47,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Sendspin.SDK" />
+		<PackageReference Include="SoundFlow" />
 		<PackageReference Include="Velopack" />
 		<PackageReference Include="Xaml.Behaviors.Avalonia" />
 

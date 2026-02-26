@@ -1,0 +1,20 @@
+<UserControl
+          x:Class="WateryTart.Platform.Windows.Views.PlaybackSettingsView"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          d:DesignHeight="200"
+          d:DesignWidth="400"
+          mc:Ignorable="d">
+
+    <StackPanel Margin="12" Spacing="8">
+        <TextBlock FontSize="16" Text="Audio Backend" />
+
+        <!--  ComboBox populated from code-behind; selection synced in code-behind  -->
+        <ComboBox x:Name="BackendComboBox" HorizontalAlignment="Stretch" />
+
+        <TextBlock Text="Select the audio backend to use for playback. Changing this will switch the runtime player." TextWrapping="Wrap" />
+    </StackPanel>
+
+</UserControl>
