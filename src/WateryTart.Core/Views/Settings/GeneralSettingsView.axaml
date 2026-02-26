@@ -9,7 +9,7 @@
           x:DataType="vm:GeneralSettingsViewModel">
 
     <UserControl.Resources>
-        <converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+
         <SolidColorBrush x:Key="SecondaryForeground" Color="#FF6E6E6E" />
 
 

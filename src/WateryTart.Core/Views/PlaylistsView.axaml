@@ -13,10 +13,6 @@
     d:DesignWidth="800"
     x:DataType="vm:PlaylistsViewModel"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-    </UserControl.Resources>
-
     <DockPanel>
         <ListBox
             x:Name="lbPlaylists"

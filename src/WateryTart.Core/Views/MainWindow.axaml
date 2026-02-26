@@ -15,8 +15,6 @@
           ExtendClientAreaChromeHints="NoChrome"
           ExtendClientAreaToDecorationsHint="True"
           Icon="avares://WateryTart.Core/Assets/logo_square.png">
-    <Window.Resources>
-        <x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
-    </Window.Resources>
+
     <WateryTart:MainView x:Name="Host" />
 </Window>

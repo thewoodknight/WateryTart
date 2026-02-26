@@ -15,11 +15,6 @@
           x:DataType="vm:AlbumsListViewModel"
           Background="{x:Null}"
           mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-        <converters:ArtistsToStringConverter x:Key="ArtistsToStringConverter" />
-    </UserControl.Resources>
-
     <StackPanel>
         <StackPanel
                   Margin="0,0,0,10"

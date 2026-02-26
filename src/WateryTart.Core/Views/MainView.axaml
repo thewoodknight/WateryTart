@@ -21,13 +21,7 @@
           x:DataType="viewModels:MainWindowViewModel"
           Loaded="MainView_Loaded"
           mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
 
-        <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-        <converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
-        <converters:TitleToMarginConverter x:Key="TitleToMarginConverter" />
-    </UserControl.Resources>
     <UserControl.GestureRecognizers>
         <ScrollGestureRecognizer CanVerticallyScroll="True" />
     </UserControl.GestureRecognizers>

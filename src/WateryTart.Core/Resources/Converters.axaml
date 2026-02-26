@@ -1,0 +1,24 @@
+<ResourceDictionary
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:converters="using:WateryTart.Core.Converters">
+
+    <converters:ArtistsToStringConverter x:Key="ArtistsToStringConverter" />
+    <converters:BoolToIconKindConverter x:Key="BoolToIconKindConverter" />
+    <converters:ColourPickConverter x:Key="ColourPickConverter" />
+    <converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+    <converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter" />
+    <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
+    <converters:MassImageImageConverter x:Key="MassImageImageConverter" />
+    <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
+    <converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
+    <converters:PlayerVisibleConverter x:Key="PlayerVisibleConverter" />
+    <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
+    <converters:SecondsToMinutesConverter x:Key="SecondsToMinutesConverter" />
+    <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
+    <converters:TitleToMarginConverter x:Key="TitleToMarginConverter" />
+    <converters:RepeatModeToIconKindConverter x:Key="RepeatModeToIconKindConverter" />
+    <converters:VolumeLevelToIconConverter x:Key="VolumeLevelToIconConverter" />
+    <converters:QualityToBackgroundBrushConverter x:Key="QualityToBackgroundBrushConverter" />
+    <converters:StringNullOrEmptyToBoolConverter x:Key="StringNullOrEmptyToBoolConverter" />
+</ResourceDictionary>

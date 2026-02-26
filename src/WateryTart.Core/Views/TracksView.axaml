@@ -14,11 +14,6 @@
           d:DesignWidth="800"
           x:DataType="vm:TracksViewModel"
           mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-        <converters:ArtistsToStringConverter x:Key="ArtistsToStringConverter" />
-        <converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter" />
-    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>

@@ -16,20 +16,7 @@
           d:DesignWidth="800"
           x:DataType="vm:PlayersViewModel"
           mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-        <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-        <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
-        <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
-        <converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter" />
-        <x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
-        <converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
-        <converters:VolumeLevelToIconConverter x:Key="VolumeLevelToIconConverter" />
-        <converters:QualityToBackgroundBrushConverter x:Key="QualityToBackgroundBrushConverter" />
-        <converters:BoolToIconKindConverter x:Key="BoolToIconKindConverter" />
-        <converters:RepeatModeToIconKindConverter x:Key="RepeatModeToIconKindConverter" />
-        <converters:PlayerVisibleConverter x:Key="PlayerVisibleConverter" />
-    </UserControl.Resources>
+
 
     <StackPanel Margin="10" Spacing="10">
 

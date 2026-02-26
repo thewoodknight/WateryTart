@@ -14,13 +14,8 @@
           d:DesignWidth="800"
           x:DataType="vm:ArtistViewModel"
           mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-        <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-        <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
-    </UserControl.Resources>
-    <StackPanel Spacing="10">
 
+    <StackPanel Spacing="10">
         <Ellipse Width="250" Height="250">
             <Ellipse.Fill>
                 <ImageBrush asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />

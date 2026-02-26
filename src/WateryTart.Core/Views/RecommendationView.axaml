@@ -12,11 +12,6 @@
     d:DesignWidth="800"
     x:DataType="vm:RecommendationViewModel"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-        <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-        <converters:HomeExtraToStringConverter x:Key="HomeExtraToStringConverter" />
-    </UserControl.Resources>
 
     <ItemsControl
         Padding="0"

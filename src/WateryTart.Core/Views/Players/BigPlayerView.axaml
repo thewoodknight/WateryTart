@@ -18,21 +18,8 @@
           d:DesignWidth="800"
           x:DataType="players:BigPlayerViewModel"
           mc:Ignorable="d">
-    <UserControl.Resources>
-        <converters:FriendlyTimeConverter x:Key="FriendlyTimeConverter" />
-        <converters:MetadataImageConverter x:Key="MetadataImageConverter" />
-        <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
-        <x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
-        <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-        <converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
-        <converters:VolumeLevelToIconConverter x:Key="VolumeLevelToIconConverter" />
-        <converters:QualityToBackgroundBrushConverter x:Key="QualityToBackgroundBrushConverter" />
-        <converters:BoolToIconKindConverter x:Key="BoolToIconKindConverter" />
-        <converters:RepeatModeToIconKindConverter x:Key="RepeatModeToIconKindConverter" />
-    </UserControl.Resources>
+
     <UserControl.Styles>
-
-
         <!--  slider thumb  -->
         <Style Selector="Slider:horizontal /template/ Thumb">
             <Setter Property="Template">

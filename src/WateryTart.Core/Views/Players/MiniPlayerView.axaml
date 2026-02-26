@@ -16,12 +16,6 @@
           x:DataType="vm:Players.MiniPlayerViewModel"
           mc:Ignorable="d">
 
-    <UserControl.Resources>
-        <x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
-        <converters:ToUpperValueConverter x:Key="ToUpperValueConverter" />
-        <converters:PlaybackStateToVisibilityConverter x:Key="PlaybackStateToVisibilityConverter" />
-        <converters:PlaybackStateToIconConverter x:Key="PlaybackStateToIconConverter" />
-    </UserControl.Resources>
     <StackPanel>
         <ProgressBar
                   Foreground="{Binding ColourService.ColourAccent}"

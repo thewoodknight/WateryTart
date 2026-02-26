@@ -103,7 +103,7 @@ public partial class App : Application
 
     private void RegisterServices(ContainerBuilder builder)
     {
-        /* Explicit interface definitions so .AsImplemented() isn't call, which isn't AOT compatible */
+        /* Explicit interface definitions so .AsImplemented() isn't called, which isn't AOT compatible */
         builder.Register(c => new MainWindowViewModel(
             c.Resolve<MusicAssistantClient>(),
             c.Resolve<PlayersService>(),
