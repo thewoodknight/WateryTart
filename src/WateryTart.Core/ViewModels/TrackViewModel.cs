@@ -10,6 +10,8 @@ using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Core.ViewModels.Popups;
 using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Models;
+using WateryTart.MusicAssistant.Models.Enums;
+using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
@@ -87,9 +89,9 @@ public partial class TrackViewModel : ReactiveObject, IViewModelBase, IDisposabl
 
     public async Task LoadFromId(string itemId, string provider)
     {
-        /* try
+        try
          {
-             var response = await _massClient.GetTrackAsync(itemId, provider);
+             var response = await _massClient.WithWs().GetLibraryItemAsync(MediaType.Track, itemId, provider);
              if (response?.Result != null)
              {
                  Track = response.Result;
@@ -99,6 +101,6 @@ public partial class TrackViewModel : ReactiveObject, IViewModelBase, IDisposabl
          catch (Exception ex)
          {
              System.Diagnostics.Debug.WriteLine($"Error loading track: {ex.Message}");
-         }*/
+         }
     }
 }

@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
 using WateryTart.MusicAssistant;
@@ -47,10 +49,12 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
     public override string Title => "Home";
     [Reactive] public override partial bool IsLoading { get; set; }
     [Reactive] public partial ObservableCollection<TrackViewModel> RecentTracks { get; set; }
-
     [Reactive] public partial ObservableCollection<AlbumViewModel> DiscoverAlbums { get; set; }
-
     [Reactive] public partial ObservableCollection<ArtistViewModel> DiscoverArtists { get; set; }
+
+    public ICommand DiscoverArtistsCommand { get; set; }
+    public ICommand DiscoverAlbumsCommand { get; set; }
+    public ICommand RecentlyPlayedTracksCommand { get; set; }
     public Home2ViewModel(
         IScreen screen,
         MusicAssistantClient maClient,
@@ -65,6 +69,11 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
         DiscoverArtists = new ObservableCollection<ArtistViewModel>();
         DiscoverAlbums = new ObservableCollection<AlbumViewModel>();
         RecentTracks = new ObservableCollection<TrackViewModel>();
+
+        //Set all commands
+        DiscoverArtistsCommand = new RelayCommand(() => { });
+        DiscoverAlbumsCommand = new RelayCommand(() => { });
+        RecentlyPlayedTracksCommand = new RelayCommand(() => { });
 
         _ = LoadDataAsync();
     }
@@ -86,6 +95,8 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
                     {
                         var track = App.Container.GetRequiredService<TrackViewModel>();
                         track.Track = r;
+                        //The returned values are fairly basic, so we need to fetch the full track details
+                        _ = track.LoadFromId(r.ItemId!, r.Provider!);
                         RecentTracks.Add(track);
                     }
 

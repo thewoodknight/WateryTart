@@ -10,6 +10,7 @@
           Title="Watery Tart"
           Width="800"
           Height="480"
+          MinWidth="439"
           Padding="0"
           ExtendClientAreaChromeHints="NoChrome"
           ExtendClientAreaToDecorationsHint="True"

@@ -8,6 +8,7 @@ public class SecondsToMinutesConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
+        if (value == null) return null;
         int seconds = (int)value!;
 
         var span = new TimeSpan(0, 0, seconds);

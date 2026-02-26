@@ -10,25 +10,18 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class LibraryViewModel : ReactiveObject, IViewModelBase//, IActivatableViewModel
+public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
 {
-    private ILogger<LibraryViewModel> _logger;
-    private readonly MusicAssistantClient _massClient;
-    public string? UrlPathSegment { get; } = "library";
-    public IScreen HostScreen { get; }
-    public string Title { get; set; }
+    public string Title => "Library";
     [Reactive] public partial ObservableCollection<LibraryItem> Items { get; set; }
-    public bool ShowMiniPlayer => true;
-    public bool ShowNavigation => true;
-    [Reactive] public partial bool IsLoading { get; set; } = false;
-//    public ViewModelActivator Activator { get; } = new();
+    [Reactive] public override partial bool IsLoading { get; set; }
 
-    public LibraryViewModel(MusicAssistantClient massClient, IScreen screen, ILoggerFactory loggerFactory)
+    public LibraryViewModel(
+        MusicAssistantClient massClient, 
+        IScreen screen, 
+        ILoggerFactory loggerFactory) : base(loggerFactory, massClient)
     {
-        _massClient = massClient;
         HostScreen = screen;
-        Title = "Library";
-        _logger = loggerFactory.CreateLogger<LibraryViewModel>();
 
         var artists = new LibraryItem()
         {
@@ -96,29 +89,29 @@ public partial class LibraryViewModel : ReactiveObject, IViewModelBase//, IActiv
     {
         try
         {
-            var artistCountResponse = await _massClient.WithWs().GetArtistCountAsync();
+            var artistCountResponse = await _client.WithWs().GetArtistCountAsync();
             artists.Count = artistCountResponse.Result;
 
-            var albumCountResponse = await _massClient.WithWs().GetAlbumsCountAsync();
+            var albumCountResponse = await _client.WithWs().GetAlbumsCountAsync();
             albums.Count = albumCountResponse.Result;
 
-            var trackCountResponse = await _massClient.WithWs().GetTrackCountAsync();
+            var trackCountResponse = await _client.WithWs().GetTrackCountAsync();
             tracks.Count = trackCountResponse.Result;
 
             //Currently the API  docs has this call but it does not return a result
-            //var genreCountResponse = await _massClient.GenreCountAsync();
+            //var genreCountResponse = await _client.GenreCountAsync();
             //genres.Count = genreCountResponse.Result;
 
-            var podcastCountResponse = await _massClient.WithWs().GetPodcastCountAsync();
+            var podcastCountResponse = await _client.WithWs().GetPodcastCountAsync();
             podcasts.Count = podcastCountResponse.Result;
 
-            var radiosCountResponse = await _massClient.WithWs().GetRadiosCountAsync();
+            var radiosCountResponse = await _client.WithWs().GetRadiosCountAsync();
             radios.Count = radiosCountResponse.Result;
 
-            var audiobookCountResponse = await _massClient.WithWs().GetAudiobookCountAsync();
+            var audiobookCountResponse = await _client.WithWs().GetAudiobookCountAsync();
             audiobooks.Count = audiobookCountResponse.Result;
 
-            var playlistsCountResponse = await _massClient.WithWs().GetPlaylistsCountAsync();
+            var playlistsCountResponse = await _client.WithWs().GetPlaylistsCountAsync();
             playlists.Count = playlistsCountResponse.Result;
         }
         catch (Exception ex)

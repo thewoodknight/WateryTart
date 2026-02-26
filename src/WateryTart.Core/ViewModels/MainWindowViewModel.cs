@@ -9,7 +9,6 @@ using WateryTart.Core.Messages;
 using WateryTart.Core.Playback;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
-using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Core.ViewModels.Players;
 using WateryTart.MusicAssistant;
 using Xaml.Behaviors.SourceGenerators;
@@ -17,14 +16,12 @@ using WateryTart.Core.ViewModels.Popups;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatableViewModel
+public partial class MainWindowViewModel : ViewModelBase<MainWindowViewModel>, IScreen, IActivatableViewModel
 {
-    private readonly MusicAssistantClient _massClient;
     private readonly SendSpinClient _sendSpinClient;
     private readonly ProviderService providerService;
     private readonly ISettings _settings;
-    private readonly ILogger<MainWindowViewModel> _logger;
-
+    
     private bool _canNavigateToHome = true;
     private bool _canNavigateToMusic = true;
     private bool _canNavigateToSearch = true;
@@ -48,23 +45,25 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
     public ISettings Settings => _settings;
     [Reactive] public partial bool ShowSlideupMenu { get; set; }
     [Reactive] public partial IPopupViewModel? SlideupMenu { get; set; }
+    
+    //If not reactive, this causes issues with page titles
     [Reactive] public partial string Title { get; set; }
 
     public MainWindowViewModel(MusicAssistantClient massClient, PlayersService playersService, ISettings settings, ColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory, ProviderService providerService)
+        :base(loggerFactory, massClient)
     {
-        _massClient = massClient;
+        _client = massClient;
         PlayersService = playersService;
         _settings = settings;
         _sendSpinClient = sendSpinClient;
         this.providerService = providerService;
         ColourService = colourService;
-        _logger = loggerFactory.CreateLogger<MainWindowViewModel>();
         ShowSlideupMenu = false;
         Activator = new ViewModelActivator();
 
         // Create the commands first
         GoBack = new RelayCommand(() => Router.NavigateBack.Execute(Unit.Default), () => _canNavigateBack);
-        GoHome = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<HomeViewModel>()), () => _canNavigateToHome);
+        GoHome = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<Home2ViewModel>()), () => _canNavigateToHome);
         GoMusic = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<LibraryViewModel>()), () => _canNavigateToMusic);
         GoSearch = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<SearchViewModel>()), () => _canNavigateToSearch);
         GoSettings = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<SettingsViewModel>()), () => _canNavigateToSettings);
@@ -74,7 +73,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
         // Subscribe to CurrentViewModel changes and update canExecute predicates
         Router.CurrentViewModel.Subscribe(vm =>
         {
-            _canNavigateToHome = vm is not HomeViewModel;
+            _canNavigateToHome = vm is not Home2ViewModel;
             _canNavigateToMusic = vm is not LibraryViewModel;
             _canNavigateToSearch = vm is not SearchViewModel;
             _canNavigateToSettings = vm is not SettingsViewModel;
@@ -162,9 +161,9 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
         }
 
         _logger.LogInformation("Attempting to connect to MassClient");
-        _massClient.SetBaseUrl(_settings.Credentials.BaseUrl);
-        _massClient.SetToken(_settings.Credentials.Token);
-        var connected = await _massClient.WithWs().Connect();
+        _client.SetBaseUrl(_settings.Credentials.BaseUrl);
+        _client.SetToken(_settings.Credentials.Token);
+        var connected = await _client.WithWs().Connect();
 
         if (!connected)
         {
@@ -175,7 +174,7 @@ public partial class MainWindowViewModel : ReactiveObject, IScreen, IActivatable
         _logger.LogInformation("Successfully connected to MassClient");
         await PlayersService.GetPlayers();
 
-        Router.NavigateAndReset.Execute(App.Container.GetRequiredService<HomeViewModel>());
+        Router.NavigateAndReset.Execute(App.Container.GetRequiredService<Home2ViewModel>());
 
         if (!OperatingSystem.IsAndroid())
             _ = _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);
