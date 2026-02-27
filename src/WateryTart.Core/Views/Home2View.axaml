@@ -49,16 +49,16 @@
                       Kind="History" />
         </Grid>
 
-        <ListBox
+        <ItemsControl
                   Padding="0"
                   Background="Transparent"
                   ItemsSource="{Binding RecentTracks}">
-            <ListBox.Styles>
-                <Style Selector="ListBoxItem">
+            <ItemsControl.Styles>
+                <Style Selector="ContentPresenter">
                     <Setter Property="Padding" Value="0,10,0,10" />
                 </Style>
-            </ListBox.Styles>
-            <ListBox.ItemTemplate>
+            </ItemsControl.Styles>
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -131,8 +131,8 @@
                     </Grid>
 
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
 
         <!--  Discover Artists  -->
@@ -161,7 +161,13 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <!--  "Medium" Artist Template  -->
-                    <StackPanel Spacing="10">
+                    <StackPanel Background="Transparent" Spacing="10">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="Tapped">
+                                <InvokeCommandAction Command="{Binding ArtistFullViewClicked}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+
                         <Ellipse Width="125" Height="125">
                             <Ellipse.Fill>
                                 <ImageBrush asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />
@@ -192,16 +198,16 @@
                       Kind="ChevronRight" />
         </Grid>
 
-        <ListBox
+        <ItemsControl
                   Margin="0,0,0,20"
                   Background="Transparent"
                   ItemsSource="{Binding DiscoverAlbums}">
-            <ListBox.ItemsPanel>
+            <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel ItemSpacing="15" ItemWidth="200" />
                 </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
                 <DataTemplate>
 
                     <!--  "Medium" Album Template  -->
@@ -250,8 +256,8 @@
                         </StackPanel>
                     </Grid>
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
 
     </StackPanel>
