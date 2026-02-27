@@ -65,6 +65,22 @@
 	  </Compile>
 	</ItemGroup>
 
+	<ItemGroup>
+		<TrimmerRootAssembly Include="Avalonia.Controls" />
+		<TrimmerRootAssembly Include="ReactiveUI" />
+		<TrimmerRootAssembly Include="WateryTart.Core" />
+		<TrimmerRootAssembly Include="Concentus" />
+		<TrimmerRootAssembly Include="Sendspin.SDK" />
+		<TrimmerRootAssembly Include="Fleck" />
+		<!--<TrimmerRootAssembly Include="SoundFlow" />-->
+	</ItemGroup>
+
+	<ItemGroup>
+		<RdXmlFile Include="Avalonia.rd.xml" />
+		<!--<RdXmlFile Include="Microsoft.EntityFrameworkCore.rd.xml" />
+		<RdXmlFile Include="Microsoft.EntityFrameworkCore.Sqlite.rd.xml" />-->
+	</ItemGroup>
+	
 	<PropertyGroup>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 	</PropertyGroup>
