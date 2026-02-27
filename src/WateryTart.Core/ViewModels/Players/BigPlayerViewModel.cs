@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls.Primitives;
 using CommunityToolkit.Mvvm.Input;
 using IconPacks.Avalonia.Material;
+using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
@@ -20,9 +21,8 @@ using Xaml.Behaviors.SourceGenerators;
 
 namespace WateryTart.Core.ViewModels.Players;
 
-public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
+public partial class BigPlayerViewModel : ViewModelBase<BigPlayerViewModel>
 {
-    private readonly PlayersService _playersService;
     private double _pendingVolume;
     private CancellationTokenSource? _volumeCts;
     private bool _suppressVolumeUpdate;
@@ -65,8 +65,6 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
     }
 
     [Reactive] public partial ColourService ColourService { get; set; }
-    public required IScreen HostScreen { get; set; }
-    [Reactive] public partial bool IsLoading { get; set; } = false;
     [Reactive] public partial bool IsSmallDisplay { get; set; }
     public ICommand PlayerNextCommand { get; set; }
     public ICommand PlayerPlayPauseCommand { get; set; }
@@ -80,17 +78,15 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
     public ICommand ShowTrackInfo { get; set; }
     public bool ShowBackButton => false;
-    public bool ShowMiniPlayer => false;
-    public bool ShowNavigation => false;
-    public string Title { get; set; } = "";
+    public new bool ShowMiniPlayer => false;
+    public new bool ShowNavigation => false;
     public ICommand ToggleFavoriteCommand { get; set; }
 
     public ICommand ToggleShuffleCommand { get; set; }
-    
-    public ICommand CycleRepeatCommand { get; set; }
-    public string? UrlPathSegment { get; } = "BigPlayer";
 
-    public BigPlayerViewModel(PlayersService playersService, IScreen screen, ColourService colourService)
+    public ICommand CycleRepeatCommand { get; set; }
+
+    public BigPlayerViewModel(PlayersService playersService, IScreen screen, ColourService colourService, ILoggerFactory loggerFactory) : base(loggerFactory)
     {
         _playersService = playersService;
         ColourService = colourService;
@@ -110,7 +106,8 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
                     {
                         _suppressVolumeUpdate = true;
                         Volume = (int)serverVol;
-                    } finally
+                    }
+                    finally
                     {
                         _suppressVolumeUpdate = false;
                     }
@@ -119,7 +116,7 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         ShowTrackInfo = new RelayCommand(
             () =>
             {
-                if(PlayersService != null &&
+                if (PlayersService != null &&
                     PlayersService.SelectedQueue != null &&
                     PlayersService.SelectedQueue.CurrentItem != null &&
                     PlayersService.SelectedPlayer != null)
@@ -133,11 +130,11 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
         SeekCommand = new RelayCommand<double>(
             (s) =>
             {
-                if(s == 0)
+                if (s == 0)
                     return;
                 var duration = _playersService?.SelectedQueue?.CurrentItem?.Duration;
                 var newPosition = duration * (s / 100);
-                if(newPosition != null)
+                if (newPosition != null)
                     _playersService?.PlayerSeek(null, (int)newPosition);
             });
 
@@ -145,12 +142,12 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             () =>
             {
                 var item = PlayersService?.SelectedQueue?.CurrentItem?.MediaItem;
-                if(item == null)
+                if (item == null)
                     return;
 
-                if(item.Favorite)
+                if (item.Favorite)
                     PlayersService?.PlayerRemoveFromFavorites(item);
-    else
+                else
                     PlayersService?.PlayerAddToFavorites(item);
             });
 
@@ -158,21 +155,21 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 #pragma warning disable CS4014
         CycleRepeatCommand = new RelayCommand(() =>
         {
-            var mode = PlayersService.SelectedQueue.RepeatMode;
+            var mode = PlayersService?.SelectedQueue?.RepeatMode;
             switch (mode)
             {
                 case RepeatMode.Off:
-                    PlayersService.PlayerSetRepeatMode(RepeatMode.All);
+                    PlayersService?.PlayerSetRepeatMode(RepeatMode.All);
                     break;
                 case RepeatMode.All:
-                    PlayersService.PlayerSetRepeatMode(RepeatMode.One);
+                    PlayersService?.PlayerSetRepeatMode(RepeatMode.One);
                     break;
                 case RepeatMode.One:
-                    PlayersService.PlayerSetRepeatMode(RepeatMode.Off);
+                    PlayersService?.PlayerSetRepeatMode(RepeatMode.Off);
                     break;
             }
         });
-        ToggleShuffleCommand = new RelayCommand(() => PlayersService.PlayerShuffle(null, !PlayersService.SelectedQueue.ShuffleEnabled));
+        ToggleShuffleCommand = new RelayCommand(() => PlayersService.PlayerShuffle(null, !PlayersService.SelectedQueue!.ShuffleEnabled));
         PlayerRepeatQueue = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.All));
         PlayerRepeatOff = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.Off));
         PlayerRepeatTrack = new RelayCommand(() => PlayersService.PlayerSetRepeatMode(RepeatMode.One));
@@ -227,18 +224,24 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
                 HostScreen.Router.Navigate.Execute(SimilarTracksViewModel);
             });
 
-            var menu = new MenuViewModel(
-            [
-                new TwoLineMenuItemViewModel("Go to Album", item.Album.Name, PackIconMaterialKind.Album, GoToAlbum),
-                new TwoLineMenuItemViewModel("Go to Artist", item.Artists.FirstOrDefault().Name, PackIconMaterialKind.AccountMusic, GoToArtist),
-                new MenuItemViewModel("Similar tracks", PackIconMaterialKind.MusicClefTreble, GoToSimilarTracks),
-                new MenuItemViewModel("Repeat Mode", PackIconMaterialKind.Repeat, null),
-                new MenuItemViewModel("Repeat Off", PackIconMaterialKind.RepeatOff, PlayerRepeatOff, true),
-                new MenuItemViewModel("Repeat Entire Queue", PackIconMaterialKind.RepeatVariant, PlayerRepeatQueue, true),
-                new MenuItemViewModel("Repeat Single Track", PackIconMaterialKind.Repeat, PlayerRepeatTrack, true),
+            if (item != null && item.Album != null && item.Artists != null && PlayersService != null)
+            {
+                var menu = new MenuViewModel(
+                    [
+                        new TwoLineMenuItemViewModel("Go to Album", item.Album.Name, PackIconMaterialKind.Album, GoToAlbum),
+                        new TwoLineMenuItemViewModel("Go to Artist", item.Artists.FirstOrDefault()!.Name, PackIconMaterialKind.AccountMusic,GoToArtist),
+                        new MenuItemViewModel("Similar tracks", PackIconMaterialKind.MusicClefTreble, GoToSimilarTracks),
+                        new MenuItemViewModel("Repeat Mode", PackIconMaterialKind.Repeat, null),
+                        new MenuItemViewModel("Repeat Off", PackIconMaterialKind.RepeatOff, PlayerRepeatOff, true),
+                        new MenuItemViewModel("Repeat Entire Queue",PackIconMaterialKind.RepeatVariant, PlayerRepeatQueue, true), 
+                        new MenuItemViewModel("Repeat Single Track", PackIconMaterialKind.Repeat, PlayerRepeatTrack, true), 
+                    ]);
 
-            ], PlayersService.SelectedQueue.CurrentItem);
-            MessageBus.Current.SendMessage<IPopupViewModel>(menu);
+                if (PlayersService?.SelectedQueue?.CurrentItem != null)
+                    menu.HeaderItem = PlayersService.SelectedQueue.CurrentItem;
+
+                MessageBus.Current.SendMessage<IPopupViewModel>(menu);
+            }
         });
 
         // Create a CanExecute observable that checks if a player is selected
@@ -298,11 +301,12 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
             {
                 try
                 {
-                    await Task.Delay(200, ct).ConfigureAwait(false);
-                    // Use PlayersService.PlayerVolume which serializes and performs echo suppression.
-                    await _playersService.PlayerVolume((int)pending).ConfigureAwait(false);
+                    await Task.Delay(200, ct);
+                    await _playersService.PlayerVolume((int)pending);
                 }
-                catch (OperationCanceledException) { }
+                catch (OperationCanceledException)
+                {
+                }
                 catch (Exception ex)
                 {
                     Debug.WriteLine($"Volume change error: {ex}");
@@ -324,26 +328,12 @@ public partial class BigPlayerViewModel : ReactiveObject, IViewModelBase
 
             if (streamDetails == null || streamDetails.AudioFormat == null || string.IsNullOrEmpty(streamDetails.AudioFormat.ContentType))
                 return QualityTier.LOW;
-
             if (streamDetails.AudioFormat.BitDepth > 16 || streamDetails.AudioFormat.SampleRate > 48000)
-            {
                 return QualityTier.HIRES;
-            }
             else if (IsContentTypeLossless(streamDetails.AudioFormat.ContentType))
-            {
                 return QualityTier.HQ;
-            }
             else
-            {
                 return QualityTier.LOW;
-            }
         }
     }
-}
-
-public enum QualityTier
-{
-    LOW,
-    HQ,
-    HIRES
 }

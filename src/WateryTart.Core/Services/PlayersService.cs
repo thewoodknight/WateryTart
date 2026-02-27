@@ -1,4 +1,5 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia.Controls.Primitives;
+using Avalonia.Threading;
 using DynamicData;
 using DynamicData.Binding;
 using Microsoft.Extensions.Logging;
@@ -565,7 +566,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
     public void Reap()
     {
         _timer?.Stop();
-        _timer = null;
+        _timer = null!;
         QueuedItems?.Dispose();
         _subscriptions?.Dispose();
 
@@ -587,12 +588,15 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
     }
 
-    private TrackViewModel GetOrCreateTrackViewModel(QueuedItem? queuedItem)
+    private TrackViewModel? GetOrCreateTrackViewModel(QueuedItem? queuedItem)
     {
         if (queuedItem == null)
             return null;
 
         var cacheKey = queuedItem.QueueItemId;
+
+        if (cacheKey == null)
+            return null;
 
         if (_trackViewModelCache.TryGetValue(cacheKey, out var cachedViewModel))
         {
@@ -640,7 +644,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
         catch (Exception ex)
         {
-            
+            _logger.LogError(ex, "Caught exception");
         }
     }
     public async Task PlayerDontStopTheMusic(Player? p = null, bool dontstop = true)
@@ -656,7 +660,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
         catch (Exception ex)
         {
-            
+            _logger.LogError(ex, "Caught exception");
         }
     }
 
@@ -673,7 +677,13 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
         catch (Exception ex)
         {
-
+            _logger.LogError(ex, "Caught exception");
         }
+    }
+
+    public async Task FetchLyrics(Item t)
+    {
+        var lyricsResponse = await _massClient.WithWs().GetLyricsAsync(t);
+        var lyrics = lyricsResponse.Result;
     }
 }
