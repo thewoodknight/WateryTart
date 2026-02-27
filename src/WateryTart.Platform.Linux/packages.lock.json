@@ -36,6 +36,18 @@
           "Avalonia.Skia": "11.3.12"
         }
       },
+      "Microsoft.DotNet.ILCompiler": {
+        "type": "Direct",
+        "requested": "[10.0.1, )",
+        "resolved": "10.0.1",
+        "contentHash": "XXLCchzjSbesZg+Ws0dKtjQjXpCggGTC2wNdolSpNanwJQfD00cYu0NVfSlXlZS9COYrofspctKnxRoyErBLyA=="
+      },
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.1, )",
+        "resolved": "10.0.1",
+        "contentHash": "FNmISdN18UwftHwPJgfsVrxzGPpxAprOinGP0iEQWJAf5xFQjRdf4b2F3wjo9sfp+3f501AwVI+ZIag15ERQQw=="
+      },
       "ReactiveUI.SourceGenerators": {
         "type": "Direct",
         "requested": "[2.6.1, )",
@@ -619,7 +631,7 @@
         "type": "Project",
         "dependencies": {
           "Concentus": "[2.2.2, )",
-          "Fleck": "[0.0.0.1-local, )",
+          "Fleck": "[1.2.3, )",
           "Makaretu.Dns.Multicast": "[0.27.0, )",
           "Microsoft.Extensions.Logging": "[10.0.3, )",
           "Zeroconf": "[3.7.16, )"
@@ -631,19 +643,18 @@
           "AsyncImageLoader.Avalonia": "[3.6.0, )",
           "Autofac": "[9.0.0, )",
           "Avalonia": "[11.3.12, )",
-          "Avalonia.Diagnostics": "[11.3.12, )",
           "Avalonia.Fonts.Inter": "[11.3.12, )",
           "Avalonia.Themes.Fluent": "[11.3.12, )",
           "AvaloniaUI.DiagnosticsSupport": "[2.1.1, )",
           "CommunityToolkit.Mvvm": "[8.4.0, )",
           "Concentus": "[2.2.2, )",
           "Deadpikle.AvaloniaProgressRing": "[0.10.10, )",
-          "Fleck": "[0.0.0.1-local, )",
+          "Fleck": "[1.2.3, )",
           "Iot.Device.Bindings": "[4.1.0, )",
           "Karambolo.Extensions.Logging.File": "[4.1.0, )",
           "Microsoft.Extensions.Logging.Console": "[10.0.3, )",
           "ReactiveUI.Avalonia": "[11.3.8, )",
-          "Sendspin.SDK": "[6.3.4, )",
+          "Sendspin.SDK": "[1.2.3, )",
           "SharpHook": "[7.1.1, )",
           "SkiaSharp": "[2.88.9, )",
           "Svg.Controls.Skia.Avalonia": "[11.3.9.2, )",
