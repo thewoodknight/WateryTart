@@ -40,13 +40,10 @@
 			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
-		<PackageReference Include="NAudio.Core" />
-		<PackageReference Include="NAudio.Wasapi" />
 		<PackageReference Include="ReactiveUI.SourceGenerators">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Sendspin.SDK" />
 		<PackageReference Include="SoundFlow" />
 		<PackageReference Include="Velopack" />
 		<PackageReference Include="Xaml.Behaviors.Avalonia" />
@@ -54,20 +51,46 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Fleck\src\Fleck\Fleck.csproj" />
 		<ProjectReference Include="..\WateryTart.Core\WateryTart.Core.csproj" />
+		<ProjectReference Include="..\windowsSpin\src\Sendspin.SDK\Sendspin.SDK.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Reference Include="IconPacks.Avalonia.Core">
+	    <HintPath>..\binaries\IconPacks.Avalonia.Core.dll</HintPath>
+	  </Reference>
+	  <Reference Include="IconPacks.Avalonia.ForkAwesome">
+	    <HintPath>..\binaries\IconPacks.Avalonia.ForkAwesome.dll</HintPath>
+	  </Reference>
+	  <Reference Include="IconPacks.Avalonia.Material">
+	    <HintPath>..\binaries\IconPacks.Avalonia.Material.dll</HintPath>
+	  </Reference>
+	  <Reference Include="IconPacks.Avalonia.MaterialDesign">
+	    <HintPath>..\binaries\IconPacks.Avalonia.MaterialDesign.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<TrimmerRootDescriptor Include="Properties\PublishProfiles\TrimmerRoots.xml" />
 		<TrimmerRootAssembly Include="Avalonia.Controls" />
 		<TrimmerRootAssembly Include="ReactiveUI" />
 		<TrimmerRootAssembly Include="WateryTart.Core" />
+		<TrimmerRootAssembly Include="Concentus" />
 		<TrimmerRootAssembly Include="Sendspin.SDK" />
-		<TrimmerRootDescriptor Include="Properties\PublishProfiles\TrimmerRoots.xml" />
+		<TrimmerRootAssembly Include="Fleck" />
+		<TrimmerRootAssembly Include="SoundFlow" />
 	</ItemGroup>
-
+	<ItemGroup>
+		<RdXmlFile Include="Avalonia.rd.xml" />
+		<!--<RdXmlFile Include="Microsoft.EntityFrameworkCore.rd.xml" />
+		<RdXmlFile Include="Microsoft.EntityFrameworkCore.Sqlite.rd.xml" />-->
+	</ItemGroup>
+	
 	<PropertyGroup>
 		<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 		<PackageIcon>logo-128.png</PackageIcon>
+		<PublishAot>True</PublishAot>
 	</PropertyGroup>
 
 

@@ -54,11 +54,8 @@
 		</PackageReference>
 		<PackageReference Include="AvaloniaUI.DiagnosticsSupport" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
+		<PackageReference Include="Concentus" />
 		<PackageReference Include="Deadpikle.AvaloniaProgressRing" />
-		<PackageReference Include="IconPacks.Avalonia.Core" />
-		<PackageReference Include="IconPacks.Avalonia.FontAwesome" />
-		<PackageReference Include="IconPacks.Avalonia.Material" />
-		<PackageReference Include="IconPacks.Avalonia.MaterialDesign" />
 		<PackageReference Include="Iot.Device.Bindings" />
 		<PackageReference Include="Karambolo.Extensions.Logging.File" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
@@ -67,7 +64,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Sendspin.SDK" />
 		<PackageReference Include="SharpHook" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="Svg.Controls.Skia.Avalonia" />
@@ -82,6 +78,26 @@
 		</PackageReference>
 		<PackageReference Include="XVolume" />
 		<PackageReference Include="Zeroconf" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Fleck\src\Fleck\Fleck.csproj" />
+	  <ProjectReference Include="..\windowsSpin\src\Sendspin.SDK\Sendspin.SDK.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="IconPacks.Avalonia.Core">
+	    <HintPath>..\binaries\IconPacks.Avalonia.Core.dll</HintPath>
+	  </Reference>
+	  <Reference Include="IconPacks.Avalonia.ForkAwesome">
+	    <HintPath>..\binaries\IconPacks.Avalonia.ForkAwesome.dll</HintPath>
+	  </Reference>
+	  <Reference Include="IconPacks.Avalonia.Material">
+	    <HintPath>..\binaries\IconPacks.Avalonia.Material.dll</HintPath>
+	  </Reference>
+	  <Reference Include="IconPacks.Avalonia.MaterialDesign">
+	    <HintPath>..\binaries\IconPacks.Avalonia.MaterialDesign.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>

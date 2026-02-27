@@ -31,15 +31,15 @@ sealed class Program
 
             var x = new App(
             [
-                new InstancePlatformSpecificRegistration<Playback.SwitchableAudioPlayer>(new Playback.SwitchableAudioPlayer(
+                /*new InstancePlatformSpecificRegistration<Playback.SwitchableAudioPlayer>(new Playback.SwitchableAudioPlayer(
                     () => new SimpleWasapiPlayer(),
                     () => new SoundflowPlayer(),
                     Playback.SwitchableAudioPlayer.PlayerBackend.SimpleWasapi
-                )),
-
-                new LambdaRegistration<IPlayerFactory>(c => new WindowsAudioPlayerFactory(() => App.Container.Resolve<Playback.SwitchableAudioPlayer>())),
+                )),*/
+                
+                new LambdaRegistration<IPlayerFactory>(c => new WindowsAudioPlayerFactory(/*() => App.Container.Resolve<Playback.SwitchableAudioPlayer>()*/)),
                 new LambdaRegistration<IVolumeService>(c => new WindowsVolumeService(c.Resolve<PlayersService>())),
-                new LambdaRegistration<IHaveSettings>(c => new PlaybackSettingsViewModel(c.Resolve<ISettings>(), c.Resolve<Playback.SwitchableAudioPlayer>(), c.Resolve<ILoggerFactory>())),
+                /*new LambdaRegistration<IHaveSettings>(c => new PlaybackSettingsViewModel(c.Resolve<ISettings>(), c.Resolve<Playback.SwitchableAudioPlayer>(), c.Resolve<ILoggerFactory>())),*/
             ]);
             return x;
         })

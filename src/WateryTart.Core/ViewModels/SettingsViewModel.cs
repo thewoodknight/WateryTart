@@ -8,8 +8,7 @@ namespace WateryTart.Core.ViewModels;
 
 public partial class SettingsViewModel : ViewModelBase<SettingsViewModel>
 {   public ObservableCollection<IHaveSettings> SettingsProviders { get; set; }
-    public new string Title => "Settings";
-
+    public override string Title => "Settings";
     public RelayCommand<IViewModelBase> GoToSettings { get; set; }
     public SettingsViewModel(IEnumerable<IHaveSettings> settingsProviders, IScreen screen, ILoggerFactory loggerFactory)
     {

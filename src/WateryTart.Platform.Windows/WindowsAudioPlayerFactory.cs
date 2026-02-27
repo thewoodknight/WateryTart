@@ -9,7 +9,7 @@ public class WindowsAudioPlayerFactory : IPlayerFactory
 {
     private readonly Func<IAudioPlayer> _create;
 
-    public WindowsAudioPlayerFactory() : this(() => new SimpleWasapiPlayer()) { }
+    public WindowsAudioPlayerFactory() : this(() => new SoundflowPlayer()) { }
 
     public WindowsAudioPlayerFactory(Func<IAudioPlayer> create)
     {

@@ -45,6 +45,21 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Reference Include="IconPacks.Avalonia.Core">
+	    <HintPath>..\binaries\IconPacks.Avalonia.Core.dll</HintPath>
+	  </Reference>
+	  <Reference Include="IconPacks.Avalonia.ForkAwesome">
+	    <HintPath>..\binaries\IconPacks.Avalonia.ForkAwesome.dll</HintPath>
+	  </Reference>
+	  <Reference Include="IconPacks.Avalonia.Material">
+	    <HintPath>..\binaries\IconPacks.Avalonia.Material.dll</HintPath>
+	  </Reference>
+	  <Reference Include="IconPacks.Avalonia.MaterialDesign">
+	    <HintPath>..\binaries\IconPacks.Avalonia.MaterialDesign.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Update="Views\GpioVolumeSettingsView.axaml.cs">
 	    <DependentUpon>GpioVolumeSettingsView.axaml</DependentUpon>
 	  </Compile>

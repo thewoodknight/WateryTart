@@ -2,11 +2,13 @@ using Sendspin.SDK.Audio;
 using SoundFlow.Enums;
 using SoundFlow.Interfaces;
 using SoundFlow.Metadata.Models;
+using SoundFlow.Structs;
 using System;
+using System.Diagnostics;
 
 namespace WateryTart.Platform.Windows.Playback;
 
-public class SoundFlowSampleSourceProvider : ISoundDataProvider, IDisposable
+public sealed class SoundFlowSampleSourceProvider : ISoundDataProvider, IDisposable
 {
     private readonly Func<bool> _getMuted;
     private readonly Func<float> _getVolume;
@@ -41,6 +43,38 @@ public class SoundFlowSampleSourceProvider : ISoundDataProvider, IDisposable
     public void Dispose()
     {
         _disposed = true;
+    }
+
+    public int Read(float[] buffer, int offset, int count)
+    {
+        // Diagnostic: log that native side is invoking Read
+        try
+        {
+            Debug.WriteLine($"SoundFlowSampleSourceProvider.Read invoked this={GetHashCode()} count={count}");
+        }
+        catch { }
+
+        // Fill buffer from source
+        int samplesRead = 0;
+        try
+        {
+            samplesRead = _source.Read(buffer, offset, count);
+            // Apply volume/mute
+            var vol = _getVolume();
+            var muted = _getMuted();
+            if (muted) vol = 0f;
+            if (vol != 1f && samplesRead > 0)
+            {
+                for (int i = offset; i < offset + samplesRead; i++)
+                    buffer[i] *= vol;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"SoundFlowSampleSourceProvider.Read error: {ex}");
+        }
+
+        return samplesRead;
     }
 
     public int ReadBytes(Span<float> buffer)

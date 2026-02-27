@@ -16,13 +16,13 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!--  Controls  -->
-                <ResourceInclude Source="/Controls/ResponsiveColumnPanel.axaml" />
-                <ResourceInclude Source="/Controls/BindableCommandSlider.axaml" />
+                <ResourceInclude Source="avares://WateryTart.Core/Controls/ResponsiveColumnPanel.axaml" />
+                <ResourceInclude Source="avares://WateryTart.Core/Controls/BindableCommandSlider.axaml" />
 
                 <!--  Resource Dictionaries  -->
-                <ResourceInclude Source="/Resources/Converters.axaml" />
-                <ResourceInclude Source="/Resources/DataTemplates.axaml" />
-                <ResourceInclude Source="/Resources/GlobalResourceStyles.axaml" />
+                <ResourceInclude Source="avares://WateryTart.Core/Resources/Converters.axaml" />
+                <ResourceInclude Source="avares://WateryTart.Core/Resources/DataTemplates.axaml" />
+                <ResourceInclude Source="avares://WateryTart.Core/Resources/GlobalResourceStyles.axaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
@@ -60,7 +60,7 @@
         <StyleInclude Source="avares://AsyncImageLoader.Avalonia/AdvancedImage.axaml" />
         <StyleInclude Source="avares://AvaloniaProgressRing/Styles/ProgressRing.xaml" />
         <StyleInclude Source="avares://IconPacks.Avalonia.Material/Material.axaml" />
-        <StyleInclude Source="avares://IconPacks.Avalonia.FontAwesome/FontAwesome.axaml" />
+        <!--<StyleInclude Source="avares://IconPacks.Avalonia.FontAwesome/FontAwesome.axaml" />-->
 
         <StyleInclude Source="/Resources/Styles.axaml" />
     </Application.Styles>

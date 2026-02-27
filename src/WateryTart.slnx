@@ -15,6 +15,16 @@
     <File Path="../.github/workflows/build-and-publish.yml" />
     <File Path="../build/linux_deb_builder.sh" />
   </Folder>
+  <Folder Name="/Submodules/">
+    <Project Path="Fleck/src/Fleck/Fleck.csproj">
+      <BuildType Solution="ARMRELEASE|*" Project="Release" />
+      <BuildType Solution="X64Debug|*" Project="Release" />
+    </Project>
+    <Project Path="windowsSpin/src/Sendspin.SDK/Sendspin.SDK.csproj">
+      <BuildType Solution="ARMRELEASE|*" Project="Release" />
+      <BuildType Solution="X64Debug|*" Project="Release" />
+    </Project>
+  </Folder>
   <Project Path="WateryTart.Core/WateryTart.Core.csproj">
     <Platform Solution="*|ARM64" Project="ARM64" />
     <Platform Solution="ARMRELEASE|x64" Project="ARM64" />

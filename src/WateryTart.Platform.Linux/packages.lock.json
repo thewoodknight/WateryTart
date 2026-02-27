@@ -180,11 +180,6 @@
         "resolved": "3.4.1",
         "contentHash": "wLHldZHvxsSD6Ahonfj00/SkfHfKqO+YT6jsUwVm8Rch1REL9IArHAcSLXxYxYfu5/4ydGtmXvOtaH3AkVPu0A=="
       },
-      "Concentus": {
-        "type": "Transitive",
-        "resolved": "2.2.2",
-        "contentHash": "2B9YmHPKO+k7YpAAnqmiXwiMJnfjfj1C868RszOll2iZWLnGTAiC1q21L/d7CvTan7T+hyqU8dR0Dcy3cpjVfQ=="
-      },
       "DynamicData": {
         "type": "Transitive",
         "resolved": "9.4.1",
@@ -197,11 +192,6 @@
         "type": "Transitive",
         "resolved": "4.3.1",
         "contentHash": "A8UtcghHQlWxPJhJF5bsfEYO7068JHGTuJ7tzyyMjd5fE/N/xY1cVOUhzuLLFwMOCJVnM4mqSQc93W9fGfZ1kA=="
-      },
-      "Fleck": {
-        "type": "Transitive",
-        "resolved": "1.2.0",
-        "contentHash": "bPLXn6QbLAFoviur6XbrKB0Zn6x04E8VibHXyHZeJsoC7bkUl5DVtzM5cZgDuqHkIrBqAXJyTNJwSNIc6wBJ2Q=="
       },
       "HarfBuzzSharp": {
         "type": "Transitive",
@@ -246,17 +236,6 @@
         "contentHash": "qe/5w5Q/i2Xz2ZnCq3E49kLAtVFRuuBn40C1mQPWbLDwlHM0KVDzCkFqwxDedv7JgQis66Z9AZKyo1zCTRrdYA==",
         "dependencies": {
           "SimpleBase": "1.3.1"
-        }
-      },
-      "Makaretu.Dns.Multicast": {
-        "type": "Transitive",
-        "resolved": "0.27.0",
-        "contentHash": "MTMq3vca9yw8sMW0knox/lZcAkDghmH6FVLTRInJZWbuYE99QI/9k9EujsXusWQ8oDySXb/gX92bfZipKehQgw==",
-        "dependencies": {
-          "Common.Logging": "3.4.1",
-          "IPNetwork2": "2.1.2",
-          "Makaretu.Dns": "2.0.1",
-          "Tmds.LibC": "0.2.0"
         }
       },
       "MicroCom.Runtime": {
@@ -327,14 +306,6 @@
         "type": "Transitive",
         "resolved": "10.0.0",
         "contentHash": "5hfVl/e+bx1px2UkN+1xXhd3hu7Ui6ENItBzckFaRDQXfr+SHT/7qrCDrlQekCF/PBtEu2vtk87U2+gDEF8EhQ=="
-      },
-      "Microsoft.Extensions.Logging.Abstractions": {
-        "type": "Transitive",
-        "resolved": "10.0.3",
-        "contentHash": "lxl0WLk7ROgBFAsjcOYjQ8/DVK+VMszxGBzUhgtQmAsTNldLL5pk9NG/cWTsXHq0lUhUEAtZkEE7jOGOA8bGKQ==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.3"
-        }
       },
       "Microsoft.Extensions.Logging.Configuration": {
         "type": "Transitive",
@@ -641,6 +612,19 @@
           "Xaml.Behaviors.Interactivity": "11.3.9.5"
         }
       },
+      "fleck": {
+        "type": "Project"
+      },
+      "sendspin.sdk": {
+        "type": "Project",
+        "dependencies": {
+          "Concentus": "[2.2.2, )",
+          "Fleck": "[0.0.0.1-local, )",
+          "Makaretu.Dns.Multicast": "[0.27.0, )",
+          "Microsoft.Extensions.Logging": "[10.0.3, )",
+          "Zeroconf": "[3.7.16, )"
+        }
+      },
       "waterytart.core": {
         "type": "Project",
         "dependencies": {
@@ -652,22 +636,20 @@
           "Avalonia.Themes.Fluent": "[11.3.12, )",
           "AvaloniaUI.DiagnosticsSupport": "[2.1.1, )",
           "CommunityToolkit.Mvvm": "[8.4.0, )",
+          "Concentus": "[2.2.2, )",
           "Deadpikle.AvaloniaProgressRing": "[0.10.10, )",
-          "IconPacks.Avalonia.Core": "[1.3.1, )",
-          "IconPacks.Avalonia.FontAwesome": "[1.3.1, )",
-          "IconPacks.Avalonia.Material": "[1.3.1, )",
-          "IconPacks.Avalonia.MaterialDesign": "[1.3.1, )",
+          "Fleck": "[0.0.0.1-local, )",
           "Iot.Device.Bindings": "[4.1.0, )",
           "Karambolo.Extensions.Logging.File": "[4.1.0, )",
           "Microsoft.Extensions.Logging.Console": "[10.0.3, )",
           "ReactiveUI.Avalonia": "[11.3.8, )",
-          "Sendspin.SDK": "[6.3.5, )",
+          "Sendspin.SDK": "[6.3.4, )",
           "SharpHook": "[7.1.1, )",
           "SkiaSharp": "[2.88.9, )",
           "Svg.Controls.Skia.Avalonia": "[11.3.9.2, )",
           "System.Device.Gpio": "[4.1.0, )",
           "Velopack": "[0.0.1298, )",
-          "WateryTart.MusicAssistant": "[4.0.0, )",
+          "WateryTart.MusicAssistant": "[4.1.0, )",
           "XVolume": "[0.1.1, )",
           "Xaml.Behaviors.Avalonia": "[11.3.9.5, )",
           "Xaml.Behaviors.Interactivity": "[11.3.9.5, )",
@@ -735,6 +717,12 @@
         "resolved": "8.4.0",
         "contentHash": "tqVU8yc/ADO9oiTRyTnwhFN68hCwvkliMierptWOudIAvWY1mWCh5VFh+guwHJmpMwfg0J0rY+yyd5Oy7ty9Uw=="
       },
+      "Concentus": {
+        "type": "CentralTransitive",
+        "requested": "[2.2.2, )",
+        "resolved": "2.2.2",
+        "contentHash": "2B9YmHPKO+k7YpAAnqmiXwiMJnfjfj1C868RszOll2iZWLnGTAiC1q21L/d7CvTan7T+hyqU8dR0Dcy3cpjVfQ=="
+      },
       "Deadpikle.AvaloniaProgressRing": {
         "type": "CentralTransitive",
         "requested": "[0.10.10, )",
@@ -742,45 +730,6 @@
         "contentHash": "0JYNdCQgDegmhaBfNcbQ73UeaTA8yNvGKATBf1gYwFx3V2zxPSzjpXFzHiwO3poXZhmoaMxolbEWvlcxS/pDUg==",
         "dependencies": {
           "Avalonia": "11.2.1"
-        }
-      },
-      "IconPacks.Avalonia.Core": {
-        "type": "CentralTransitive",
-        "requested": "[1.3.1, )",
-        "resolved": "1.3.1",
-        "contentHash": "S3EmujVvd7f6a7W927QqiAfe9tWorXJ5N6rvfnuHvIO1nptbFZdiiECkpnVGmmsVLBTkpy+59k8M45h8q0vjJg==",
-        "dependencies": {
-          "Avalonia": "11.0.13"
-        }
-      },
-      "IconPacks.Avalonia.FontAwesome": {
-        "type": "CentralTransitive",
-        "requested": "[1.3.1, )",
-        "resolved": "1.3.1",
-        "contentHash": "mLq0STeFwho21xO4CFFyBba8RkfaqHd8wx+gBAvamKmUHafpp8Q/ZKNNHOLfTFvFRT/+2MlbCqHq62TnLraUjw==",
-        "dependencies": {
-          "Avalonia": "11.0.13",
-          "IconPacks.Avalonia.Core": "1.3.1"
-        }
-      },
-      "IconPacks.Avalonia.Material": {
-        "type": "CentralTransitive",
-        "requested": "[1.3.1, )",
-        "resolved": "1.3.1",
-        "contentHash": "HUwHUDCFNBBZitUmENGKG0W21Im6pBAMPpxdMUL55dt/OyawyAVlpGr6ANBQGJ24DFVm8SwP/Pcn+wWriPvv5Q==",
-        "dependencies": {
-          "Avalonia": "11.0.13",
-          "IconPacks.Avalonia.Core": "1.3.1"
-        }
-      },
-      "IconPacks.Avalonia.MaterialDesign": {
-        "type": "CentralTransitive",
-        "requested": "[1.3.1, )",
-        "resolved": "1.3.1",
-        "contentHash": "6o/hpXyXtGLCELGS3ULBYI/s1xy7tB41gm1zB8sjfznpdE5pUyG8vqTBEVc/01iqpMNYXmu2VgenSN1BLe7qLQ==",
-        "dependencies": {
-          "Avalonia": "11.0.13",
-          "IconPacks.Avalonia.Core": "1.3.1"
         }
       },
       "Iot.Device.Bindings": {
@@ -808,6 +757,18 @@
           "Microsoft.Extensions.Options.ConfigurationExtensions": "10.0.0"
         }
       },
+      "Makaretu.Dns.Multicast": {
+        "type": "CentralTransitive",
+        "requested": "[0.27.0, )",
+        "resolved": "0.27.0",
+        "contentHash": "MTMq3vca9yw8sMW0knox/lZcAkDghmH6FVLTRInJZWbuYE99QI/9k9EujsXusWQ8oDySXb/gX92bfZipKehQgw==",
+        "dependencies": {
+          "Common.Logging": "3.4.1",
+          "IPNetwork2": "2.1.2",
+          "Makaretu.Dns": "2.0.1",
+          "Tmds.LibC": "0.2.0"
+        }
+      },
       "Microsoft.Extensions.DependencyInjection": {
         "type": "CentralTransitive",
         "requested": "[10.0.2, )",
@@ -819,13 +780,22 @@
       },
       "Microsoft.Extensions.Logging": {
         "type": "CentralTransitive",
-        "requested": "[10.0.2, )",
+        "requested": "[10.0.3, )",
         "resolved": "10.0.3",
         "contentHash": "8D9Er1cGXNjNDIB+VLBNHn386L5ls2FoiG9a6o12gyn+GG3w6jdfUhzT8dtBnKcevE7/fsVA8MS3FBgFfClFtQ==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "10.0.3",
           "Microsoft.Extensions.Logging.Abstractions": "10.0.3",
           "Microsoft.Extensions.Options": "10.0.3"
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions": {
+        "type": "CentralTransitive",
+        "requested": "[8.0.2, )",
+        "resolved": "10.0.3",
+        "contentHash": "lxl0WLk7ROgBFAsjcOYjQ8/DVK+VMszxGBzUhgtQmAsTNldLL5pk9NG/cWTsXHq0lUhUEAtZkEE7jOGOA8bGKQ==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.3"
         }
       },
       "Microsoft.Extensions.Logging.Console": {
@@ -861,19 +831,6 @@
           "Avalonia": "11.3.8",
           "ReactiveUI": "22.2.1",
           "Splat": "17.1.1"
-        }
-      },
-      "Sendspin.SDK": {
-        "type": "CentralTransitive",
-        "requested": "[6.3.5, )",
-        "resolved": "6.3.5",
-        "contentHash": "rxZjhzkPSe/NcFD+G9suCzVw7bueWARdJ22LJ+Cdl7C5p4Pqi9XMHw3j9D0P+TWfuXWm+SWYKglIQzMxS/65kg==",
-        "dependencies": {
-          "Concentus": "2.2.2",
-          "Fleck": "1.2.0",
-          "Makaretu.Dns.Multicast": "0.27.0",
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.2",
-          "Zeroconf": "3.7.16"
         }
       },
       "SharpHook": {
@@ -916,9 +873,9 @@
       },
       "WateryTart.MusicAssistant": {
         "type": "CentralTransitive",
-        "requested": "[4.0.0, )",
-        "resolved": "4.0.0",
-        "contentHash": "mutotyggW6m732YPFG3Az+8H+nqrJFIG2zPac+yljFHH62tFSKADIlX8tVLv2Vg0Ip8ggezCKdZg+77p9LSg6g==",
+        "requested": "[4.1.0, )",
+        "resolved": "4.1.0",
+        "contentHash": "W8+c+ZrfOHXsUOrOLkjo9oB8c5sEcWzlukBund3BESb9wnVQ2dv56TpSrWKvxA4pIZCPuzCB0NLWzwKQeWDz2g==",
         "dependencies": {
           "Microsoft.Extensions.Logging": "10.0.2",
           "Microsoft.Extensions.Logging.Console": "10.0.2",
