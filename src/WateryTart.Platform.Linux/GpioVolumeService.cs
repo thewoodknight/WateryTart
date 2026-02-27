@@ -47,9 +47,16 @@ public partial class GpioVolumeService : ReactiveObject, IVolumeService, IReaper
 
     private void Enable()
     {
-        var PinA = (int)_settings.CustomSettings["GpioPinA"];
-        var PinB = (int)_settings.CustomSettings["GpioPinB"];
-        var PulsesPerTurn = (int)_settings.CustomSettings["GpioPulsesPerTurn"];
+        int PinA = 17;
+        int PinB = 27;
+        if (_settings.CustomSettings.ContainsKey("GpioPinA"))
+            PinA = (int)_settings.CustomSettings["GpioPinA"]!;
+        if (_settings.CustomSettings.ContainsKey("GpioPinB"))
+            PinB = (int)_settings.CustomSettings["GpioPinB"]!;
+
+        int PulsesPerTurn = 20;
+        if (_settings.CustomSettings.ContainsKey("GpioPulsesPerTurn"))
+            PulsesPerTurn = (int)_settings.CustomSettings["GpioPulsesPerTurn"]!;
 
         rotaryEncoder = new QuadratureRotaryEncoder(PinA, PinB, PulsesPerTurn);
         oldValue = rotaryEncoder.PulseCount;

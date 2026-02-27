@@ -58,7 +58,7 @@ sealed class Program
                 [
                     new InstancePlatformSpecificRegistration<IPlayerFactory>(new LinuxAudioPlayerFactory()),
 #if LINUX_ARM64         
-                    new LambdaRegistration<IVolumeService>(c => new GpioVolumeService(c.Resolve<ISettings>(),c.Resolve<PlayersService>())),
+                    new LambdaRegistration<GpioVolumeService>(c => new GpioVolumeService(c.Resolve<ISettings>(),c.Resolve<PlayersService>())),
                     new LambdaRegistration<IHaveSettings>(c =>
                         new GpioVolumeSettingsViewModel(
                             c.Resolve<ISettings>(),
