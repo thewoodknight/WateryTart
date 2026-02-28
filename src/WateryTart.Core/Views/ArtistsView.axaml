@@ -13,12 +13,11 @@
           d:DesignWidth="800"
           x:DataType="vm:ArtistsViewModel"
           mc:Ignorable="d">
-
-    <!--  The key is this DockPanel with LastChildFill="True" that forces the ListBox to fill available space  -->
     <DockPanel>
         <ListBox
                   x:Name="lbArtists"
                   Background="Transparent"
+                  ItemTemplate="{StaticResource artistMediumReusableTemplate}"
                   ItemsSource="{Binding Artists}">
             <Interaction.Behaviors>
                 <behaviors:GridScrollBehavior
@@ -31,35 +30,6 @@
                     <WrapPanel ItemSpacing="15" ItemWidth="200" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                        <Interaction.Behaviors>
-                            <EventTriggerBehavior EventName="Tapped">
-                                <InvokeCommandAction Command="{Binding #lbArtists.((vm:ArtistsViewModel)DataContext).ClickedCommand}" CommandParameter="{Binding Path=.}" />
-                            </EventTriggerBehavior>
-                        </Interaction.Behaviors>
-                        <Border
-                                  Width="195"
-                                  Height="195"
-                                  Margin="0,0,0,5"
-                                  BoxShadow="0 0 10 0 Black">
-                            <Border ClipToBounds="True" CornerRadius="5">
-                                <asyncImageLoader:AdvancedImage
-                                          Width="195"
-                                          Height="195"
-                                          FallbackImage="{x:Static app:App.FallbackImage}"
-                                          Loader="{x:Static app:App.ImageLoaderInstance}"
-                                          Source="{Binding Path=Artist, Converter={StaticResource MetadataImageConverter}}" />
-                            </Border>
-                        </Border>
-                        <TextBlock
-                                  Margin="-10,0,0,0"
-                                  Text="{Binding Artist.Name}"
-                                  TextTrimming="CharacterEllipsis" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
         </ListBox>
     </DockPanel>
 </UserControl>

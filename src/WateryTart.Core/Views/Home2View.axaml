@@ -78,6 +78,7 @@
 
         <ListBox
                   Background="Transparent"
+                  ItemTemplate="{StaticResource artistMediumReusableTemplate}"
                   ItemsSource="{Binding DiscoverArtists}"
                   ScrollViewer.HorizontalScrollBarVisibility="Auto">
             <ListBox.ItemsPanel>
@@ -85,30 +86,6 @@
                     <StackPanel Orientation="Horizontal" Spacing="15" />
                 </ItemsPanelTemplate>
             </ListBox.ItemsPanel>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <!--  "Medium" Artist Template  -->
-                    <StackPanel Background="Transparent" Spacing="10">
-                        <Interaction.Behaviors>
-                            <EventTriggerBehavior EventName="Tapped">
-                                <InvokeCommandAction Command="{Binding ArtistFullViewClicked}" />
-                            </EventTriggerBehavior>
-                        </Interaction.Behaviors>
-
-                        <Ellipse Width="125" Height="125">
-                            <Ellipse.Fill>
-                                <ImageBrush asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />
-                            </Ellipse.Fill>
-                        </Ellipse>
-
-                        <TextBlock
-                                  HorizontalAlignment="Center"
-                                  FontSize="16"
-                                  FontWeight="Bold"
-                                  Text="{Binding Artist.Name}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
         </ListBox>
 
         <!--  Discover Albums  -->
