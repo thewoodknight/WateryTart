@@ -26,7 +26,34 @@ jobs:
             echo "version=0.0.1" >> $GITHUB_OUTPUT
           fi
 
-  linuxbuild: # this handles linux and windows builds
+  windowsbuild: # this is required to use NativeAOT compilation, cannot cross-compile from linux to windows
+    needs:
+      - generate-version
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '10.0.x' ]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: Setup .NET 10.x
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+          cache: true
+          cache-dependency-path: './src/WateryTart.Platform.Windows/packages.lock.json'
+      - name: Install dependencies
+        run: dotnet restore src/WateryTart.Platform.Windows
+      - name: Publish
+        run: dotnet publish src/WateryTart.Platform.Windows -p:PublishProfile=Winx64 /p:Version=${{ needs.generate-version.outputs.version }} -o ./output/win-x64
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-x64-build
+          path: ./output/win-x64
+
+  linuxbuild:
     needs:
       - generate-version
     runs-on: ubuntu-latest
@@ -48,7 +75,7 @@ jobs:
       - run: |
           dotnet publish src/WateryTart.Platform.Linux -p:PublishProfile=LinuxArm /p:Version=${{ needs.generate-version.outputs.version }} -o ./output/linux-arm64
           dotnet publish src/WateryTart.Platform.Linux -p:PublishProfile=Linux-x64 /p:Version=${{ needs.generate-version.outputs.version }} -o ./output/linux-x64
-          dotnet publish src/WateryTart.Platform.Windows -p:PublishProfile=Winx64 /p:Version=${{ needs.generate-version.outputs.version }} -o ./output/win-x64
+          #dotnet publish src/WateryTart.Platform.Windows -p:PublishProfile=Winx64 /p:Version=${{ needs.generate-version.outputs.version }} -o ./output/win-x64
       - name: Set permissions
         run: |
           chmod +x ./output/linux-x64/WateryTartLinux
@@ -65,11 +92,11 @@ jobs:
           name: linux-x64-build
           path: ./output/linux-x64
 
-      - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: win-x64-build
-          path: ./output/win-x64
+      #- name: Upload Windows artifacts
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: win-x64-build
+      #    path: ./output/win-x64
 
   #this doesn't use Velopack just yet because I have no way of testing it, or even knowing what it creates
  # macosbuild:
@@ -132,6 +159,7 @@ jobs:
     needs:
       - generate-version
       - linuxbuild
+      - windowsbuild
       #- macosbuild
     runs-on: ubuntu-latest
     steps:
