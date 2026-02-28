@@ -23,6 +23,7 @@ public class LibraryItem : ReactiveObject
     public ICommand? ClickedCommand { get; set; }
     public string LowerTitle => Title.ToLowerInvariant();
 
+    public IconPacks.Avalonia.Material.PackIconMaterialKind Icon { get; set; }
     public int Count
     {
         get => field;

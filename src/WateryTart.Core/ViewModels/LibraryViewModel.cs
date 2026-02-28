@@ -1,30 +1,32 @@
+using Autofac;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.WsExtensions;
-using Autofac;
 namespace WateryTart.Core.ViewModels;
 
 public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
 {
-    public string Title => "Library";
     [Reactive] public partial ObservableCollection<LibraryItem> Items { get; set; }
     [Reactive] public override partial bool IsLoading { get; set; }
 
+    [Reactive] public partial ObservableCollection<TrackViewModel> RecentlyAdded { get; set; }
     public LibraryViewModel(
-        MusicAssistantClient massClient, 
-        IScreen screen, 
+        MusicAssistantClient massClient,
+        IScreen screen,
         ILoggerFactory loggerFactory) : base(loggerFactory, massClient)
     {
         HostScreen = screen;
-
+        Title = "Library";
         var artists = new LibraryItem()
         {
+            Icon = IconPacks.Avalonia.Material.PackIconMaterialKind.Account,
             Title = "Artists",
             ClickedCommand = new RelayCommand(() =>
             {
@@ -36,6 +38,7 @@ public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
         var albums = new LibraryItem()
         {
             Title = "Albums",
+            Icon = IconPacks.Avalonia.Material.PackIconMaterialKind.Album,
             ClickedCommand = new RelayCommand(() =>
             {
                 var vm = App.Container.Resolve<AlbumsListViewModel>();
@@ -46,6 +49,7 @@ public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
         var tracks = new LibraryItem()
         {
             Title = "Tracks",
+            Icon = IconPacks.Avalonia.Material.PackIconMaterialKind.MusicNoteEighth,
             ClickedCommand = new RelayCommand(() =>
             {
                 var vm = App.Container.Resolve<TracksViewModel>();
@@ -55,6 +59,7 @@ public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
         var playlists = new LibraryItem
         {
             Title = "Playlists",
+            Icon = IconPacks.Avalonia.Material.PackIconMaterialKind.PlaylistMusic,
             ClickedCommand = new RelayCommand(() =>
             {
                 var vm = App.Container.Resolve<PlaylistsViewModel>();
@@ -63,9 +68,9 @@ public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
         };
 
         //var genres = new LibraryItem { Title = "Genres" };
-        var podcasts = new LibraryItem { Title = "Podcasts" };
-        var radios = new LibraryItem { Title = "Radios" };
-        var audiobooks = new LibraryItem { Title = "Audiobooks" };
+        var podcasts = new LibraryItem { Icon = IconPacks.Avalonia.Material.PackIconMaterialKind.Podcast, Title = "Podcasts" };
+        var radios = new LibraryItem { Icon = IconPacks.Avalonia.Material.PackIconMaterialKind.RadioTower, Title = "Radios" };
+        var audiobooks = new LibraryItem { Icon = IconPacks.Avalonia.Material.PackIconMaterialKind.Book, Title = "Audiobooks" };
 
         Items =
        [
@@ -74,17 +79,31 @@ public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
            tracks,
            playlists,
           // genres,
-           podcasts,
-           radios,
-           audiobooks
+           //podcasts,
+           //radios,
+           //audiobooks
        ];
 
         // Load counts asynchronously in the background
 #pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
         _ = LoadLibraryCountsAsync(artists, albums, tracks, playlists, null, podcasts, radios, audiobooks);
+        _ = LoadRecentlyAdded();
 #pragma warning restore CS4014
     }
 
+    private async Task LoadRecentlyAdded()
+    {
+        RecentlyAdded = [];
+        var response = await _client.WithWs().GetRecentlyAddedTracksAsync();
+
+        foreach (var r in response.Result!)
+        {
+            var vm = App.Container.Resolve<TrackViewModel>();
+            vm.Track = r;
+            RecentlyAdded.Add(vm);
+        }
+
+    }
     private async Task LoadLibraryCountsAsync(LibraryItem artists, LibraryItem albums, LibraryItem tracks, LibraryItem playlists, LibraryItem genres, LibraryItem podcasts, LibraryItem radios, LibraryItem audiobooks)
     {
         try

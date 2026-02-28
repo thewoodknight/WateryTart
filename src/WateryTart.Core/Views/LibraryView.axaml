@@ -1,37 +1,108 @@
 ﻿<UserControl
-    x:Class="WateryTart.Core.Views.LibraryView"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="vm:LibraryViewModel"
-    mc:Ignorable="d">
-    <ListBox
-        HorizontalAlignment="Stretch"
-        Background="Transparent"
-        ItemsSource="{Binding Items}">
-        <ListBox.ItemTemplate>
-            <DataTemplate>
-                <StackPanel
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Background="Transparent">
-                    <Interaction.Behaviors>
-                        <EventTriggerBehavior EventName="Tapped">
-                            <vm:ClickAction Command="{Binding ClickedCommand}" />
-                        </EventTriggerBehavior>
-                    </Interaction.Behaviors>
+          x:Class="WateryTart.Core.Views.LibraryView"
+          xmlns="https://github.com/avaloniaui"
+          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+          xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+          xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
+          d:DesignHeight="450"
+          d:DesignWidth="800"
+          x:DataType="vm:LibraryViewModel"
+          mc:Ignorable="d">
+    <UserControl.Styles>
+        <!--  This cascades to all children  -->
+        <Style Selector="#lbSettings ContentPresenter#PART_ContentPresenter:pointerover">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
 
-                    <TextBlock Text="{Binding Title}" />
-                    <TextBlock Opacity="0.5">
-                        <Run Text="{Binding Count}" />
-                        <Run Text="{Binding LowerTitle}" />
-                    </TextBlock>
-                </StackPanel>
-            </DataTemplate>
-        </ListBox.ItemTemplate>
-    </ListBox>
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <!--  this 'undoes' the cascading  -->
+        <Style Selector="ListBox.hoverable ContentPresenter#PART_ContentPresenter:pointerover">
+            <Setter Property="Background" Value="#11FFFFFF" />
+        </Style>
+    </UserControl.Styles>
+
+    <StackPanel Margin="10">
+        <ListBox
+                  HorizontalAlignment="Stretch"
+                  Background="Transparent"
+                  ItemsSource="{Binding Items}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="3" Classes="GroupingBorderStyle">
+                        <Grid
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
+                                  Background="Transparent">
+                            <Interaction.Behaviors>
+                                <EventTriggerBehavior EventName="Tapped">
+                                    <vm:ClickAction Command="{Binding ClickedCommand}" />
+                                </EventTriggerBehavior>
+                            </Interaction.Behaviors>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                            </Grid.ColumnDefinitions>
+
+                            <iconPacks:PackIconMaterial
+                                      Grid.Column="0"
+                                      Width="20"
+                                      Height="20"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Kind="{Binding Icon}" />
+
+
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding Title}" />
+                                <TextBlock Opacity="0.5">
+                                    <Run Text="{Binding Count}" />
+                                    <Run Text="{Binding LowerTitle}" />
+                                </TextBlock>
+                            </StackPanel>
+
+                            <iconPacks:PackIconMaterial
+                                      Grid.Column="2"
+                                      Width="18"
+                                      Height="18"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      Kind="ChevronRight"
+                                      Opacity="0.7" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!--  Ideally replace this with recently added albums  -->
+
+        <TextBlock
+                  Margin="0,40,10,0"
+                  Classes="H2"
+                  Text="Recently Added" />
+
+        <ItemsControl
+                  Padding="0"
+                  HorizontalAlignment="Stretch"
+                  Background="Transparent"
+                  ItemTemplate="{StaticResource trackMediumReusableTemplate}"
+                  ItemsSource="{Binding RecentlyAdded}">
+            <ItemsControl.Styles>
+                <Style Selector="ContentPresenter">
+                    <Setter Property="Padding" Value="0,10,0,10" />
+                </Style>
+            </ItemsControl.Styles>
+        </ItemsControl>
+    </StackPanel>
 </UserControl>
