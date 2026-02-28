@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.0](https://github.com/TemuWolverine/WateryTart/compare/v1.5.0...v1.6.0) (2026-02-28)
+
+
+### Features
+
+* added a now playing animation ([80e2583](https://github.com/TemuWolverine/WateryTart/commit/80e2583ec92b5910dd175d68639b0666593c5937))
+
+
+### Bug Fixes
+
+* Artists in list form now use artistMediumReusableTemplate ([d5a35c5](https://github.com/TemuWolverine/WateryTart/commit/d5a35c5a9db786d50f9d2a94e06636c5b5fc7e97))
+* minor loading bug fix ([529f7b5](https://github.com/TemuWolverine/WateryTart/commit/529f7b509766640c3b6971160fa0944f16018b83))
+
 ## [1.5.0](https://github.com/TemuWolverine/WateryTart/compare/v1.4.0...v1.5.0) (2026-02-28)
 
 
