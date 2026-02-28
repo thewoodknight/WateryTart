@@ -29,6 +29,7 @@ public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
     public RelayCommand AlbumFullViewCommand { get; }
     [Reactive] public partial string InputProviderIcon { get; set; } = App.BlankSvg;
     public AsyncRelayCommand PlayAlbumCommand { get; }
+    public RelayCommand PlayAlbumShuffleCommand { get; }
     public ICommand ArtistViewCommand { get; set; }
     public ICommand AlbumAltCommand { get; set; }
     [Reactive] public partial ProviderManifest? Provider { get; set; }
@@ -36,6 +37,13 @@ public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
     public AsyncRelayCommand<Item?> TrackTappedCommand { get; }
     public ICommand ToggleFavoriteCommand { get; set; }
     [Reactive] public override partial bool IsLoading { get; set; }
+
+    private string _runningTime;
+    public string RunningTime
+    {
+        get => _runningTime;
+        set => this.RaiseAndSetIfChanged(ref _runningTime, value);
+    }
     public AlbumViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService? playersService, Album? a = null)
         : base(null, massClient, playersService)
     {
@@ -102,6 +110,12 @@ public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
                 {
                     await _playersService.PlayItem(Album, mode: PlayMode.Replace);
                 }
+        });
+
+        PlayAlbumShuffleCommand = new RelayCommand(() =>
+        {
+            PlayAlbumCommand.Execute(null);
+            _ = _playersService?.PlayerShuffle(null, true);
         });
 
         TrackTappedCommand = new AsyncRelayCommand<Item?>((t) =>
@@ -175,8 +189,15 @@ public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
             {
                 var tracksResponse = await _client.WithWs().GetMusicAlbumTracksAsync(id, provider);
                 if (tracksResponse.Result != null)
+                {
                     foreach (var t in tracksResponse.Result)
                         Tracks.Add(new TrackViewModel(_client, _playersService!, t));
+
+
+                    var totalSeconds = Tracks?.Sum(t => t.Track?.Duration ?? 0) ?? 0;
+                    var ts = TimeSpan.FromSeconds((int)totalSeconds);
+                    RunningTime = $"{(int)ts.TotalHours}h {ts.Minutes}m";
+                }
             }
         }
         catch (Exception ex)

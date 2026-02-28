@@ -3,6 +3,7 @@
           xmlns="https://github.com/avaloniaui"
           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
           xmlns:app="clr-namespace:WateryTart.Core"
+          xmlns:asyncImageLoader="using:AsyncImageLoader"
           xmlns:asyncImageLoader1="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
           xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
           xmlns:converters="clr-namespace:WateryTart.Core.Converters"
@@ -15,7 +16,179 @@
           d:DesignWidth="800"
           x:DataType="vm:AlbumViewModel"
           mc:Ignorable="d">
+    <StackPanel Margin="10,0,0,0">
+        <StackPanel HorizontalAlignment="Center" Spacing="20">
+            <Border Margin="0,10,0,0" BoxShadow="0 0 20 0 Black">
+                <Border
+                          Width="240"
+                          Height="240"
+                          ClipToBounds="True"
+                          CornerRadius="8">
+                    <asyncImageLoader:AdvancedImage
+                              FallbackImage="{x:Static app:App.FallbackImage}"
+                              Loader="{x:Static app:App.ImageLoaderInstance}"
+                              Source="{Binding Album, Converter={StaticResource MetadataImageConverter}}"
+                              Stretch="UniformToFill" />
+                </Border>
+            </Border>
+            <StackPanel HorizontalAlignment="Center" Spacing="5">
+                <TextBlock
+                          HorizontalAlignment="Center"
+                          Classes="H1"
+                          Text="{Binding Album.Name}" />
 
+                <TextBlock
+                          HorizontalAlignment="Center"
+                          Background="Transparent"
+                          Classes="H2"
+                          Text="{Binding Album.Artists[0].Name}">
+                    <Interaction.Behaviors>
+                        <EventTriggerBehavior EventName="Tapped">
+                            <InvokeCommandAction Command="{Binding ArtistViewCommand}" />
+                        </EventTriggerBehavior>
+                    </Interaction.Behaviors>
+                </TextBlock>
+
+                <StackPanel
+                          HorizontalAlignment="Center"
+                          Orientation="Horizontal"
+                          Spacing="5">
+                    <TextBlock FontWeight="SemiBold" Text="{Binding Tracks.Count}" />
+                    <TextBlock Text="Tracks • " />
+                    <TextBlock FontWeight="SemiBold" Text="{Binding RunningTime}" />
+                </StackPanel>
+                <StackPanel
+                          HorizontalAlignment="Center"
+                          Orientation="Horizontal"
+                          Spacing="5">
+                    <Button
+                              Classes="iconButton navButton"
+                              Command="{Binding ToggleFavoriteCommand}"
+                              ToolTip.Tip="(Un)mark Favourite Album">
+
+                        <iconPacks:PackIconMaterial
+                                  Width="20"
+                                  Height="20"
+                                  Kind="{Binding Album.Favorite, Converter={StaticResource BoolToIconKindConverter}, ConverterParameter='HeartOutline,Heart'}" />
+                    </Button>
+
+                    <Svg
+                              Width="30"
+                              Height="30"
+                              Source="{Binding InputProviderIcon}" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <!--  Action Buttons  -->
+        <Grid HorizontalAlignment="Stretch" ColumnDefinitions="*, *">
+            <Button
+                      Grid.Column="0"
+                      Height="50"
+                      Margin="0,10,10,10"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Center"
+                      Command="{Binding PlayAlbumCommand}"
+                      CornerRadius="10">
+                <StackPanel
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Orientation="Horizontal"
+                          Spacing="10">
+                    <iconPacks:PackIconMaterial
+                              Width="15"
+                              Height="15"
+                              Kind="Play" />
+                    <TextBlock FontWeight="Bold" Text="Play" />
+                </StackPanel>
+            </Button>
+            <Button
+                      Grid.Column="1"
+                      Height="50"
+                      Margin="10,10,10,10"
+                      HorizontalAlignment="Stretch"
+                      HorizontalContentAlignment="Center"
+                      Command="{Binding PlayAlbumShuffleCommand}"
+                      CornerRadius="10">
+                <StackPanel
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Orientation="Horizontal"
+                          Spacing="10">
+                    <iconPacks:PackIconMaterial
+                              Width="15"
+                              Height="15"
+                              Kind="Shuffle" />
+                    <TextBlock FontWeight="Bold" Text="Shuffle" />
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <!--  Tracks  -->
+        <ListBox
+                  x:Name="lbTracks"
+                  Background="Transparent"
+                  ItemsSource="{Binding Tracks}">
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Padding" Value="0,10,0,10" />
+                </Style>
+            </ListBox.Styles>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:TrackViewModel">
+                    <Grid Background="Transparent">
+                        <Interaction.Behaviors>
+                            <EventTriggerBehavior EventName="DoubleTapped">
+                                <InvokeCommandAction Command="{Binding TrackFullViewCommand}" />
+                            </EventTriggerBehavior>
+                        </Interaction.Behaviors>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock
+                                  HorizontalAlignment="Left"
+                                  Foreground="{StaticResource FadedTextColour}"
+                                  Text="{Binding Track.TrackNumber}" />
+
+                        <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
+                            <!--  Now Playing Indicator  -->
+                            <iconPacks:PackIconMaterial
+                                      Width="24"
+                                      Height="24"
+                                      Margin="5,0,5,0"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      IsVisible="{Binding IsNowPlaying}"
+                                      Kind="VolumeHigh" />
+
+                            <!--  Track Info  -->
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding Track.Name}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Opacity="0.7" Text="{Binding Track.Duration, Converter={StaticResource SecondsToMinutesConverter}}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Button
+                                  Grid.Column="2"
+                                  Classes="iconButton navButton"
+                                  Command="{Binding TrackAltMenuCommand}">
+                            <iconPacks:PackIconMaterial
+                                      Width="20"
+                                      Height="20"
+                                      Kind="DotsVertical" />
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </StackPanel>
+
+    <!--
     <StackPanel Margin="10" Spacing="20">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -110,7 +283,9 @@
                       Source="{Binding InputProviderIcon}" />
         </StackPanel>
 
-        <!--  Tracks  -->
+    -->
+    <!--  Tracks  -->
+    <!--
         <ListBox
                   x:Name="lbTracks"
                   Background="Transparent"
@@ -142,7 +317,9 @@
                                   Text="{Binding Track.TrackNumber}" />
 
                         <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
-                            <!--  Now Playing Indicator  -->
+    -->
+    <!--  Now Playing Indicator  -->
+    <!--
                             <iconPacks:PackIconMaterial
                                       Width="24"
                                       Height="24"
@@ -152,7 +329,9 @@
                                       IsVisible="{Binding IsNowPlaying}"
                                       Kind="VolumeHigh" />
 
-                            <!--  Track Info  -->
+    -->
+    <!--  Track Info  -->
+    <!--
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding Track.Name}" TextTrimming="CharacterEllipsis" />
                                 <TextBlock Opacity="0.7" Text="{Binding Track.Duration, Converter={StaticResource SecondsToMinutesConverter}}" />
@@ -172,5 +351,5 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-    </StackPanel>
+    </StackPanel>-->
 </UserControl>
