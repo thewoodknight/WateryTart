@@ -16,12 +16,14 @@
           mc:Ignorable="d">
 
     <StackPanel Spacing="10">
-        <Ellipse Width="250" Height="250">
-            <Ellipse.Fill>
-                <ImageBrush asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />
-            </Ellipse.Fill>
-        </Ellipse>
+        <Border Width="250" Margin="0,10,0,0" BoxShadow="0 0 20 0 Black" CornerRadius="125">
+            <Ellipse Width="250" Height="250">
+                <Ellipse.Fill>
+                    <ImageBrush asyncImageLoader:ImageBrushLoader.Source="{Binding Path=ArtistThumb, Converter={StaticResource MassImageImageConverter}}" />
+                </Ellipse.Fill>
+            </Ellipse>
 
+        </Border>
         <TextBlock
                   HorizontalAlignment="Center"
                   FontSize="28"
