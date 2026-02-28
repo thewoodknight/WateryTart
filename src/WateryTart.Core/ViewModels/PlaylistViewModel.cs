@@ -11,17 +11,27 @@ using WateryTart.MusicAssistant.WsExtensions;
 using WateryTart.MusicAssistant.Models;
 using CommunityToolkit.Mvvm.Input;
 using WateryTart.Core.ViewModels.Popups;
+using System.Linq;
 
 namespace WateryTart.Core.ViewModels
 {
     public partial class PlaylistViewModel : ViewModelBase<PlaylistViewModel>
     {
         public RelayCommand<Item> PlayCommand { get; }
+        public RelayCommand<Item> PlayShuffleCommand { get; }
+        
         [Reactive] public partial Playlist Playlist { get; set; }
         public RelayCommand PlaylistAltMenuCommand { get; }
         public RelayCommand PlaylistFullViewCommand { get; }
         public ObservableCollection<TrackViewModel>? Tracks { get; set; }
 
+        private string _runningTime;
+        public string RunningTime
+        {
+            get => _runningTime;
+            set => this.RaiseAndSetIfChanged(ref _runningTime, value);
+        }
+        [Reactive] public override partial bool IsLoading { get; set; }
         public PlaylistViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, Playlist? playlist = null)
             : base(client: massClient, playersService: playersService)
         {
@@ -43,6 +53,12 @@ namespace WateryTart.Core.ViewModels
             PlayCommand = new RelayCommand<Item>((i) =>
             {
                 _ = _playersService?.PlayItem(Playlist as MediaItemBase);
+            });
+
+            PlayShuffleCommand = new RelayCommand<Item>((i) =>
+            {
+                _ = _playersService?.PlayItem(Playlist as MediaItemBase);
+                _ = _playersService?.PlayerShuffle(null, true);
             });
         }
 
@@ -77,6 +93,10 @@ namespace WateryTart.Core.ViewModels
                     foreach (var t in tracksResponse.Result)
                         Tracks?.Add(new TrackViewModel(_client, _playersService!, t));
                 }
+
+                var totalSeconds = Tracks?.Sum(t => t.Track?.Duration ?? 0) ?? 0;
+                var ts = TimeSpan.FromSeconds((int)totalSeconds);
+                RunningTime = $"{(int)ts.TotalHours}h {ts.Minutes}m";
             }
             catch (Exception ex)
             {
