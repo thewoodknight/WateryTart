@@ -52,86 +52,13 @@
         <ItemsControl
                   Padding="0"
                   Background="Transparent"
+                  ItemTemplate="{StaticResource trackMediumReusableTemplate}"
                   ItemsSource="{Binding RecentTracks}">
             <ItemsControl.Styles>
                 <Style Selector="ContentPresenter">
                     <Setter Property="Padding" Value="0,10,0,10" />
                 </Style>
             </ItemsControl.Styles>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="50" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-
-                        <!--  Album Art  -->
-                        <Border
-                                  Grid.Column="0"
-                                  ClipToBounds="True"
-                                  CornerRadius="5">
-                            <asyncImageLoader:AdvancedImage
-                                      Width="50"
-                                      Height="50"
-                                      FallbackImage="{x:Static app:App.FallbackImage}"
-                                      Loader="{x:Static app:App.ImageLoaderInstance}"
-                                      Source="{Binding Path=Track, Converter={StaticResource MetadataImageConverter}}">
-                                <Interaction.Behaviors>
-                                    <EventTriggerBehavior EventName="Tapped">
-                                        <InvokeCommandAction Command="{Binding TrackFullViewCommand}" />
-                                    </EventTriggerBehavior>
-                                </Interaction.Behaviors>
-                            </asyncImageLoader:AdvancedImage>
-                        </Border>
-
-                        <!--  Track Info  -->
-                        <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
-                            <iconPacks:PackIconMaterial
-                                      Grid.Column="0"
-                                      Width="20"
-                                      Height="20"
-                                      Margin="5,0,0,0"
-                                      VerticalAlignment="Top"
-                                      IsVisible="{Binding IsNowPlaying}"
-                                      Kind="VolumeHigh" />
-
-                            <TextBlock
-                                      Grid.Column="1"
-                                      Margin="10,0,0,0"
-                                      Text="{Binding Track.Name}"
-                                      TextTrimming="CharacterEllipsis" />
-
-                            <TextBlock
-                                      Grid.Column="1"
-                                      Margin="10,20,0,0"
-                                      FontSize="{StaticResource SmallFontSize}"
-                                      Foreground="{StaticResource FadedTextColourBrush}"
-                                      Text="{Binding Track.Artists[0].Name}"
-                                      TextTrimming="CharacterEllipsis" />
-                        </Grid>
-
-                        <TextBlock
-                                  Grid.Column="2"
-                                  Foreground="{StaticResource FadedTextColourBrush}"
-                                  Text="{Binding Track.Duration, Converter={StaticResource SecondsToMinutesConverter}}" />
-
-                        <Button
-                                  Grid.Column="3"
-                                  VerticalAlignment="Top"
-                                  Classes="iconButton navButton"
-                                  Command="{Binding TrackAltMenuCommand}">
-                            <iconPacks:PackIconMaterial
-                                      Width="{StaticResource AltMenuSize}"
-                                      Height="{StaticResource AltMenuSize}"
-                                      Kind="DotsVertical" />
-                        </Button>
-                    </Grid>
-
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
         </ItemsControl>
 
 
