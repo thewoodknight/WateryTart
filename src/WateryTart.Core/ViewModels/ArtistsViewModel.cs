@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using WateryTart.Core.Services;
 using WateryTart.MusicAssistant;
+using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels;
@@ -31,7 +32,10 @@ public partial class ArtistsViewModel : ViewModelBase<ArtistsViewModel>
         ClickedCommand = new RelayCommand<ArtistViewModel>(item =>
         {
             if (item != null)
+            {
                 HostScreen.Router.Navigate.Execute(item);
+                item.LoadFromId(item.Artist.ItemId, item.Artist.Provider);
+            }
         });
 
         LoadMoreCommand = new AsyncRelayCommand(
