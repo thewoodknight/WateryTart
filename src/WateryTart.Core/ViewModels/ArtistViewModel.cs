@@ -28,7 +28,7 @@ namespace WateryTart.Core.ViewModels
         public RelayCommand ArtistFullViewCommand { get; }
         public Image? ArtistLogo { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.Type == ImageType.Logo); } }
         public Image? ArtistThumb { get { return Artist?.Metadata?.Images?.FirstOrDefault(i => i.Type == ImageType.Thumb); } }
-        [Reactive] public partial string InputProviderIcon { get; set; } = string.Empty;
+        [Reactive] public partial string InputProviderIcon { get; set; } = App.BlankSvg;
         public RelayCommand PlayArtistCommand { get; }
         public RelayCommand PlayArtistRadioCommand { get; }
         [Reactive] public partial ProviderManifest? Provider { get; set; } = null;

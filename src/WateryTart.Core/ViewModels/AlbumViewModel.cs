@@ -27,7 +27,7 @@ public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
     [Reactive] public partial Album? Album { get; set; }
     public RelayCommand AlbumAltMenuCommand { get; }
     public RelayCommand AlbumFullViewCommand { get; }
-    [Reactive] public partial string InputProviderIcon { get; set; } = string.Empty;
+    [Reactive] public partial string InputProviderIcon { get; set; } = App.BlankSvg;
     public AsyncRelayCommand PlayAlbumCommand { get; }
     public ICommand ArtistViewCommand { get; set; }
     public ICommand AlbumAltCommand { get; set; }
@@ -35,8 +35,9 @@ public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
     [Reactive] public partial ObservableCollection<TrackViewModel> Tracks { get; set; }
     public AsyncRelayCommand<Item?> TrackTappedCommand { get; }
     public ICommand ToggleFavoriteCommand { get; set; }
+    [Reactive] public override partial bool IsLoading { get; set; }
     public AlbumViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService? playersService, Album? a = null)
-        :base(null, massClient, playersService)
+        : base(null, massClient, playersService)
     {
         _providerservice = App.Container.Resolve<ProviderService>();
         HostScreen = screen;
@@ -138,9 +139,10 @@ public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
 
     private async Task LoadAlbumDataAsync(string id, string provider)
     {
-        IsLoading = true;
+
         try
         {
+            IsLoading = true;
             var albumResponse = await _client.WithWs().GetMusicAlbumAsync(id, provider);
             Album = albumResponse.Result;
             if (Album != null && Album.Name != null)
@@ -160,14 +162,20 @@ public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
         {
             Debug.WriteLine($"Error loading album: {ex.Message}");
         }
+        finally
+        {
+            IsLoading = false; 
+        }
+
 
         try
         {
-            if(Tracks.Count == 0)
+            IsLoading = true;
+            if (Tracks.Count == 0)
             {
                 var tracksResponse = await _client.WithWs().GetMusicAlbumTracksAsync(id, provider);
-                if(tracksResponse.Result != null)
-                    foreach(var t in tracksResponse.Result)
+                if (tracksResponse.Result != null)
+                    foreach (var t in tracksResponse.Result)
                         Tracks.Add(new TrackViewModel(_client, _playersService!, t));
             }
         }
@@ -175,6 +183,9 @@ public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
         {
             Debug.WriteLine($"Error loading tracks: {ex.Message}");
         }
-        IsLoading = false;
+        finally
+        {
+            IsLoading = false;
+        }
     }
 }

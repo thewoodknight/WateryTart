@@ -57,6 +57,8 @@ public partial class App : Application
         }
     }
 
+    public static string BlankSvg => $"<?xml version=\"1.0\" encoding=\"UTF-8\"?><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1\" height=\"1\"/>";
+
 #pragma warning disable CRR0026 // Unused member
     public static Bitmap FallbackImage
     {
@@ -125,7 +127,6 @@ public partial class App : Application
         builder.RegisterType<PlayersViewModel>().SingleInstance();
         builder.RegisterType<MiniPlayerViewModel>().AsSelf().SingleInstance();
         builder.RegisterType<BigPlayerViewModel>().AsSelf().SingleInstance();
-        builder.RegisterType<HomeViewModel>().SingleInstance();
         builder.RegisterType<Home2ViewModel>().SingleInstance();
         //builder.RegisterType<KeyboardVolumeKeyBindingsViewModel>().As<IHaveSettings>().SingleInstance();
         builder.RegisterType<SearchResultsViewModel>().AsSelf().SingleInstance();

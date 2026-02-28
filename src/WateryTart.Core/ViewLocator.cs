@@ -21,7 +21,6 @@ public class ViewLocator : IDataTemplate
     public static readonly Dictionary<Type, Func<Control>> _viewFactories = new()
     {
         // Main navigation views
-        [typeof(HomeViewModel)] = () => new HomeView(),
         [typeof(Home2ViewModel)] = () => new Home2View(),
         [typeof(LibraryViewModel)] = () => new LibraryView(),
         [typeof(SearchViewModel)] = () => new SearchView(),
