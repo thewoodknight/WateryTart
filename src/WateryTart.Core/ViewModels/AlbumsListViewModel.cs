@@ -20,12 +20,13 @@ public partial class AlbumsListViewModel : ViewModelBase<AlbumsListViewModel>
     [Reactive] public partial bool HasMoreItems { get; set; } = true;
     public AsyncRelayCommand LoadMoreCommand { get; }
     public AlbumViewModel? SelectedAlbum { get; set; }
-    public override string Title => "Albums";
+    [Reactive] public override partial bool IsLoading { get; set; }
     public AlbumsListViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService)
         : base(null, massClient, playersService)
     {
         HostScreen = screen;
         Albums = [];
+        Title = "Albums";
 
         GoNext = new RelayCommand(() =>
         {

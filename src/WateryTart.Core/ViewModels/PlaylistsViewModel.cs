@@ -16,7 +16,9 @@ public partial class PlaylistsViewModel : ViewModelBase<PlaylistsViewModel>
     [Reactive] public partial ObservableCollection<PlaylistViewModel> Playlists { get; set; } = new();
     [Reactive] public partial bool HasMoreItems { get; set; } = true;
     [Reactive] public partial int CurrentOffset { get; set; } = 0;
-    
+
+    [Reactive] public override partial bool IsLoading { get; set; }
+
     private const int PageSize = 50;
 
     public RelayCommand<PlaylistViewModel> ClickedCommand { get; }

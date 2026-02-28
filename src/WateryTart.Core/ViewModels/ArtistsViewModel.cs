@@ -19,6 +19,8 @@ public partial class ArtistsViewModel : ViewModelBase<ArtistsViewModel>
     public RelayCommand<ArtistViewModel> ClickedCommand { get; }
     [Reactive] public partial int CurrentOffset { get; set; } = 0;
     [Reactive] public partial bool HasMoreItems { get; set; } = true;
+
+    [Reactive] public override partial bool IsLoading { get; set; }
     public AsyncRelayCommand LoadMoreCommand { get; }
 
     public ArtistsViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, ILoggerFactory loggerFactory)
