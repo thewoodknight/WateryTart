@@ -45,6 +45,7 @@
 		<PackageReference Include="AsyncImageLoader.Avalonia" />
 		<PackageReference Include="Autofac" />
 		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Labs.Lottie" />
 		<PackageReference Include="Avalonia.Themes.Fluent" />
 		<PackageReference Include="Avalonia.Fonts.Inter" />
 		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->

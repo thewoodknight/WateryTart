@@ -9,6 +9,7 @@
           xmlns:converters="clr-namespace:WateryTart.Core.Converters"
           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
           xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+          xmlns:lottie="using:Avalonia.Labs.Lottie"
           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
           xmlns:vm="clr-namespace:WateryTart.Core.ViewModels"
           xmlns:wateryTart="clr-namespace:AsyncImageLoader.Loaders;assembly=AsyncImageLoader.Avalonia"
@@ -153,19 +154,24 @@
                         <TextBlock
                                   HorizontalAlignment="Left"
                                   Foreground="{StaticResource FadedTextColour}"
+                                  IsVisible="{Binding !IsNowPlaying}"
                                   Text="{Binding Track.TrackNumber}" />
 
-                        <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
-                            <!--  Now Playing Indicator  -->
-                            <iconPacks:PackIconMaterial
-                                      Width="24"
-                                      Height="24"
-                                      Margin="5,0,5,0"
+
+                        <Viewbox
+                                  Width="24"
+                                  Height="24"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Top"
+                                  IsVisible="{Binding IsNowPlaying}"
+                                  Stretch="Uniform">
+                            <lottie:Lottie
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"
-                                      IsVisible="{Binding IsNowPlaying}"
-                                      Kind="VolumeHigh" />
+                                      Path="/Assets/nowplaying.json" />
+                        </Viewbox>
 
+                        <Grid Grid.Column="1" ColumnDefinitions="Auto,*">
                             <!--  Track Info  -->
                             <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding Track.Name}" TextTrimming="CharacterEllipsis" />

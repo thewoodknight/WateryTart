@@ -10,6 +10,7 @@
     <PackageVersion Include="Autofac" Version="9.0.0" />
     <PackageVersion Include="Avalonia" Version="11.3.12" />
     <PackageVersion Include="Avalonia.Labs.CommandManager" Version="11.3.1" />
+    <PackageVersion Include="Avalonia.Labs.Lottie" Version="11.3.1" />
     <PackageVersion Include="Avalonia.LinuxFramebuffer" Version="11.3.12" />
     <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.12" />
     <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.12" />
