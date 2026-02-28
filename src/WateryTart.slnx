@@ -21,6 +21,18 @@
       <BuildType Solution="ARMRELEASE|*" Project="Release" />
       <BuildType Solution="X64Debug|*" Project="Release" />
     </Project>
+    <Project Path="WateryTart.MusicAssistant/src/WateryTart.MusicAssistant.Generators.Attributes/WateryTart.MusicAssistant.Generators.Attributes.csproj">
+      <BuildType Solution="ARMRELEASE|*" Project="Release" />
+      <BuildType Solution="X64Debug|*" Project="Release" />
+    </Project>
+    <Project Path="WateryTart.MusicAssistant/src/WateryTart.MusicAssistant.Generators/WateryTart.MusicAssistant.Generators.csproj">
+      <BuildType Solution="ARMRELEASE|*" Project="Release" />
+      <BuildType Solution="X64Debug|*" Project="Release" />
+    </Project>
+    <Project Path="WateryTart.MusicAssistant/src/WateryTart.MusicAssistant/WateryTart.MusicAssistant.csproj">
+      <BuildType Solution="ARMRELEASE|*" Project="Release" />
+      <BuildType Solution="X64Debug|*" Project="Release" />
+    </Project>
     <Project Path="windowsSpin/src/Sendspin.SDK/Sendspin.SDK.csproj">
       <BuildType Solution="ARMRELEASE|*" Project="Release" />
       <BuildType Solution="X64Debug|*" Project="Release" />

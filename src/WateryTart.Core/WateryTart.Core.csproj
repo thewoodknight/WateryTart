@@ -69,7 +69,6 @@
 		<PackageReference Include="Svg.Controls.Skia.Avalonia" />
 		<PackageReference Include="System.Device.Gpio" />
 		<PackageReference Include="Velopack" />
-		<PackageReference Include="WateryTart.MusicAssistant" />
 		<PackageReference Include="Xaml.Behaviors.Avalonia" />
 		<PackageReference Include="Xaml.Behaviors.Interactivity" />
 		<PackageReference Include="Xaml.Behaviors.SourceGenerators">
@@ -82,6 +81,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Fleck\src\Fleck\Fleck.csproj" />
+	  <ProjectReference Include="..\WateryTart.MusicAssistant\src\WateryTart.MusicAssistant\WateryTart.MusicAssistant.csproj" />
 	  <ProjectReference Include="..\windowsSpin\src\Sendspin.SDK\Sendspin.SDK.csproj" />
 	</ItemGroup>
 
