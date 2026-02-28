@@ -1,5 +1,48 @@
 # Changelog
 
+## [1.5.0](https://github.com/TemuWolverine/WateryTart/compare/v1.4.0...v1.5.0) (2026-02-28)
+
+
+### Features
+
+* added Home2View/Model, a redesigned Home page with discovery lists, much quicker loading than the recommendations. ([7549da6](https://github.com/TemuWolverine/WateryTart/commit/7549da6d8336ed128c49690b638600885a824eca))
+* **AlbumView:** Album view now looks cleaner, has slightly more functionality. ([16e58a4](https://github.com/TemuWolverine/WateryTart/commit/16e58a4d970e71efa8c685b9f0bc597bdc7977a8))
+* **Artist:** Artist profile now prettier, has more functional buttons (play, (un)favourite) ([1e6f6d9](https://github.com/TemuWolverine/WateryTart/commit/1e6f6d9ce2c39bb161a6dee659b7adad3a90c48f))
+* more improvements to Home2View, with it now correctly showing  discovery album/artist ([703d6ee](https://github.com/TemuWolverine/WateryTart/commit/703d6ee2745e8aabebba55e6dac2814fc281d162))
+* **Playback:** New experimental playback engine for Windows, powered by SoundFlow. If it turns out to be acceptable, it should make its way to other platforms too. ([9a0e755](https://github.com/TemuWolverine/WateryTart/commit/9a0e7553fcb420ce2e6fccb143b1853334f9ec09))
+* **Visuals:** Players tray now looks significantly nicer. ([95ed02e](https://github.com/TemuWolverine/WateryTart/commit/95ed02e847efc62ba22c784cbe3aec6cb25ebe39))
+* **Visuals:** Settings reworked to be much easier on the eyes and more logically grouped. ([99cf9f0](https://github.com/TemuWolverine/WateryTart/commit/99cf9f0c7c30c9d8be52677980e01508d7be73dd))
+* **Visuals:** Visual cleanup, button consistency (radio, alt menu) & big player view improvements ([917d9a9](https://github.com/TemuWolverine/WateryTart/commit/917d9a960d78a5e26c598de6f8787777890bb5c9))
+
+
+### Bug Fixes
+
+* Addressed clickability of individual items on the home page. ([fde2a29](https://github.com/TemuWolverine/WateryTart/commit/fde2a2945f44b1035c0549b93035ac9a478b7d82))
+* album view prettified ([94da85c](https://github.com/TemuWolverine/WateryTart/commit/94da85cccec239ca452df58aef62e4a38ed426bf))
+* albums won't reload tracks if the tracks had previously been loaded. ([2564e6f](https://github.com/TemuWolverine/WateryTart/commit/2564e6fad7c9d9878de08cce5238bdc4202ac1c1))
+* artist view now has a dropshadow ([f8acf55](https://github.com/TemuWolverine/WateryTart/commit/f8acf5505bf6c4b8ac9f5495c5767d5cc5c1f708))
+* big player now correctly loads albums ([465023b](https://github.com/TemuWolverine/WateryTart/commit/465023b7a1fa8a8c9f7bf77543fc06f90a41a5db))
+* build script should now use native-aot for windows ([57fcced](https://github.com/TemuWolverine/WateryTart/commit/57fcced4258287844cf247f55cf7a49eebbc3384))
+* cleanup of windows platform's players ([9a341d7](https://github.com/TemuWolverine/WateryTart/commit/9a341d759b4fc9ab4fc94399c4e241db08ce643b))
+* consistency in settings navigation visibility ([e249de6](https://github.com/TemuWolverine/WateryTart/commit/e249de68ec5cdd1b017b3a3afd6836aa1d5d21e4))
+* corrected artist details not loading ([d8ee5fc](https://github.com/TemuWolverine/WateryTart/commit/d8ee5fcde584914bb17bb001a16bb80a4dde2ced))
+* corrected IsLoading on several viewmodels ([0f5f36e](https://github.com/TemuWolverine/WateryTart/commit/0f5f36e8c4c62e065159ba068daf96372bd951e1))
+* fixed linux-x64 for aot mode ([a31f3f3](https://github.com/TemuWolverine/WateryTart/commit/a31f3f39472300cdf55608bdb2614df7aaa281bf))
+* Home2View uses a reusable template now ([205006a](https://github.com/TemuWolverine/WateryTart/commit/205006a6a0d575932a8f5298e18dac36d9b0e955))
+* improved the base vm class, implemented it more ([5fa1d84](https://github.com/TemuWolverine/WateryTart/commit/5fa1d848a0cbe73af7fd2d85f7894171a3b84201))
+* Library view is prettfied ([7715440](https://github.com/TemuWolverine/WateryTart/commit/77154404e8aaae53e5a56fa9c58931b69fab2f77))
+* Linux publish profiles more correcter ([2a3964b](https://github.com/TemuWolverine/WateryTart/commit/2a3964b83ec4f2f575d7887b2c932ccf569e94f7))
+* linux-arm64 build fixes ([7342f5f](https://github.com/TemuWolverine/WateryTart/commit/7342f5f3fc22e6e9c837f36a0c4c778607786946))
+* linuxarm64 presents issues with AOT currently. Fixed up the GPIO service causing crashes ([09e1678](https://github.com/TemuWolverine/WateryTart/commit/09e1678d063b6a45b08fe51de24b9d56da71b58f))
+* More players tray visual tweaks ([46799ca](https://github.com/TemuWolverine/WateryTart/commit/46799cad722c19ca8acc796ee586f0f9494ed1a6))
+* **Playback:** Address WASAPI exception issues ([087bf94](https://github.com/TemuWolverine/WateryTart/commit/087bf9400984d77eefd73cf5b57eb9b97d1c3c28))
+* **Playback:** more MVVM ([e1183dd](https://github.com/TemuWolverine/WateryTart/commit/e1183dd9e1de94d454112960e3f4f5020eacd7b8))
+* playlist view prettified ([0262beb](https://github.com/TemuWolverine/WateryTart/commit/0262bebef402098df4b8a450fc8ad7c8fa836358))
+* removed old homeview/model, added default svg (blank) icon ([37e5945](https://github.com/TemuWolverine/WateryTart/commit/37e59458daa82d50821f63cadd489aef2e92339b))
+* the big one. This addresses nearly all classes, cleaning up old code, reducing build warnings and messages, and switches to use teh new ViewModelBase where appropriate. ([893b3a2](https://github.com/TemuWolverine/WateryTart/commit/893b3a2bb99c58603309d22c4a836d691b80598b))
+* **Visuals:** more restyling ([5a80f85](https://github.com/TemuWolverine/WateryTart/commit/5a80f85aecd76ae5a18e6033a97030e8e80b0dfd))
+* XAML cleanup - moved repeated resources into single source of truth, split out of app.xaml into Converters, DataTemplates, GlobalResourceStyles, Styles.axaml ([fabdfcb](https://github.com/TemuWolverine/WateryTart/commit/fabdfcbf27e1f8d8dde9613e904322e0776ace42))
+
 ## [1.4.0](https://github.com/TemuWolverine/WateryTart/compare/v1.3.1...v1.4.0) (2026-02-24)
 
 
