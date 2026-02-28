@@ -3,6 +3,7 @@ using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System.Windows.Input;
 using WateryTart.Core.Services;
+using Autofac;
 
 namespace WateryTart.Core.ViewModels.Players
 {
@@ -24,7 +25,7 @@ namespace WateryTart.Core.ViewModels.Players
         [ReactiveCommand]
         private void Clicked()
         {
-            var vm = App.Container?.GetRequiredService<BigPlayerViewModel>();
+            var vm = App.Container?.Resolve<BigPlayerViewModel>();
             if (vm != null) 
                 HostScreen.Router.Navigate.Execute(vm);
         }

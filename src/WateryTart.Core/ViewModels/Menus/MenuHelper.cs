@@ -1,11 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using IconPacks.Avalonia.Material;
 using Microsoft.Extensions.Logging;
-using ReactiveUI;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reactive;
 using System.Windows.Input;
 using WateryTart.Core.Services;
 using WateryTart.MusicAssistant.Models;
@@ -40,7 +37,7 @@ public static class MenuHelper
 
             ICommand playerCommand = new AsyncRelayCommand(async () =>
             {
-                App.Logger?.LogInformation("Playing on {DisplayName}", displayName);
+                //App.Logger?.LogInformation("Playing on {DisplayName}", displayName);
                 playersService.SelectedPlayer = capturedPlayer;
                 await playersService.PlayItem(capturedItem, capturedPlayer);
 

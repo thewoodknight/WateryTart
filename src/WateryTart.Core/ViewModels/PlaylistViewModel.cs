@@ -14,27 +14,18 @@ using WateryTart.Core.ViewModels.Popups;
 
 namespace WateryTart.Core.ViewModels
 {
-    public partial class PlaylistViewModel : ReactiveObject, IViewModelBase
+    public partial class PlaylistViewModel : ViewModelBase<PlaylistViewModel>
     {
-        public string? UrlPathSegment => "playlist";
-        public IScreen HostScreen { get; }
-        private readonly MusicAssistantClient _massClient;
-        private readonly PlayersService _playersService;
-        public bool ShowMiniPlayer => true; 
-        public bool ShowNavigation => true;
-        [Reactive] public partial Playlist Playlist { get; set; }
-        [Reactive] public partial string? Title { get; set; }
-        [Reactive] public partial bool IsLoading { get; set; } = false;
-        public ObservableCollection<TrackViewModel>? Tracks { get; set; }
         public RelayCommand<Item> PlayCommand { get; }
+        [Reactive] public partial Playlist Playlist { get; set; }
         public RelayCommand PlaylistAltMenuCommand { get; }
         public RelayCommand PlaylistFullViewCommand { get; }
+        public ObservableCollection<TrackViewModel>? Tracks { get; set; }
+
         public PlaylistViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, Playlist? playlist = null)
+            : base(client: massClient, playersService: playersService)
         {
-            _massClient = massClient;
-            _playersService = playersService;
             HostScreen = screen;
-            Title = "";
             Playlist = playlist ?? new Playlist();
 
             PlaylistFullViewCommand = new RelayCommand(() =>
@@ -49,17 +40,16 @@ namespace WateryTart.Core.ViewModels
                 MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(playersService, Playlist));
             });
 
-            PlayCommand = new RelayCommand<Item>((i) => { 
-                _playersService.PlayItem(Playlist as MediaItemBase);
+            PlayCommand = new RelayCommand<Item>((i) =>
+            {
+                _ = _playersService?.PlayItem(Playlist as MediaItemBase);
             });
         }
 
         public void LoadFromId(string id, string provider)
         {
-            Tracks = new ObservableCollection<TrackViewModel>();
-#pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
+            Tracks = [];
             _ = LoadPlaylistDataAsync(id, provider);
-#pragma warning restore CS4014
         }
 
         private async Task LoadPlaylistDataAsync(string id, string provider)
@@ -67,7 +57,7 @@ namespace WateryTart.Core.ViewModels
             IsLoading = true;
             try
             {
-                var playlistResponse = await _massClient.WithWs().GetPlaylistAsync(id, provider);
+                var playlistResponse = await _client.WithWs().GetPlaylistAsync(id, provider);
                 if (playlistResponse?.Result != null)
                 {
                     Playlist = playlistResponse.Result;
@@ -81,11 +71,11 @@ namespace WateryTart.Core.ViewModels
 
             try
             {
-                var tracksResponse = await _massClient.WithWs().GetPlaylistTracksAsync(id, provider);
+                var tracksResponse = await _client.WithWs().GetPlaylistTracksAsync(id, provider);
                 if (tracksResponse?.Result != null)
                 {
                     foreach (var t in tracksResponse.Result)
-                        Tracks?.Add(new TrackViewModel(_massClient, HostScreen, _playersService, t));
+                        Tracks?.Add(new TrackViewModel(_client, _playersService!, t));
                 }
             }
             catch (Exception ex)
@@ -97,4 +87,3 @@ namespace WateryTart.Core.ViewModels
         }
     }
 }
-

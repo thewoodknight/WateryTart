@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using WateryTart.Core.Extensions;
@@ -15,7 +14,7 @@ using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
 using WateryTart.MusicAssistant.WsExtensions;
-
+using Autofac;
 namespace WateryTart.Core.ViewModels
 {
     public partial class HomeViewModel : ReactiveObject, IViewModelBase
@@ -58,7 +57,7 @@ namespace WateryTart.Core.ViewModels
                 _logger.LogInformation("Navigating to recommendation: {ItemId}", r?.ItemId);
                 if (App.Container != null)
                 {
-                    var vm = App.Container.GetRequiredService<RecommendationViewModel>();
+                    var vm = App.Container.Resolve<RecommendationViewModel>();
                     vm.SetRecommendation(SourceRecommendations.SingleOrDefault(x => x.ItemId == r.ItemId));
                     screen.Router.Navigate.Execute(vm).Subscribe();
                 }
@@ -74,20 +73,20 @@ namespace WateryTart.Core.ViewModels
                     switch (item.MediaType)
                     {
                         case MediaType.Album:
-                            var albumVm = App.Container.GetRequiredService<AlbumViewModel>();
+                            var albumVm = App.Container.Resolve<AlbumViewModel>();
                             albumVm.Album = item.Album;
                             albumVm.LoadFromId(item.ItemId, item.Provider);
                             HostScreen.Router.Navigate.Execute(albumVm);
                             break;
 
                         case MediaType.Playlist:
-                            var playlistVm = App.Container.GetRequiredService<PlaylistViewModel>();
+                            var playlistVm = App.Container.Resolve<PlaylistViewModel>();
                             playlistVm.LoadFromId(item.ItemId, item.Provider);
                             HostScreen.Router.Navigate.Execute(playlistVm);
                             break;
 
                         case MediaType.Artist:
-                            var artistVm = App.Container.GetRequiredService<ArtistViewModel>();
+                            var artistVm = App.Container.Resolve<ArtistViewModel>();
                             artistVm.LoadFromId(item.ItemId, item.Provider);
                             HostScreen.Router.Navigate.Execute(artistVm);
                             break;

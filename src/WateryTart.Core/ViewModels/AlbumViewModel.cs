@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using Autofac;
+using CommunityToolkit.Mvvm.Input;
 using IconPacks.Avalonia.Material;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WateryTart.Core.Extensions;
 using WateryTart.Core.Services;
 using WateryTart.Core.ViewModels.Menus;
 using WateryTart.Core.ViewModels.Popups;
@@ -19,43 +21,35 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class AlbumViewModel : ReactiveObject, IViewModelBase
+public partial class AlbumViewModel : ViewModelBase<AlbumViewModel>
 {
-    private readonly MusicAssistantClient _massClient;
-    private readonly PlayersService _playersService;
-    private ProviderService _providerservice;
+    private readonly ProviderService _providerservice;
     [Reactive] public partial Album? Album { get; set; }
     public RelayCommand AlbumAltMenuCommand { get; }
     public RelayCommand AlbumFullViewCommand { get; }
-    public IScreen HostScreen { get; }
-    [Reactive] public partial string InputProviderIcon { get; set; }
-    [Reactive] public partial bool IsLoading { get; set; }
+    [Reactive] public partial string InputProviderIcon { get; set; } = string.Empty;
     public AsyncRelayCommand PlayAlbumCommand { get; }
     public ICommand ArtistViewCommand { get; set; }
     public ICommand AlbumAltCommand { get; set; }
-    [Reactive] public partial ProviderManifest Provider { get; set; }
-    public bool ShowMiniPlayer => true;
-    public bool ShowNavigation => true;
-    [Reactive] public partial string Title { get; set; } = string.Empty;
+    [Reactive] public partial ProviderManifest? Provider { get; set; }
     [Reactive] public partial ObservableCollection<TrackViewModel> Tracks { get; set; }
     public AsyncRelayCommand<Item?> TrackTappedCommand { get; }
-    public string? UrlPathSegment { get; } = "Album/ID";
     public ICommand ToggleFavoriteCommand { get; set; }
-    public AlbumViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, Album? a = null)
+    public AlbumViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService? playersService, Album? a = null)
+        :base(null, massClient, playersService)
     {
-        _providerservice = App.Container.GetRequiredService<ProviderService>();
-        _massClient = massClient;
-        _playersService = playersService;
+        _providerservice = App.Container.Resolve<ProviderService>();
         HostScreen = screen;
         Album = a;
-        Tracks = new ObservableCollection<TrackViewModel>();
+        Title = string.Empty;
+        Tracks = [];
 
         ToggleFavoriteCommand = new RelayCommand(() =>
         {
             if (!Album!.Favorite)
-                _ = _massClient.WithWs().AddFavoriteItemAsync(Album);
+                _ = _client.WithWs().AddFavoriteItemAsync(Album);
             else
-                _ = _massClient.WithWs().RemoveFavoriteItemAsync(Album);
+                _ = _client.WithWs().RemoveFavoriteItemAsync(Album);
 
             Album.Favorite = !Album.Favorite;
         });
@@ -70,12 +64,12 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
             [
                 //new MenuItemViewModel("Add to library", PackIconMaterialKind.BookPlusMultiple, addToLibraryCommand),
                 //new MenuItemViewModel("Add to favourites", PackIconMaterialKind.HeartPlus, addToFavouritesCommand),
-                new MenuItemViewModel("Start Radio",PackIconMaterialKind.RadioTower, new RelayCommand(() => _playersService.PlayAlbumRadio(Album)))
+                new MenuItemViewModel("Start Radio",PackIconMaterialKind.RadioTower, new RelayCommand(() => _playersService!.PlayAlbumRadio(Album)))
                 //new MenuItemViewModel("Play", PackIconMaterialKind.Play, playCommand)
             ]);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
-            var playerMenuItems = MenuHelper.AddPlayers(playersService, Album);
+            var playerMenuItems = MenuHelper.AddPlayers(playersService!, Album);
             menu.AddMenuItem(playerMenuItems);
 
 
@@ -89,7 +83,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
                 var artist = Album.Artists[0];
                 if (artist.ItemId != null && artist.Provider != null)
                 {
-                    var vm = new ArtistViewModel(_massClient, HostScreen, _playersService);
+                    var vm = new ArtistViewModel(_client, HostScreen, _playersService!);
                     vm.LoadFromId(artist.ItemId, artist.Provider);
                     screen.Router.Navigate.Execute(vm);
                 }
@@ -98,9 +92,9 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         PlayAlbumCommand = new AsyncRelayCommand(async () =>
         {
             if (Album != null)
-                if (_playersService.SelectedPlayer == null)
+                if (_playersService?.SelectedPlayer == null)
                 {
-                    MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(_playersService, Album));
+                    MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(_playersService!, Album));
                     await Task.CompletedTask;
                 }
                 else
@@ -112,35 +106,34 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         TrackTappedCommand = new AsyncRelayCommand<Item?>((t) =>
         {
             if (t != null)
-                return _playersService.PlayItem(t, mode: PlayMode.Replace);
+                return _playersService!.PlayItem(t, mode: PlayMode.Replace);
             return null!;
         });
+
         AlbumFullViewCommand = new RelayCommand(() =>
         {
-            if (Album.ItemId != null && Album.Provider != null)
+            if (Album?.ItemId != null && Album.Provider != null)
                 LoadFromId(Album.ItemId, Album.Provider);
             screen.Router.Navigate.Execute(this);
         });
+
         AlbumAltMenuCommand = new RelayCommand(() =>
         {
-            MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(playersService, Album));
+            MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(playersService!, Album!));
         });
     }
 
     public void Load(Album album)
     {
         Album = album;
-#pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
+
         if (album.ItemId != null && album.Provider != null)
             _ = LoadAlbumDataAsync(album.ItemId, album.Provider);
-#pragma warning restore CS4014
     }
 
     public void LoadFromId(string id, string provider)
     {
-#pragma warning disable CS4014 // Fire-and-forget intentional - loads data asynchronously
         _ = LoadAlbumDataAsync(id, provider);
-#pragma warning restore CS4014
     }
 
     private async Task LoadAlbumDataAsync(string id, string provider)
@@ -148,7 +141,7 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         IsLoading = true;
         try
         {
-            var albumResponse = await _massClient.WithWs().GetMusicAlbumAsync(id, provider);
+            var albumResponse = await _client.WithWs().GetMusicAlbumAsync(id, provider);
             Album = albumResponse.Result;
             if (Album != null && Album.Name != null)
                 Title = Album.Name;
@@ -172,10 +165,10 @@ public partial class AlbumViewModel : ReactiveObject, IViewModelBase
         {
             if(Tracks.Count == 0)
             {
-                var tracksResponse = await _massClient.WithWs().GetMusicAlbumTracksAsync(id, provider);
+                var tracksResponse = await _client.WithWs().GetMusicAlbumTracksAsync(id, provider);
                 if(tracksResponse.Result != null)
                     foreach(var t in tracksResponse.Result)
-                        Tracks.Add(new TrackViewModel(_massClient, HostScreen, _playersService, t));
+                        Tracks.Add(new TrackViewModel(_client, _playersService!, t));
             }
         }
         catch (Exception ex)

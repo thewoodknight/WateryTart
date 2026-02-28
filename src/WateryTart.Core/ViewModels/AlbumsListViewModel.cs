@@ -11,35 +11,29 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
+public partial class AlbumsListViewModel : ViewModelBase<AlbumsListViewModel>
 {
     private const int PageSize = 50;
-    private readonly MusicAssistantClient _massClient;
-    private readonly PlayersService _playersService;
     public ObservableCollection<AlbumViewModel> Albums { get; set; }
     [Reactive] public partial int CurrentOffset { get; set; } = 0;
     public RelayCommand GoNext { get; }
     [Reactive] public partial bool HasMoreItems { get; set; } = true;
-    public IScreen HostScreen { get; }
-    [Reactive] public partial bool IsLoading { get; set; }
     public AsyncRelayCommand LoadMoreCommand { get; }
     public AlbumViewModel? SelectedAlbum { get; set; }
-    public bool ShowMiniPlayer => true;
-    public bool ShowNavigation => true;
-    [Reactive] public partial string Title { get; set; } = "Albums";
-    public string? UrlPathSegment { get; } = "AlbumsList";
-
+    public override string Title => "Albums";
     public AlbumsListViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService)
+        : base(null, massClient, playersService)
     {
-        _massClient = massClient;
-        _playersService = playersService;
         HostScreen = screen;
-        Albums = new ObservableCollection<AlbumViewModel>();
+        Albums = [];
 
         GoNext = new RelayCommand(() =>
         {
-            screen.Router.Navigate.Execute(SelectedAlbum);
-            SelectedAlbum.Load(SelectedAlbum.Album);
+            if (SelectedAlbum != null && SelectedAlbum.Album != null)
+            {
+                screen.Router.Navigate.Execute(SelectedAlbum);
+                SelectedAlbum.Load(SelectedAlbum.Album);
+            }
             //SelectedAlbum = null;
         });
 
@@ -48,9 +42,7 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
             () => !IsLoading && HasMoreItems
         );
 
-#pragma warning disable CS4014
         _ = LoadInitialAsync();
-#pragma warning restore CS4014
     }
 
     private async Task LoadAlbumsAsync()
@@ -62,13 +54,13 @@ public partial class AlbumsListViewModel : ReactiveObject, IViewModelBase
         {
             IsLoading = true;
 
-            var response = await _massClient.WithWs().GetMusicAlbumsLibraryItemsAsync(limit: PageSize, offset: CurrentOffset);
+            var response = await _client.WithWs().GetMusicAlbumsLibraryItemsAsync(limit: PageSize, offset: CurrentOffset);
 
             if (response?.Result != null)
             {
                 foreach (var album in response.Result)
                 {
-                    Albums.Add(new AlbumViewModel(_massClient, HostScreen, _playersService, album));
+                    Albums.Add(new AlbumViewModel(_client, HostScreen, _playersService, album));
                 }
 
                 HasMoreItems = response.Result.Count == PageSize;

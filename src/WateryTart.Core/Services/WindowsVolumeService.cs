@@ -5,9 +5,8 @@ namespace WateryTart.Core.Services;
 
 public class WindowsVolumeService : IVolumeService, IReaper
 {
-    private readonly PlayersService playerService;
-    private EventLoopGlobalHook _hook;
-
+    private readonly EventLoopGlobalHook _hook;
+    private readonly PlayersService _playerService;
     public bool IsEnabled { get; set; }
 
     public WindowsVolumeService(PlayersService playerService)
@@ -19,7 +18,13 @@ public class WindowsVolumeService : IVolumeService, IReaper
         _hook.KeyReleased += OnKeyReleased;
 
         _hook.RunAsync();
-        this.playerService = playerService;
+        _playerService = playerService;
+    }
+
+    public void Reap()
+    {
+        _hook?.Stop();
+        _hook?.Dispose();
     }
 
     private void OnHookDisabled(object? sender, HookEventArgs e)
@@ -35,26 +40,24 @@ public class WindowsVolumeService : IVolumeService, IReaper
         switch (e.Data.KeyCode)
         {
             case SharpHook.Data.KeyCode.VcVolumeUp:
-                playerService.PlayerVolumeUp();
+                _playerService?.PlayerVolumeUp();
                 break;
+
             case SharpHook.Data.KeyCode.VcVolumeDown:
-                playerService.PlayerVolumeDown();
+                _playerService?.PlayerVolumeDown();
                 break;
+
             case SharpHook.Data.KeyCode.VcMediaPlay:
-                playerService.PlayerPlayPause();
+                _playerService?.PlayerPlayPause();
                 break;
+
             case SharpHook.Data.KeyCode.VcMediaNext:
-                playerService.PlayerNext();
+                _playerService?.PlayerNext();
                 break;
+
             case SharpHook.Data.KeyCode.VcMediaPrevious:
-                playerService.PlayerPrevious();
+                _playerService?.PlayerPrevious();
                 break;
         }
-    }
-
-    public void Reap()
-    {
-        _hook?.Stop();
-        _hook?.Dispose();
     }
 }

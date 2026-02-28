@@ -90,13 +90,4 @@ public class ViewLocator : IDataTemplate
     {
         _viewFactories[typeof(TViewModel)] = () => new TView();
     }
-
-    /// <summary>
-    /// Register a custom ViewModel-to-View mapping with a factory function.
-    /// </summary>
-    public static void RegisterView<TViewModel>(Func<Control> factory) 
-        where TViewModel : class
-    {
-        _viewFactories[typeof(TViewModel)] = factory;
-    }
 }

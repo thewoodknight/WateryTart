@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Runtime.CompilerServices;
-using WateryTart.Core.Settings;
+﻿using Autofac;
 using WateryTart.Core.ViewModels;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
@@ -32,7 +30,7 @@ public static class ItemExtensions
 
     private static TrackViewModel CreateTrackViewModel(Item item)
     {
-        var vm = App.Container.GetRequiredService<TrackViewModel>();
+        var vm = App.Container.Resolve<TrackViewModel>();
         vm.Track = item;
         //  vm.LoadFromId(item.ItemId, item.Provider);
         return vm;
@@ -40,7 +38,7 @@ public static class ItemExtensions
 
     private static AlbumViewModel CreateAlbumViewModel(Item item)
     {
-        var vm = App.Container.GetRequiredService<AlbumViewModel>();
+        var vm = App.Container.Resolve<AlbumViewModel>();
         vm.Album = item.Album;
         vm.LoadFromId(item.ItemId, item.GetProviderInstance());
         return vm;
@@ -48,14 +46,14 @@ public static class ItemExtensions
 
     private static PlaylistViewModel CreatePlaylistViewModel(Item item)
     {
-        var vm = App.Container.GetRequiredService<PlaylistViewModel>();
+        var vm = App.Container.Resolve<PlaylistViewModel>();
         vm.LoadFromId(item.ItemId, item.GetProviderInstance());
         return vm;
     }
 
     private static ArtistViewModel CreateArtistViewModel(Item item)
     {
-        var vm = App.Container.GetRequiredService<ArtistViewModel>();
+        var vm = App.Container.Resolve<ArtistViewModel>();
         vm.LoadFromId(item.ItemId, item.GetProviderInstance());
         return vm;
     }

@@ -11,15 +11,8 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
+public partial class PlaylistsViewModel : ViewModelBase<PlaylistsViewModel>
 {
-    public string? UrlPathSegment { get; } = "Playlists";
-    public IScreen HostScreen { get; }
-    private readonly MusicAssistantClient _massClient;
-    private readonly PlayersService _playersService;
-    private readonly ILogger _logger;
-    [Reactive] public partial bool IsLoading { get; set; } = false;
-    [Reactive] public partial string Title { get; set; }
     [Reactive] public partial ObservableCollection<PlaylistViewModel> Playlists { get; set; } = new();
     [Reactive] public partial bool HasMoreItems { get; set; } = true;
     [Reactive] public partial int CurrentOffset { get; set; } = 0;
@@ -28,15 +21,9 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
 
     public RelayCommand<PlaylistViewModel> ClickedCommand { get; }
     public AsyncRelayCommand LoadMoreCommand { get; }
-    public bool ShowMiniPlayer => true;
-    public bool ShowNavigation => true;
-
     public PlaylistsViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, ILoggerFactory loggerFactory)
+            : base(loggerFactory, massClient, playersService, screen)
     {
-        _massClient = massClient;
-        _playersService = playersService;
-        _logger = loggerFactory.CreateLogger<PlaylistsViewModel>();
-        HostScreen = screen;
         Title = "Playlists";
 
         ClickedCommand = new RelayCommand<PlaylistViewModel>(item =>
@@ -45,7 +32,7 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
                 return;
 
             item.LoadFromId(item.Playlist.ItemId, item.Playlist.Provider);
-            screen.Router.Navigate.Execute(item);
+            HostScreen.Router.Navigate.Execute(item);
         }, item => item != null);
 
         LoadMoreCommand = new AsyncRelayCommand(LoadMoreAsync, CanLoadMore);
@@ -58,9 +45,7 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
             }
         };
 
-#pragma warning disable CS4014
         _ = LoadInitialAsync();
-#pragma warning restore CS4014
     }
 
     private bool CanLoadMore()
@@ -89,13 +74,13 @@ public partial class PlaylistsViewModel : ReactiveObject, IViewModelBase
         {
             IsLoading = true;
             
-            var response = await _massClient.WithWs().GetPlaylistsAsync(limit: PageSize, offset: CurrentOffset);
+            var response = await _client.WithWs().GetPlaylistsAsync(limit: PageSize, offset: CurrentOffset);
             
             if (response?.Result != null)
             {
                 foreach (var playlist in response.Result)
                 {
-                    Playlists.Add(new PlaylistViewModel(_massClient, HostScreen, _playersService, playlist));
+                    Playlists.Add(new PlaylistViewModel(_client, HostScreen, _playersService!, playlist));
                 }
 
                 HasMoreItems = response.Result.Count == PageSize;

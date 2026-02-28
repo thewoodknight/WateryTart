@@ -1,3 +1,4 @@
+using Autofac;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
@@ -34,7 +35,7 @@ public partial class MainWindow : Window
             if (vm == null)
                 return;
 
-            _settings = App.Container.GetRequiredService<ISettings>();
+            _settings = App.Container.Resolve<ISettings>();
             if (_settings.WindowWidth != 0)
             {
                 Width = _settings.WindowWidth;
@@ -50,7 +51,7 @@ public partial class MainWindow : Window
             {
                 if(_trayService == null)
                 {
-                    _trayService = App.Container.GetRequiredService<ITrayService>();
+                    _trayService = App.Container.Resolve<ITrayService>();
                     _trayService.Initialize(this);
                 }
 

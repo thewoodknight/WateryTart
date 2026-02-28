@@ -136,10 +136,8 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
             {
                 SetError("No Music Assistant servers found on the network. Make sure your server is running.");
             }
-            else if (SelectedServer == null)
-            {
-                SelectedServer = DiscoveredServers[0];
-            }
+            else 
+                SelectedServer ??= DiscoveredServers[0];
         }
         catch (Exception ex)
         {
@@ -159,12 +157,7 @@ public partial class LoginViewModel : ReactiveObject, IViewModelBase, IDisposabl
             if (!DiscoveredServers.Any(s => s.Address == server.Address && s.Port == server.Port))
             {
                 DiscoveredServers.Add(server);
-
-                // Auto-select if it's the first one
-                if (SelectedServer == null)
-                {
-                    SelectedServer = server;
-                }
+                SelectedServer ??= server;
             }
         });
     }

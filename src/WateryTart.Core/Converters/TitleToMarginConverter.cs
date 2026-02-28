@@ -7,7 +7,7 @@ namespace WateryTart.Core.Converters
 {
     public class TitleToMarginConverter : IValueConverter
     {
-        public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             var title = value as string;
             return string.IsNullOrWhiteSpace(title)

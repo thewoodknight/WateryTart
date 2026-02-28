@@ -8,12 +8,16 @@ namespace WateryTart.Core.Converters
 {
     public class QualityToBackgroundBrushConverter : IValueConverter
     {
-        private static readonly SolidColorBrush LowBrush = new SolidColorBrush(Color.Parse("#FFA500")); // Orange
-        private static readonly SolidColorBrush GoodBrush = new SolidColorBrush(Color.Parse("#90EE90")); // LightGreen
-        private static readonly SolidColorBrush HiresBrush = new SolidColorBrush(Color.Parse("#00FFFF")); // Cyan
+        private static readonly SolidColorBrush LowBrush = new(Color.Parse("#FFA500")); // Orange
+        private static readonly SolidColorBrush GoodBrush = new(Color.Parse("#90EE90")); // LightGreen
+        private static readonly SolidColorBrush HiresBrush = new(Color.Parse("#00FFFF")); // Cyan
 
-        public object Convert(object? value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
+            if (value == null)
+            {
+                return LowBrush;
+            }
             if (value is QualityTier qt)
             {
                 return qt switch
@@ -31,6 +35,9 @@ namespace WateryTart.Core.Converters
             return LowBrush;
         }
 
-        public object ConvertBack(object? value, Type targetType, object parameter, CultureInfo culture) => throw new NotImplementedException();
+        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            return value;
+        }
     }
 }

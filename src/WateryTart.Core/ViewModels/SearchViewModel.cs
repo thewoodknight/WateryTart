@@ -21,20 +21,9 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class SearchViewModel : ReactiveObject, IViewModelBase
+public partial class SearchViewModel : ViewModelBase<SearchViewModel>
 {
-    private readonly MusicAssistantClient _massClient;
-    private readonly ISettings _settings;
-    private readonly PlayersService _playersService;
-    private readonly ILogger<SearchViewModel> _logger;
     private readonly CompositeDisposable _disposables;
-
-    public string? UrlPathSegment { get; } = "Search";
-    public IScreen HostScreen { get; }
-    public bool ShowMiniPlayer { get => true; }
-    public bool ShowNavigation => true;
-
-    [Reactive] public partial bool IsLoading { get; set; }
     [Reactive] public partial string Title { get; set; } = "Search";
     [Reactive] public partial string SearchTerm { get; set; }
     [Reactive] public partial bool IsSearching { get; set; }
@@ -46,24 +35,24 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
     public RelayCommand ExpandTracksResultsCommand { get; }
     public RelayCommand ExpandPlaylistResultsCommand { get; }
 
-    private CompositeDisposable _subscriptions = new CompositeDisposable();
-    private SourceList<MediaItemBase> _searchResults = new SourceList<MediaItemBase>();
-    private ReadOnlyObservableCollection<ArtistViewModel> searchArtists;
-    private ReadOnlyObservableCollection<AlbumViewModel> searchAlbums;
-    private ReadOnlyObservableCollection<TrackViewModel> searchItem;
-    private ReadOnlyObservableCollection<PlaylistViewModel> searchPlaylist;
+    private readonly CompositeDisposable _subscriptions = [];
+    private readonly SourceList<MediaItemBase> _searchResults = new();
+    private readonly ReadOnlyObservableCollection<ArtistViewModel> searchArtists;
+    private readonly ReadOnlyObservableCollection<AlbumViewModel> searchAlbums;
+    private readonly ReadOnlyObservableCollection<TrackViewModel> searchItem;
+    private readonly ReadOnlyObservableCollection<PlaylistViewModel> searchPlaylist;
 
+#pragma warning disable CRR0026 // Unused member
     public ReadOnlyObservableCollection<ArtistViewModel> SearchArtists => searchArtists;
     public ReadOnlyObservableCollection<AlbumViewModel> SearchAlbums => searchAlbums;
     public ReadOnlyObservableCollection<TrackViewModel> SearchItem => searchItem;
     public ReadOnlyObservableCollection<PlaylistViewModel> SearchPlaylist => searchPlaylist;
+#pragma warning restore CRR0026 // Unused member
 
-    public SearchViewModel(MusicAssistantClient massClient, ISettings settings, PlayersService playersService, IScreen screen, ILoggerFactory loggerFactory)
+    public SearchViewModel(MusicAssistantClient massclient, ISettings settings, PlayersService playersService, IScreen screen, ILoggerFactory loggerFactory)
+        : base(loggerFactory, massclient, playersService)
     {
-        _massClient = massClient;
         _settings = settings;
-        _playersService = playersService;
-        _logger = loggerFactory.CreateLogger<SearchViewModel>();
         HostScreen = screen;
         _disposables = [];
 
@@ -87,7 +76,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
                 _searchResults
                     .Items
                     .Where(i => i is Artist)
-                    .Select(i => new ArtistViewModel(massClient, HostScreen, playersService, (Artist)i))
+                    .Select(i => new ArtistViewModel(_client, HostScreen, playersService, (Artist)i))
             );
 
             HostScreen.Router.Navigate.Execute(resultsViewModel);
@@ -99,7 +88,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
                 _searchResults
                     .Items
                     .Where(i => i is Album)
-                    .Select(i => new AlbumViewModel(massClient, HostScreen, playersService, (Album)i))
+                    .Select(i => new AlbumViewModel(_client, HostScreen, playersService, (Album)i))
                 );
             HostScreen.Router.Navigate.Execute(resultsViewModel);
         });
@@ -110,7 +99,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
                 _searchResults
                     .Items
                     .Where(i => i is Item)
-                    .Select(i => new TrackViewModel(massClient, HostScreen, playersService, (Item)i))
+                    .Select(i => new TrackViewModel(_client, playersService, (Item)i))
             );
 
             HostScreen.Router.Navigate.Execute(resultsViewModel);
@@ -122,7 +111,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
                 _searchResults
                     .Items
                     .Where(i => i is Playlist)
-                    .Select(i => new PlaylistViewModel(massClient, HostScreen, playersService, (Playlist)i))
+                    .Select(i => new PlaylistViewModel(_client, HostScreen, playersService, (Playlist)i))
             );
 
             HostScreen.Router.Navigate.Execute(resultsViewModel);
@@ -137,7 +126,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
             {
                 if (!string.IsNullOrEmpty(SearchTerm))
                 {
-                    SearchResponse results = await (_massClient.WithWs().SearchAsync(SearchTerm));
+                    SearchResponse results = await (_client.WithWs().SearchAsync(SearchTerm));
                     var searchResponse = results;
                     _searchResults.Clear();
 #pragma warning disable CS8604 // Possible null reference argument.
@@ -165,7 +154,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
         _subscriptions.Add(_searchResults
             .Connect()
             .Filter(i => i is Artist)
-            .Transform(i => new ArtistViewModel(massClient, screen, playersService, (Artist)i))
+            .Transform(i => new ArtistViewModel(_client, screen, playersService, (Artist)i))
             .Top(5)
             .Bind(out searchArtists)
             .Subscribe());
@@ -173,7 +162,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
         _subscriptions.Add(_searchResults
             .Connect()
             .Filter(i => i is Album)
-            .Transform(i => new AlbumViewModel(massClient, screen, playersService, (Album)i))
+            .Transform(i => new AlbumViewModel(_client, screen, playersService, (Album)i))
             .Top(5)
             .Bind(out searchAlbums)
             .Subscribe());
@@ -181,7 +170,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
         _subscriptions.Add(_searchResults
             .Connect()
             .Filter(i => i is Item)
-            .Transform(i => new TrackViewModel(massClient, screen, playersService, (Item)i))
+            .Transform(i => new TrackViewModel(_client, playersService, (Item)i))
             .Top(5)
             .Bind(out searchItem)
             .Subscribe());
@@ -189,7 +178,7 @@ public partial class SearchViewModel : ReactiveObject, IViewModelBase
         _subscriptions.Add(_searchResults
             .Connect()
             .Filter(i => i is Playlist)
-            .Transform(i => new PlaylistViewModel(massClient, screen, playersService, (Playlist)i))
+            .Transform(i => new PlaylistViewModel(_client, screen, playersService, (Playlist)i))
             .Top(5)
             .Bind(out searchPlaylist)
             .Subscribe());

@@ -16,7 +16,7 @@ namespace WateryTart.Platform.Windows.ViewModels
         private readonly ISettings _settings;
         public string Description => "Select audio backend";
         public PackIconMaterialKind Icon => PackIconMaterialKind.MusicNote;
-        public IEnumerable<PlaybackBackend> PlaybackBackendOptions { get; } = (PlaybackBackend[])Enum.GetValues(typeof(PlaybackBackend));
+        public IEnumerable<PlaybackBackend> PlaybackBackendOptions { get; } = Enum.GetValues<PlaybackBackend>();
 
         public PlaybackBackend SelectedBackend
         {

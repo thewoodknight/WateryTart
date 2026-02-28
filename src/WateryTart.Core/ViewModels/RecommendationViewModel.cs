@@ -8,7 +8,7 @@ using WateryTart.Core.Settings;
 using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
-
+using Autofac;
 namespace WateryTart.Core.ViewModels;
 
 public partial class RecommendationViewModel : ReactiveObject, IViewModelBase
@@ -42,20 +42,20 @@ public partial class RecommendationViewModel : ReactiveObject, IViewModelBase
             {
                 case MediaType.Album:
 
-                    var vm = App.Container.GetRequiredService<AlbumViewModel>();
+                    var vm = App.Container.Resolve<AlbumViewModel>();
 
                     vm.LoadFromId(i.ItemId, i.Provider);
                     HostScreen.Router.Navigate.Execute(vm);
                     break;
 
                 case MediaType.Playlist:
-                    var playlistViewModel = App.Container.GetRequiredService<PlaylistViewModel>();
+                    var playlistViewModel = App.Container.Resolve<PlaylistViewModel>();
                     playlistViewModel.LoadFromId(i.ItemId, i.Provider);
                     HostScreen.Router.Navigate.Execute(playlistViewModel);
                     break;
 
                 case MediaType.Artist:
-                    var artistViewModel = App.Container.GetRequiredService<ArtistViewModel>();
+                    var artistViewModel = App.Container.Resolve<ArtistViewModel>();
                     artistViewModel.LoadFromId(i.ItemId, i.Provider);
                     HostScreen.Router.Navigate.Execute(artistViewModel);
                     break;

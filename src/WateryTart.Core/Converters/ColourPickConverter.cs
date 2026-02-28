@@ -4,7 +4,10 @@ using Avalonia.Data.Converters;
 using WateryTart.Core.Services;
 
 namespace WateryTart.Core.Converters;
+
+#pragma warning disable CRRSP08 
 public class ColourPickConverter : IValueConverter
+#pragma warning restore CRRSP08
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {

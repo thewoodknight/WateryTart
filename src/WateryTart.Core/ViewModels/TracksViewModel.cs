@@ -2,7 +2,6 @@ using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using WateryTart.Core.Services;
@@ -14,17 +13,9 @@ using WateryTart.Core.ViewModels.Popups;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class TracksViewModel : ReactiveObject, IViewModelBase
+public partial class TracksViewModel : ViewModelBase<TracksViewModel>
 {
-    public string? UrlPathSegment { get; } = "Tracks";
-    public IScreen HostScreen { get; }
-    private readonly MusicAssistantClient _massClient;
-    private readonly PlayersService _playersService;
-    private readonly ILogger _logger;
-
-    [Reactive] public partial string Title { get; set; }
     [Reactive] public partial ObservableCollection<TrackViewModel> Tracks { get; set; } = new();
-    [Reactive] public partial bool IsLoading { get; set; }
     [Reactive] public partial bool HasMoreItems { get; set; } = true;
     [Reactive] public partial int CurrentOffset { get; set; } = 0;
     
@@ -32,14 +23,9 @@ public partial class TracksViewModel : ReactiveObject, IViewModelBase
 
     public RelayCommand<TrackViewModel> ClickedCommand { get; }
     public AsyncRelayCommand LoadMoreCommand { get; }
-    public bool ShowMiniPlayer => true;
-    public bool ShowNavigation => true;
-
     public TracksViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, ILoggerFactory loggerFactory)
+        :base(client: massClient, playersService: playersService, loggerFactory: loggerFactory)
     {
-        _massClient = massClient;
-        _playersService = playersService;
-        _logger = loggerFactory.CreateLogger<TracksViewModel>();
         HostScreen = screen;
         Title = "Tracks";
 
@@ -48,7 +34,7 @@ public partial class TracksViewModel : ReactiveObject, IViewModelBase
             if (item == null)
                 return;
 
-            MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(_playersService, item.Track));
+            MessageBus.Current.SendMessage<IPopupViewModel>(MenuHelper.BuildStandardPopup(_playersService!, item.Track!));
         }, item => item != null);
 
         LoadMoreCommand = new AsyncRelayCommand(LoadMoreAsync, CanLoadMore);
@@ -61,9 +47,7 @@ public partial class TracksViewModel : ReactiveObject, IViewModelBase
             }
         };
 
-#pragma warning disable CS4014
         _ = LoadInitialAsync();
-#pragma warning restore CS4014
     }
 
     private bool CanLoadMore()
@@ -92,13 +76,13 @@ public partial class TracksViewModel : ReactiveObject, IViewModelBase
         {
             IsLoading = true;
             
-            var response = await _massClient.WithWs().GetTracksAsync(limit: PageSize, offset: CurrentOffset);
+            var response = await _client.WithWs().GetTracksAsync(limit: PageSize, offset: CurrentOffset);
             
             if (response?.Result != null)
             {
                 foreach (var track in response.Result)
                 {
-                    Tracks.Add(new TrackViewModel(_massClient, HostScreen, _playersService, track));
+                    Tracks.Add(new TrackViewModel(_client, _playersService!, track));
                 }
 
                 HasMoreItems = response.Result.Count == PageSize;

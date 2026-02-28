@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using WateryTart.MusicAssistant;
 using WateryTart.MusicAssistant.WsExtensions;
-
+using Autofac;
 namespace WateryTart.Core.ViewModels;
 
 public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
@@ -28,7 +28,7 @@ public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
             Title = "Artists",
             ClickedCommand = new RelayCommand(() =>
             {
-                var vm = App.Container.GetRequiredService<ArtistsViewModel>();
+                var vm = App.Container.Resolve<ArtistsViewModel>();
                 screen.Router.Navigate.Execute(vm);
             })
         };
@@ -38,7 +38,7 @@ public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
             Title = "Albums",
             ClickedCommand = new RelayCommand(() =>
             {
-                var vm = App.Container.GetRequiredService<AlbumsListViewModel>();
+                var vm = App.Container.Resolve<AlbumsListViewModel>();
                 screen.Router.Navigate.Execute(vm);
             })
         };
@@ -48,7 +48,7 @@ public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
             Title = "Tracks",
             ClickedCommand = new RelayCommand(() =>
             {
-                var vm = App.Container.GetRequiredService<TracksViewModel>();
+                var vm = App.Container.Resolve<TracksViewModel>();
                 screen.Router.Navigate.Execute(vm);
             })
         };
@@ -57,7 +57,7 @@ public partial class LibraryViewModel : ViewModelBase<LibraryViewModel>
             Title = "Playlists",
             ClickedCommand = new RelayCommand(() =>
             {
-                var vm = App.Container.GetRequiredService<PlaylistsViewModel>();
+                var vm = App.Container.Resolve<PlaylistsViewModel>();
                 screen.Router.Navigate.Execute(vm);
             })
         };

@@ -2,7 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia;
-using System;
 using System.Windows.Input;
 
 namespace WateryTart.Core.Controls;

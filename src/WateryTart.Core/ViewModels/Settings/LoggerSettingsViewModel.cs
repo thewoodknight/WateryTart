@@ -17,8 +17,6 @@ namespace WateryTart.Core.ViewModels;
 
 public partial class LoggerSettingsViewModel : ViewModelBase<LoggerSettingsViewModel>, IHaveSettings
 {
-    private readonly ISettings _settings;
-
     public IEnumerable<LogLevel> AvailableLogLevels => new[]
     {
         LogLevel.Trace,

@@ -21,7 +21,7 @@ public partial class MainView : UserControl
             sv?.ScrollToHome();
         });
 
-        App.Launcher = TopLevel.GetTopLevel(this).Launcher;
+       // App.Launcher = TopLevel.GetTopLevel(this).Launcher;
     }
 
 }

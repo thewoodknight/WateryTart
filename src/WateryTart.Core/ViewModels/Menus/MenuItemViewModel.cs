@@ -3,7 +3,6 @@ using System.Windows.Input;
 using IconPacks.Avalonia.Material;
 using WateryTart.Core.Messages;
 using Xaml.Behaviors.SourceGenerators;
-using CommunityToolkit.Mvvm.Input;
 
 namespace WateryTart.Core.ViewModels.Menus;
 
@@ -17,7 +16,7 @@ public partial class MenuItemViewModel : ReactiveObject, ISmallViewModelBase, IM
 
     public MenuItemViewModel(string title, PackIconMaterialKind? icon, ICommand? clickedCommand, bool? indented = false)
     {
-        Indented = indented != null ? indented.Value : false;
+        Indented = indented ?? false;
 
         _title = title;
         if (icon != null)

@@ -37,7 +37,7 @@ sealed class Program
                     Playback.SwitchableAudioPlayer.PlayerBackend.SimpleWasapi
                 )),*/
                 
-                new LambdaRegistration<IPlayerFactory>(c => new WindowsAudioPlayerFactory(/*() => App.Container.Resolve<Playback.SwitchableAudioPlayer>()*/)),
+                new LambdaRegistration<IPlayerFactory>(c => new WindowsAudioPlayerFactory(App.Container.Resolve<ILoggerFactory>())),
                 new LambdaRegistration<IVolumeService>(c => new WindowsVolumeService(c.Resolve<PlayersService>())),
                 /*new LambdaRegistration<IHaveSettings>(c => new PlaybackSettingsViewModel(c.Resolve<ISettings>(), c.Resolve<Playback.SwitchableAudioPlayer>(), c.Resolve<ILoggerFactory>())),*/
             ]);

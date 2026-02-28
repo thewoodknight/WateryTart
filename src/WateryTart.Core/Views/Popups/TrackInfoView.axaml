@@ -14,7 +14,7 @@
           mc:Ignorable="d">
 
     <UserControl.Resources>
-        <popups:CodecTypeToImageConverter x:Key="CodecTypeToImageConverter" />
+        <c:CodecTypeToImageConverter x:Key="CodecTypeToImageConverter" />
     </UserControl.Resources>
     <Grid
               Margin="30"
@@ -131,7 +131,7 @@
         <Image
                   Grid.Row="2"
                   Grid.Column="1"
-                  Source="{Binding Streamdetails.AudioFormat.CodecType, Converter={StaticResource CodecTypeToImageConverter}}" />
+                  Source="{Binding StreamDetails.AudioFormat.CodecType, Converter={StaticResource CodecTypeToImageConverter}}" />
         <TextBlock
                   Grid.Row="2"
                   Grid.Column="2"

@@ -13,8 +13,7 @@ public class MetadataImageConverter : IValueConverter
     {
         try
         {
-            var item = value as MediaItemBase;
-            if (item == null)
+            if (value is not MediaItemBase item)
                 return null;
 
             //If it is an item, but has a "image" field set, use that
@@ -23,7 +22,7 @@ public class MetadataImageConverter : IValueConverter
                 if (item.Image.Provider != null)
                     return item.Image.Path.StartsWith(("http"))
                         ? item.Image.Path
-                        : ProxyString(item.Image.Path, item.Image.Provider);
+                        : ImagePathHelper.ProxyString(item.Image.Path, item.Image.Provider);
 
             //If there is no image field set, use metadata, make sure its not null
             if (item.Metadata?.Images == null)
@@ -31,14 +30,13 @@ public class MetadataImageConverter : IValueConverter
 
             //Try a locally accessible source first
             var result = item.Metadata.Images.FirstOrDefault(i => !i.RemotelyAccessible);
-            if (result == null)
-                result = item.Metadata.Images.FirstOrDefault(i => i.RemotelyAccessible);
+            result ??= item.Metadata.Images.FirstOrDefault(i => i.RemotelyAccessible);
 
             if (result?.Provider != null)
                 if (result.Path != null)
                     return result.Path != null && result.Path.StartsWith("http")
                         ? result.Path
-                        : ProxyString(result.Path, result.Provider);
+                        : ImagePathHelper.ProxyString(result.Path!, result.Provider);
         }
         catch (Exception ex)
         {
@@ -51,10 +49,5 @@ public class MetadataImageConverter : IValueConverter
     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         return value;
-    }
-
-    private static string ProxyString(string path, string provider)
-    {
-        return $"http://{App.BaseUrl}/imageproxy?path={Uri.EscapeDataString(path)}&provider={provider}&checksum=&size=256";
     }
 }

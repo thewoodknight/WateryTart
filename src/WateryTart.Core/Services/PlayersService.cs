@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls.Primitives;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 using DynamicData;
 using DynamicData.Binding;
 using Microsoft.Extensions.Logging;
@@ -9,7 +8,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -34,25 +32,23 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
     private readonly MusicAssistantClient _massClient;
     private readonly ISettings _settings;
     private readonly ColourService _colourService;
-    private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<PlayersService> _logger;
-    private ReadOnlyObservableCollection<TrackViewModel> currentQueue;
-    private ReadOnlyObservableCollection<TrackViewModel> playedQueue;
-    private CompositeDisposable _subscriptions = new CompositeDisposable();
-    private readonly Dictionary<string, TrackViewModel> _trackViewModelCache = new Dictionary<string, TrackViewModel>();
+    private readonly ReadOnlyObservableCollection<TrackViewModel> currentQueue;
+    private readonly ReadOnlyObservableCollection<TrackViewModel> playedQueue;
+    private readonly CompositeDisposable _subscriptions = [];
+    private readonly Dictionary<string, TrackViewModel> _trackViewModelCache = [];
     private bool _isFetchingQueueContents = false;
     private DispatcherTimer _timer;
 
     // Volume coordination
     private readonly SemaphoreSlim _volumeSemaphore = new(1, 1);
     private readonly ConcurrentDictionary<string, (int Volume, DateTime Timestamp)> _pendingLocalVolumeChanges = new();
-    private DateTime _lastLocalChange = DateTime.MinValue;
     private static readonly TimeSpan EchoIgnoreWindow = TimeSpan.FromMilliseconds(700);
     private const int VolumeTolerance = 1;
 
-    [Reactive] public partial SourceCache<QueuedItem, string> QueuedItems { get; set; } = new SourceCache<QueuedItem, string>(x => x.QueueItemId);
+    [Reactive] public partial SourceCache<QueuedItem, string> QueuedItems { get; set; } = new SourceCache<QueuedItem, string>(x => x.QueueItemId!);
     [Reactive] public partial ObservableCollection<Player> Players { get; set; } = new ObservableCollection<Player>();
-    [Reactive] public partial ObservableCollection<PlayerQueue> Queues { get; set; } = new ObservableCollection<PlayerQueue>();
+    [Reactive] public partial ObservableCollection<PlayerQueue?> Queues { get; set; } = new ObservableCollection<PlayerQueue?>();
     [Reactive] public partial string SelectedPlayerQueueId { get; set; } = string.Empty;
     [Reactive] public partial PlayerQueue? SelectedQueue { get; set; } = new PlayerQueue();
     public ReadOnlyObservableCollection<TrackViewModel> CurrentQueue { get => currentQueue; }
@@ -67,10 +63,8 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         {
             if (value != null)
             {
-                _settings.LastSelectedPlayerId = value.PlayerId;
-#pragma warning disable CS4014
-                _ = FetchPlayerQueueAsync(value.PlayerId);
-#pragma warning restore CS4014
+                _settings.LastSelectedPlayerId = value.PlayerId!;
+                _ = FetchPlayerQueueAsync(value.PlayerId!);
             }
 
             this.RaiseAndSetIfChanged(ref field, value);
@@ -83,9 +77,9 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         if (pq?.Result == null)
             return;
 
-        SelectedPlayerQueueId = pq.Result.QueueId;
-        SelectedQueue = pq.Result;
-        FetchQueueContentsAsync();
+        SelectedPlayerQueueId = pq?.Result?.QueueId!;
+        SelectedQueue = pq!.Result;
+        await FetchQueueContentsAsync();
     }
 
     private async Task FetchQueueContentsAsync()
@@ -99,18 +93,21 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             if (items.Result != null)
             {
                 // Build dictionaries for fast lookup
-                var newItemsDict = items.Result.ToDictionary(i => i.QueueItemId);
-                var currentItemsDict = QueuedItems.Items.ToDictionary(i => i.QueueItemId);
+                var newItemsDict = items?.Result?.ToDictionary(i => i.QueueItemId!);
+                var currentItemsDict = QueuedItems?.Items?.ToDictionary(i => i.QueueItemId!);
 
                 // Remove items not in the new result
-                var toRemove = QueuedItems.Items.Where(i => !newItemsDict.ContainsKey(i.QueueItemId)).ToList();
-                foreach (var item in toRemove)
-                    QueuedItems.Remove(item);
+                var toRemove = QueuedItems?.Items.Where(i => !newItemsDict!.ContainsKey(i.QueueItemId!)).ToList();
+                foreach (var item in toRemove!)
+                    QueuedItems?.Remove(item);
 
                 // Update existing items
-                foreach (var item in QueuedItems.Items)
+                foreach (var item in QueuedItems?.Items!)
                 {
-                    if (newItemsDict.TryGetValue(item.QueueItemId, out var newItem))
+                    if (newItemsDict == null)
+                        continue;
+
+                    if (newItemsDict.TryGetValue(item.QueueItemId!, out var newItem))
                     {
                         // Update properties as needed
                         item.SortIndex = newItem.SortIndex;
@@ -120,11 +117,14 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
                 }
 
                 // Add new items not already present
-                var currentIds = currentItemsDict.Keys;
-                var toAdd = items.Result.Where(i => !currentIds.Contains(i.QueueItemId)).ToList();
-                if (toAdd.Count > 0)
-                    foreach (var item in toAdd)
-                        QueuedItems.AddOrUpdate(item);
+                var currentIds = currentItemsDict?.Keys;
+                if (currentIds != null)
+                {
+                    var toAdd = items?.Result.Where(i => !currentIds.Contains(i.QueueItemId!)).ToList();
+                    if (toAdd?.Count > 0)
+                        foreach (var item in toAdd)
+                            QueuedItems.AddOrUpdate(item);
+                }
             }
         }
         catch (Exception ex)
@@ -137,14 +137,11 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
     }
 
-
-
     public PlayersService(MusicAssistantClient massClient, ISettings settings, ColourService colourService, ILoggerFactory loggerFactory)
     {
         _massClient = massClient;
         _settings = settings;
         _colourService = colourService;
-        _loggerFactory = loggerFactory;
         _logger = loggerFactory.CreateLogger<PlayersService>();
 
         /* Subscribe to the relevant websocket events from MASS */
@@ -154,15 +151,22 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             .Subscribe());
 
         /* This takes care of filtering the two lists */
+        // While .Sort is deprecated, the .Transform() gets in the way of .SortAndBind, since the list is transformed before sorting.
+        // Neither Avalonia, ReactiveUI or DynamicData have examples for SortAndBind
+
+#pragma warning disable CS0618 // Type or member is obsolete
+#pragma warning disable CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
+#pragma warning disable CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
         _subscriptions.Add(QueuedItems
                 .Connect()
                 .AutoRefresh(x => x.SortIndex)
                 .AutoRefresh(x => x.MediaItem)
                 .Sort(SortExpressionComparer<QueuedItem>.Ascending(t => t.SortIndex))
                 .Filter(i => SelectedQueue != null && (i.SortIndex > SelectedQueue.CurrentIndex || i.MediaItem?.ItemId == SelectedQueue.CurrentItem?.MediaItem?.ItemId))
-                .Transform(i => GetOrCreateTrackViewModel(i))   //transform is expensive since the list is reset to 0, and despite caching still means the visual tree is recreated
+                .Transform(i => GetOrCreateTrackViewModel(i)!)
                 .Bind(out currentQueue)
                 .Subscribe());
+
 
 
         _subscriptions.Add(QueuedItems
@@ -171,21 +175,26 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
                 .AutoRefresh(x => x.MediaItem)
                 .Sort(SortExpressionComparer<QueuedItem>.Descending(t => t.SortIndex))
                 .Filter(i => SelectedQueue != null && i.SortIndex < SelectedQueue.CurrentIndex)
-                .Transform(i => GetOrCreateTrackViewModel(i))
+                .Transform(i => GetOrCreateTrackViewModel(i)!)
                 .Bind(out playedQueue)
                 .Subscribe());
+#pragma warning restore CS8620 // Argument cannot be used for parameter due to differences in the nullability of reference types.
+#pragma warning restore CS8714 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
+#pragma warning restore CS0618 // Type or member is obsolete
 
-        this.WhenAnyValue(x => x.SelectedQueue.CurrentIndex)
+        this.WhenAnyValue(x => x.SelectedQueue!.CurrentIndex)
             .Where(_ => SelectedQueue != null)
             .Subscribe(_ => QueuedItems.Refresh());
 
-        _timer = new DispatcherTimer();
-        _timer.Interval = new TimeSpan(0, 0, 1);
-        _timer.Tick += T_Tick;
+        _timer = new DispatcherTimer
+        {
+            Interval = new TimeSpan(0, 0, 1)
+        };
+        _timer.Tick += TimerTick;
         _timer.Start();
     }
 
-    private void T_Tick(object? sender, EventArgs e)
+    private void TimerTick(object? sender, EventArgs e)
     {
         if (SelectedPlayer?.PlaybackState != PlaybackState.Playing)
             return;
@@ -204,28 +213,24 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         PlayerQueueTimeUpdatedEventResponse timeEvent;
         MediaItemEventResponse mediaEvent;
         MediaItemEvent2Response mediaEvent2;
-        Debug.WriteLine(e.EventName);
+
         switch (e.EventName)
         {
             case EventType.MediaItemUpdated:
                 mediaEvent = (MediaItemEventResponse)e;
-                var item = QueuedItems.Items.FirstOrDefault(i => i.MediaItem?.Uri == mediaEvent.data.Uri);
-                if (item != null)
-                {
-                    item.MediaItem.Favorite = mediaEvent.data.Favorite;
-                    //QueuedItems.Refresh(item);
-                }
+                var item = QueuedItems.Items.FirstOrDefault(i => i.MediaItem?.Uri == mediaEvent.data!.Uri);
+                item?.MediaItem?.Favorite = mediaEvent!.data!.Favorite;
 
                 if (SelectedQueue?.CurrentItem?.MediaItem?.Uri == mediaEvent?.data?.Uri)
                 {
-                    SelectedQueue.CurrentItem.MediaItem.Favorite = mediaEvent.data.Favorite;
+                    SelectedQueue?.CurrentItem?.MediaItem?.Favorite = mediaEvent!.data!.Favorite;
                 }
 
                 break;
             case EventType.MediaItemPlayed:
                 mediaEvent2 = (MediaItemEvent2Response)e;
                 if (mediaEvent2.object_id == SelectedQueue?.CurrentItem?.MediaItem?.Uri)
-                    if (mediaEvent2.data.SecondsPlayed != null)
+                    if (mediaEvent2.data!.SecondsPlayed != null)
                         SelectedQueue?.CurrentItem?.MediaItem?.ElapsedTime = mediaEvent2.data.SecondsPlayed.Value;
                 break;
 
@@ -233,43 +238,43 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
                 timeEvent = (PlayerQueueTimeUpdatedEventResponse)e;
                 if (SelectedQueue != null && e.object_id == SelectedQueue.QueueId)
                 {
-                    SelectedQueue.CurrentItem.MediaItem.ElapsedTime = timeEvent.data;
+                    SelectedQueue.CurrentItem!.MediaItem!.ElapsedTime = timeEvent.data;
                 }
                 break;
 
             case EventType.PlayerAdded:
                 playerEvent = (PlayerEventResponse)e;
-                if (!Players.Contains((playerEvent.data)) && playerEvent.data != null)
+                if (!Players.Contains((playerEvent.data!)) && playerEvent.data != null)
                     Players.Add(playerEvent.data);
                 break;
 
             case EventType.PlayerUpdated:
                 playerEvent = (PlayerEventResponse)e;
-                var player = Players.FirstOrDefault(p => p.PlayerId == playerEvent.data.PlayerId);
+                var player = Players.FirstOrDefault(p => p.PlayerId == playerEvent.data!.PlayerId);
 
                 if (player != null)
                 {
-                    player.PlaybackState = playerEvent.data.PlaybackState;
+                    player.PlaybackState = playerEvent.data!.PlaybackState;
                     player.CurrentMedia = playerEvent.data.CurrentMedia;
 
                     var serverVol = playerEvent.data.VolumeLevel;
 
                     // If we have a recent local change for this player, and server value is close, treat as echo (ack).
-                    if (_pendingLocalVolumeChanges.TryGetValue(player.PlayerId, out var pending))
+                    if (_pendingLocalVolumeChanges.TryGetValue(player.PlayerId!, out var pending))
                     {
                         var age = DateTime.UtcNow - pending.Timestamp;
-                        var diff = Math.Abs(pending.Volume - (int)serverVol);
+                        var diff = Math.Abs(pending.Volume - (int)serverVol!);
 
                         if (age < EchoIgnoreWindow && diff <= VolumeTolerance)
                         {
                             // Echo/ack: clear pending and keep optimistic local value (no UI bounce).
-                            _pendingLocalVolumeChanges.TryRemove(player.PlayerId, out _);
+                            _pendingLocalVolumeChanges.TryRemove(player.PlayerId!, out _);
                         }
                         else
                         {
                             // Not an echo: apply authoritative server value and clear any pending (stale).
                             player.VolumeLevel = serverVol;
-                            _pendingLocalVolumeChanges.TryRemove(player.PlayerId, out _);
+                            _pendingLocalVolumeChanges.TryRemove(player.PlayerId!, out _);
                         }
                     }
                     else
@@ -282,15 +287,15 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
 
             case EventType.PlayerRemoved:
                 playerEvent = (PlayerEventResponse)e;
-                Players.RemoveAll(p => p.PlayerId == playerEvent.data.PlayerId);
+                Players.RemoveAll(p => p.PlayerId == playerEvent?.data?.PlayerId);
                 break;
 
             case EventType.QueueAdded:
 
                 queueEvent = (PlayerQueueEventResponse)e;
-                var existing = Queues.FirstOrDefault(q => q.QueueId == queueEvent.data.QueueId);
+                var existing = Queues.FirstOrDefault(q => q!.QueueId == queueEvent?.data?.QueueId);
                 if (existing == null)
-                    Queues.Add(queueEvent.data);
+                    Queues.Add(queueEvent.data!);
                 else
                     Queues.ReplaceOrAdd(existing, queueEvent.data);
                 break;
@@ -299,7 +304,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
                 queueEvent = (PlayerQueueEventResponse)e;
                 if (SelectedQueue != null && queueEvent?.data?.QueueId == SelectedQueue.QueueId)
                 {
-                    SelectedQueue.ShuffleEnabled = queueEvent.data.ShuffleEnabled;
+                    SelectedQueue.ShuffleEnabled = queueEvent!.data!.ShuffleEnabled;
                     SelectedQueue.RepeatMode = queueEvent.data.RepeatMode;
                     SelectedQueue.CurrentIndex = queueEvent.data.CurrentIndex;
                     SelectedQueue.CurrentItem = queueEvent.data.CurrentItem;
@@ -309,16 +314,16 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
 
                     //Get the new background colours
                     if (currentItem.Image != null && currentItem.Image.RemotelyAccessible)
-                        _ = _colourService.Update(currentItem.MediaItem.ItemId, currentItem.Image.Path);
+                        _ = _colourService.Update(currentItem.MediaItem!.ItemId!, currentItem.Image!.Path!);
                     else
                     {
-                        var url = ImagePathHelper.ProxyString(currentItem.Image.Path, currentItem.Image.Provider);
-                        _ = _colourService.Update(currentItem.MediaItem.ItemId, url);
+                        var url = ImagePathHelper.ProxyString(currentItem.Image!.Path!, currentItem.Image!.Provider!);
+                        _ = _colourService.Update(currentItem.MediaItem!.ItemId!, url);
                     }
                 }
                 break;
             case EventType.QueueItemsUpdated:
-                FetchQueueContentsAsync();
+                _ = FetchQueueContentsAsync();
                 break;
             default:
                 break;
@@ -330,17 +335,19 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         try
         {
             var playersResponse = await _massClient.WithWs().GetPlayersAllAsync();
-            foreach (var y in playersResponse.Result)
-            {
-                if (y != null)
-                    Players.Add(y);
-            }
+            if (playersResponse.Result != null)
+                foreach (var y in playersResponse.Result)
+                {
+                    if (y != null)
+                        Players.Add(y);
+                }
 
             var queuesResponse = await _massClient.WithWs().GetPlayerQueuesAllAsync();
-            foreach (var y in queuesResponse.Result)
-            {
-                Queues.Add(y);
-            }
+            if (queuesResponse.Result != null)
+                foreach (var y in queuesResponse.Result)
+                {
+                    Queues.Add(y);
+                }
 
             if (!string.IsNullOrEmpty(_settings.LastSelectedPlayerId))
             {
@@ -354,7 +361,6 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
     }
 
-    // Fixed PlayerChangeBy method - corrected parentheses on Math.Round
     public async Task PlayerChangeBy(int delta, Player? p = null)
     {
         p ??= SelectedPlayer;
@@ -364,18 +370,19 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         await _volumeSemaphore.WaitAsync().ConfigureAwait(false);
         try
         {
+            if (!p.VolumeLevel.HasValue)
+                return;
+
             var current = (int)Math.Round((decimal)p.VolumeLevel);
             var newVol = Math.Clamp(current + delta, 0, 100);
 
-            // Optimistically update local model
             p.VolumeLevel = newVol;
 
-            // Record pending local change per-player
-            _pendingLocalVolumeChanges[p.PlayerId] = (newVol, DateTime.UtcNow);
+            _pendingLocalVolumeChanges[p.PlayerId!] = (newVol, DateTime.UtcNow);
 
             try
             {
-                await _massClient.WithWs().SetPlayerGroupVolumeAsync(p.PlayerId, newVol).ConfigureAwait(false);
+                await _massClient.WithWs().SetPlayerGroupVolumeAsync(p.PlayerId!, newVol).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -388,7 +395,6 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
     }
 
-    // Updated absolute volume setter to use same coordination
     public async Task PlayerVolume(int volume, Player? p = null)
     {
         p ??= SelectedPlayer;
@@ -404,11 +410,11 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             p.VolumeLevel = newVol;
 
             // Record pending local change per-player
-            _pendingLocalVolumeChanges[p.PlayerId] = (newVol, DateTime.UtcNow);
+            _pendingLocalVolumeChanges[p.PlayerId!] = (newVol, DateTime.UtcNow);
 
             try
             {
-                await _massClient.WithWs().SetPlayerGroupVolumeAsync(p.PlayerId, newVol).ConfigureAwait(false);
+                await _massClient.WithWs().SetPlayerGroupVolumeAsync(p.PlayerId!, newVol).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -431,7 +437,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         await PlayerChangeBy(-1, p).ConfigureAwait(false);
     }
 
-    public async Task PlayerVolumeUp(Player p = null)
+    public async Task PlayerVolumeUp(Player? p = null)
     {
         p ??= SelectedPlayer;
         if (p == null)
@@ -440,12 +446,14 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         await PlayerChangeBy(1, p).ConfigureAwait(false);
     }
 
-    public async Task PlayerPlayPause(Player? p  = null)
+    public async Task PlayerPlayPause(Player? p = null)
     {
         p ??= SelectedPlayer;
+        if (p == null)
+            return;
         try
         {
-            await _massClient.WithWs().PlayerPlayPauseAsync(p.PlayerId);
+            await _massClient.WithWs().PlayerPlayPauseAsync(p.PlayerId!);
         }
         catch (Exception ex)
         {
@@ -453,7 +461,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
     }
 
-    public async Task PlayItem(MediaItemBase t, Player? p = null, PlayerQueue? q = null, PlayMode mode = PlayMode.Replace, bool RadioMode = false)
+    public async Task PlayItem(MediaItemBase t, Player? p = null, PlayMode mode = PlayMode.Replace, bool RadioMode = false)
     {
         p ??= SelectedPlayer;
 
@@ -469,8 +477,9 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             try
             {
                 _logger.LogInformation($"Playing {t.Name}");
-                var pq = await _massClient.WithWs().GetPlayerActiveQueueAsync(p.PlayerId);
-                await _massClient.WithWs().PlayAsync(pq.Result.QueueId, t, mode, RadioMode);
+                var pq = await _massClient.WithWs().GetPlayerActiveQueueAsync(p.PlayerId!);
+                if (pq != null && pq.Result != null && !string.IsNullOrEmpty(pq.Result.QueueId))
+                    await _massClient.WithWs().PlayAsync(pq.Result.QueueId, t, mode, RadioMode);
             }
             catch (Exception ex)
             {
@@ -486,9 +495,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             return;
         try
         {
-#pragma warning disable CS4014
             _ = _massClient.WithWs().PlayerNextAsync(p.PlayerId);
-#pragma warning restore CS4014
         }
         catch (Exception ex)
         {
@@ -503,9 +510,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             return;
         try
         {
-#pragma warning disable CS4014
             _ = _massClient.WithWs().PlayerSeekAsync(p.PlayerId, position);
-#pragma warning restore CS4014
         }
         catch (Exception ex)
         {
@@ -520,9 +525,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             return;
         try
         {
-#pragma warning disable CS4014
             _ = _massClient.WithWs().PlayerPreviousAsync(p.PlayerId);
-#pragma warning restore CS4014
         }
         catch (Exception ex)
         {
@@ -603,32 +606,30 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             return cachedViewModel;
         }
 
-        var trackViewModel = new TrackViewModel(_massClient, null, this, queuedItem.MediaItem);
+        var trackViewModel = new TrackViewModel(_massClient, this, queuedItem.MediaItem);
         _trackViewModelCache[cacheKey] = trackViewModel;
         return trackViewModel;
     }
 
     public async Task PlayerRemoveFromFavorites(MediaItemBase item)
     {
-        if (item == null) 
+        if (item == null)
             return;
         await _massClient.WithWs().RemoveFavoriteItemAsync(item);
     }
 
     public async Task PlayerAddToFavorites(MediaItemBase item)
     {
-        if (item == null) 
+        if (item == null)
             return;
         await _massClient.WithWs().AddFavoriteItemAsync(item);
     }
 
-
     public async Task PlayerSetRepeatMode(RepeatMode repeatmode, Player? p = null)
     {
-        if (p== null)
-            p = SelectedPlayer; 
+        p ??= SelectedPlayer;
 
-        await _massClient.WithWs().SetPlayerQueueRepeatAsync(p.ActiveSource, repeatmode);
+        await _massClient.WithWs().SetPlayerQueueRepeatAsync(p?.ActiveSource!, repeatmode);
     }
 
     public async Task PlayerShuffle(Player? p = null, bool shuffle = true)
@@ -638,9 +639,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             return;
         try
         {
-#pragma warning disable CS4014
-            _ = _massClient.WithWs().SetPlayerQueueShuffleAsync(p.ActiveSource, shuffle);
-#pragma warning restore CS4014
+            _ = _massClient.WithWs().SetPlayerQueueShuffleAsync(p.ActiveSource!, shuffle);
         }
         catch (Exception ex)
         {
@@ -654,9 +653,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             return;
         try
         {
-#pragma warning disable CS4014
-            _ = _massClient.WithWs().SetPlayerQueueDontStopTheMusicAsync(p.ActiveSource, dontstop);
-#pragma warning restore CS4014
+            _ = _massClient.WithWs().SetPlayerQueueDontStopTheMusicAsync(p.ActiveSource!, dontstop);
         }
         catch (Exception ex)
         {
@@ -671,9 +668,7 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
             return;
         try
         {
-#pragma warning disable CS4014
-            _ = _massClient.WithWs().ClearPlayerQueueAsync(p.ActiveSource);
-#pragma warning restore CS4014
+            _ = _massClient.WithWs().ClearPlayerQueueAsync(p.ActiveSource!);
         }
         catch (Exception ex)
         {
@@ -681,9 +676,10 @@ public partial class PlayersService : ReactiveObject, IAsyncReaper
         }
     }
 
+    /*
     public async Task FetchLyrics(Item t)
     {
         var lyricsResponse = await _massClient.WithWs().GetLyricsAsync(t);
         var lyrics = lyricsResponse.Result;
+    }*/
     }
-}

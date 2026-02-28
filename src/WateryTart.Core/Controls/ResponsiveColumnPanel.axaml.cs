@@ -51,10 +51,7 @@ public class ResponsiveColumnPanel : TemplatedControl
         base.OnApplyTemplate(e);
 
         // Unsubscribe from previous events if any
-        if (_firstColumnContent is not null)
-        {
-            _firstColumnContent.SizeChanged -= OnFirstColumnSizeChanged;
-        }
+        _firstColumnContent?.SizeChanged -= OnFirstColumnSizeChanged;
 
         // Cache template element references
         _contentGridContainer = e.NameScope.Find<Grid>("ContentGridContainer");
@@ -62,10 +59,7 @@ public class ResponsiveColumnPanel : TemplatedControl
         _secondColumnContent = e.NameScope.Find<ContentPresenter>("SecondColumnContent");
 
         // Subscribe to first column size changes
-        if (_firstColumnContent is not null)
-        {
-            _firstColumnContent.SizeChanged += OnFirstColumnSizeChanged;
-        }
+        _firstColumnContent?.SizeChanged += OnFirstColumnSizeChanged;
 
         // Initialize _isWideView based on current width
         _isWideView = Bounds.Width > Breakpoint;

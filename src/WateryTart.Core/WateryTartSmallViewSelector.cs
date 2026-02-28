@@ -8,9 +8,8 @@ namespace WateryTart.Core;
 
 public class WateryTartSmallViewSelector : IDataTemplate
 {
-    public bool SupportsRecycling => false;
     [Content]
-    public Dictionary<string, IDataTemplate> Templates { get; } = new Dictionary<string, IDataTemplate>();
+    public Dictionary<string, IDataTemplate> Templates { get; } = [];
 
     public Control? Build(object? data)
     {

@@ -45,19 +45,13 @@ public class ListScrollBehavior : Behavior<ListBox>
     protected override void OnAttached()
     {
         base.OnAttached();
-        if (AssociatedObject != null)
-        {
-            AssociatedObject.ContainerPrepared += OnContainerPrepared;
-        }
+        AssociatedObject?.ContainerPrepared += OnContainerPrepared;
     }
 
     protected override void OnDetaching()
     {
         base.OnDetaching();
-        if (AssociatedObject != null)
-        {
-            AssociatedObject.ContainerPrepared -= OnContainerPrepared;
-        }
+        AssociatedObject?.ContainerPrepared -= OnContainerPrepared;
     }
 
     private void OnContainerPrepared(object? sender, ContainerPreparedEventArgs e)

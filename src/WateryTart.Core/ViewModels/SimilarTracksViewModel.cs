@@ -18,7 +18,7 @@ public partial class SimilarTracksViewModel : ReactiveObject, IViewModelBase
     public bool ShowMiniPlayer { get; } = true;
     public bool ShowNavigation { get; } = true;
     [Reactive] public partial bool IsLoading { get; set; }
-    public ObservableCollection<IViewModelBase> Tracks { get; set; } = new ObservableCollection<IViewModelBase>();
+    public ObservableCollection<IViewModelBase> Tracks { get; set; } = [];
     public SimilarTracksViewModel(IScreen screen, MusicAssistantClient client)
     {
         _client = client;

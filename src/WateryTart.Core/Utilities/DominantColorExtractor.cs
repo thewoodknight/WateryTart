@@ -28,7 +28,7 @@ namespace WateryTart.Core.Utilities
             int colorSimilarityThreshold = 50)
         {
             if (imageSource == null)
-                return new List<Color>();
+                return [];
 
             return await Task.Run(() => GetDominantColors(imageSource, sampleSize, ensureWhiteTextContrast, minContrastRatio, colorSimilarityThreshold));
         }
@@ -44,14 +44,14 @@ namespace WateryTart.Core.Utilities
             int colorSimilarityThreshold = 50)
         {
             if (imageSource == null)
-                return new List<Color>();
+                return [];
 
             if (imageSource is Bitmap bitmap)
             {
                 return ExtractColorsFromBitmap(bitmap, sampleSize, ensureWhiteTextContrast, minContrastRatio, colorSimilarityThreshold);
             }
 
-            return new List<Color>();
+            return [];
         }
 
         private static List<Color> ExtractColorsFromBitmap(
@@ -72,7 +72,7 @@ namespace WateryTart.Core.Utilities
             }
             catch
             {
-                return new List<Color>();
+                return [];
             }
         }
 

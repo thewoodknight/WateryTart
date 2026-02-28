@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 using Sendspin.SDK.Audio;
 using WateryTart.Core.Playback;
 using WateryTart.Platform.Windows.Playback;
@@ -8,8 +9,7 @@ namespace WateryTart.Platform.Windows;
 public class WindowsAudioPlayerFactory : IPlayerFactory
 {
     private readonly Func<IAudioPlayer> _create;
-
-    public WindowsAudioPlayerFactory() : this(() => new SoundflowPlayer()) { }
+    public WindowsAudioPlayerFactory(ILoggerFactory factory) : this(() => new SoundflowPlayer(factory)) { }
 
     public WindowsAudioPlayerFactory(Func<IAudioPlayer> create)
     {

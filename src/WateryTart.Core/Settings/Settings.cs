@@ -9,20 +9,6 @@ using WateryTart.MusicAssistant.Models.Auth;
 
 namespace WateryTart.Core.Settings;
 
-public enum VolumeEventControl
-{
-    [Description("System Volume")]
-    SystemVolume,
-    [Description("App Volume")]
-    AppVolume
-}
-
-public enum PlaybackBackend
-{
-    SimpleWasapi,
-    SoundFlow
-}
-
 public partial class Settings : INotifyPropertyChanged, ISettings
 {
     [JsonConverter(typeof(MusicAssistantCredentialsConverter))]
@@ -154,7 +140,7 @@ public partial class Settings : INotifyPropertyChanged, ISettings
 
     public Hashtable CustomSettings
     {
-        get => field ??= new Hashtable();
+        get => field ??= [];
         set
         {
             field = value;

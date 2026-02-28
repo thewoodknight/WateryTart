@@ -2,7 +2,6 @@
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -39,10 +38,7 @@ public partial class ColourService : ReactiveObject
         if (id != LastId)
         {
             LastId = id;
-
-#pragma warning disable CS4014 
             await GetDominateColours(url);
-#pragma warning restore CS4014 
         }
     }
 
@@ -63,31 +59,28 @@ public partial class ColourService : ReactiveObject
                 ColourC = colors[0];
                 ColourD = colors[1];
                 LastPick = ColourChosen.CD;
-
-                App.Logger?.LogInformation("Last colours {ColourC} & {ColourD}", ColourC, ColourD);
             }
             else
             {
                 ColourA = colors[0];
                 ColourB = colors[1];
                 LastPick = ColourChosen.AB;
-                App.Logger?.LogInformation("Last colours {ColourA} & {ColourB}", ColourA, ColourB);
             }
 
             ColourAccent = new SolidColorBrush(GetTriadColor(colors[2]));
         }
-        catch (Exception ex)
+        catch
         {
-            App.Logger?.LogError(ex, "Error extracting dominant colours");
+
         }
     }
 
-    private Color FromHex(string hex)
+    private static Color FromHex(string hex)
     {
         if (string.IsNullOrWhiteSpace(hex))
             throw new ArgumentException("Hex string cannot be null or empty", nameof(hex));
 
-        hex = hex.StartsWith("#") ? hex.Substring(1) : hex;
+        hex = hex.StartsWith('#') ? hex.Substring(1) : hex;
 
         if (hex.Length != 6 && hex.Length != 8)
             throw new ArgumentException("Hex string must be 6 or 8 characters long (RRGGBB or AARRGGBB)", nameof(hex));
@@ -114,11 +107,10 @@ public partial class ColourService : ReactiveObject
         }
     }
 
-    private Color GetTriadColor(Color baseColor)
+    private static Color GetTriadColor(Color baseColor)
     {
         // Convert to HSV
-        double h, s, v;
-        RgbToHsv(baseColor, out h, out s, out v);
+        RgbToHsv(baseColor, out double h, out double s, out double v);
 
         // Add 120 degrees to the hue (modulo 360)
         h = (h + 120) % 360;
@@ -127,7 +119,7 @@ public partial class ColourService : ReactiveObject
         return HsvToRgb(h, s, v, baseColor.A);
     }
 
-    private void RgbToHsv(Color color, out double h, out double s, out double v)
+    private static void RgbToHsv(Color color, out double h, out double s, out double v)
     {
         double r = color.R / 255.0;
         double g = color.G / 255.0;
@@ -161,7 +153,7 @@ public partial class ColourService : ReactiveObject
             h += 360;
     }
 
-    private Color HsvToRgb(double h, double s, double v, byte alpha)
+    private static Color HsvToRgb(double h, double s, double v, byte alpha)
     {
         double c = v * s;
         double x = c * (1 - Math.Abs((h / 60) % 2 - 1));

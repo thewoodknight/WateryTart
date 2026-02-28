@@ -243,15 +243,15 @@
                                               Height="22"
                                               Kind="{Binding PlaybackState, Converter={StaticResource PlaybackStateToIconConverter}}" />
                                 </Button>
-                                <!--                                <Button
-								Classes="iconButton navButton"
-								Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerAltCommand}"
-								CommandParameter="{Binding Path=.}">
-								<iconPacks:PackIconMaterial
-								Width="25"
-								Height="22"
-								Kind="DotsVertical" />
-								</Button>-->
+                                <Button
+                                          Classes="iconButton navButton"
+                                          Command="{Binding #lbPlayers.((vm:PlayersViewModel)DataContext).PlayerAltCommand}"
+                                          CommandParameter="{Binding Path=.}">
+                                    <iconPacks:PackIconMaterial
+                                              Width="25"
+                                              Height="22"
+                                              Kind="DotsVertical" />
+                                </Button>
                             </StackPanel>
 
 

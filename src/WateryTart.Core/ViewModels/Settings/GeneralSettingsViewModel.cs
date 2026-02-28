@@ -15,19 +15,18 @@ namespace WateryTart.Core.ViewModels
 {
     public partial class GeneralSettingsViewModel : ViewModelBase<GeneralSettingsViewModel>, IHaveSettings
     {
-        private readonly ISettings _settings;
-        private ITrayService _trayService;
-        private UpdateManager _um;
-        private UpdateInfo _update = default!;
+        private readonly ITrayService _trayService;
+        private readonly UpdateManager _um;
+        private UpdateInfo? _update = default!;
         public PackIconMaterialKind Icon => PackIconMaterialKind.Cog;
         [Reactive] public partial string InstalledVersion { get; set; }
         [Reactive] public partial string LatestVersion { get; set; } = string.Empty;
         public VolumeEventControl SelectedVolumeEvent
         {
-            get => _settings.VolumeEventControl;
+            get => _settings!.VolumeEventControl;
             set
             {
-                if (_settings.VolumeEventControl != value)
+                if (_settings!.VolumeEventControl != value)
                     _settings.VolumeEventControl = value;
             }
         }
@@ -35,7 +34,7 @@ namespace WateryTart.Core.ViewModels
         public string Description => "Tray, updates, and other general settings.";
         [Reactive] public partial bool TrayIcon { get; set; } = false;
         public ICommand TrayIconCommand { get; set; }
-        public IEnumerable<VolumeEventControl> VolumeEventOptions { get; } = (VolumeEventControl[])Enum.GetValues(typeof(VolumeEventControl));
+        public IEnumerable<VolumeEventControl> VolumeEventOptions { get; } = Enum.GetValues<VolumeEventControl>();
 
         public GeneralSettingsViewModel(ISettings settings, ILoggerFactory loggerFactory, ITrayService trayService): base(loggerFactory)
         {
@@ -56,9 +55,9 @@ namespace WateryTart.Core.ViewModels
 
             try
             {
-                CheckForUpdates();
+                _ = CheckForUpdates();
 
-                InstalledVersion = _um.IsInstalled ? _um.CurrentVersion.ToString() : "(n/a - not installed)";
+                InstalledVersion = _um.IsInstalled ? _um.CurrentVersion!.ToString() : "(n/a - not installed)";
             }
             catch (Exception ex)
             {
@@ -74,8 +73,8 @@ namespace WateryTart.Core.ViewModels
             {
                 if (_um.IsInstalled)
                 {
-                    _update = await _um.CheckForUpdatesAsync().ConfigureAwait(true);
-                    LatestVersion = _update.TargetFullRelease.Version.ToString();
+                    _update = await _um.CheckForUpdatesAsync();
+                    LatestVersion = _update!.TargetFullRelease.Version.ToString();
                 }
                 else LatestVersion = "(n/a - not installed)";
             }

@@ -18,6 +18,7 @@ using WateryTart.Core.ViewModels.Popups;
 using WateryTart.MusicAssistant.Models;
 using WateryTart.MusicAssistant.Models.Enums;
 using Xaml.Behaviors.SourceGenerators;
+using Autofac;
 
 namespace WateryTart.Core.ViewModels.Players;
 
@@ -78,8 +79,6 @@ public partial class BigPlayerViewModel : ViewModelBase<BigPlayerViewModel>
 
     public ICommand ShowTrackInfo { get; set; }
     public bool ShowBackButton => false;
-    public new bool ShowMiniPlayer => false;
-    public new bool ShowNavigation => false;
     public ICommand ToggleFavoriteCommand { get; set; }
 
     public ICommand ToggleShuffleCommand { get; set; }
@@ -88,6 +87,8 @@ public partial class BigPlayerViewModel : ViewModelBase<BigPlayerViewModel>
 
     public BigPlayerViewModel(PlayersService playersService, IScreen screen, ColourService colourService, ILoggerFactory loggerFactory) : base(loggerFactory)
     {
+        ShowMiniPlayer = false;
+        ShowNavigation = false;
         _playersService = playersService;
         ColourService = colourService;
         HostScreen = screen;
@@ -187,7 +188,7 @@ public partial class BigPlayerViewModel : ViewModelBase<BigPlayerViewModel>
                 if (item == null || item.Album == null || item.Album.ItemId == null || item.Provider == null || HostScreen == null)
                     return;
 
-                var albumVm = App.Container.GetRequiredService<AlbumViewModel>();
+                var albumVm = App.Container.Resolve<AlbumViewModel>();
                 albumVm.Album = item.Album;
 
                 string id = string.Empty;
@@ -208,7 +209,7 @@ public partial class BigPlayerViewModel : ViewModelBase<BigPlayerViewModel>
                 if (artist == null || artist.ItemId == null)
                     return;
 
-                var artistVm = App.Container.GetRequiredService<ArtistViewModel>();
+                var artistVm = App.Container.Resolve<ArtistViewModel>();
                 artistVm.LoadFromId(artist.ItemId, item.Provider);
                 HostScreen.Router.Navigate.Execute(artistVm);
             });
@@ -217,7 +218,7 @@ public partial class BigPlayerViewModel : ViewModelBase<BigPlayerViewModel>
             {
                 if (item == null || HostScreen == null || item.ItemId == null)
                     return;
-                var SimilarTracksViewModel = App.Container.GetRequiredService<SimilarTracksViewModel>();
+                var SimilarTracksViewModel = App.Container.Resolve<SimilarTracksViewModel>();
 #pragma warning disable CS4014
                 SimilarTracksViewModel.LoadFromId(item.ItemId, item.GetProviderInstance());
 #pragma warning restore CS4014

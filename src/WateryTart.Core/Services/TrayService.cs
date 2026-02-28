@@ -1,4 +1,4 @@
-﻿using Avalonia;
+﻿
 using Avalonia.Controls;
 using Avalonia.Platform;
 using ReactiveUI;
@@ -8,25 +8,14 @@ using WateryTart.Core.Settings;
 
 namespace WateryTart.Core.Services;
 
-public interface ITrayService
-{
-    void CreateTrayIcon();
-    void Initialize(Window mainWindow);
-    void Dispose();
-}
-
-public class TrayService : ITrayService
+public class TrayService(ISettings settings) : ITrayService
 {
     private TrayIcon? _trayIcon;
     private Window? _mainWindow;
     private IDisposable? _windowStateSubscription;
     private bool _isExiting;
-    private readonly ISettings settings;
+    private readonly ISettings settings = settings;
 
-    public TrayService(ISettings settings)
-    {
-        this.settings = settings;
-    }
     public void Initialize(Window mainWindow)
     {
         _mainWindow = mainWindow;

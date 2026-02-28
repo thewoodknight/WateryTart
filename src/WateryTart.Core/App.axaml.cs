@@ -5,7 +5,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Avalonia.Platform.Storage;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using System;
@@ -28,20 +27,14 @@ using PlayersService = WateryTart.Core.Services.PlayersService;
 
 namespace WateryTart.Core;
 
-public static class AntipatternExtensionsYesIKnowItsBad
-{
-    public static T GetRequiredService<T>(this IContainer c)
-    {
-        return c.Resolve<T>();
-    }
-}
-
 public partial class App : Application
 {
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     public static IContainer Container;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     private static readonly string BaseAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "WateryTart");
     private static readonly string AppDataPath = Path.Combine(BaseAppDataPath, "Cache");
-    
+
     private static readonly Lazy<DiskCachedWebImageLoader> LazyImageLoader = new(() => new DiskCachedWebImageLoader(AppDataPath));
     private static string? _cachedBaseUrl;
     private static ISettings? _cachedSettings;
@@ -60,10 +53,11 @@ public partial class App : Application
             {
                 _cachedBaseUrl = Container.Resolve<ISettings>().Credentials.BaseUrl;
             }
-            return _cachedBaseUrl;
+            return _cachedBaseUrl!;
         }
     }
 
+#pragma warning disable CRR0026 // Unused member
     public static Bitmap FallbackImage
     {
         get
@@ -73,7 +67,8 @@ public partial class App : Application
     }
 
     public static DiskCachedWebImageLoader ImageLoaderInstance => LazyImageLoader.Value;
-    public static ILauncher Launcher { get; set; }
+
+#pragma warning restore CRR0026 // Unused member
     public static ILogger? Logger => _logger;
 
     public static ISettings Settings
@@ -87,21 +82,24 @@ public partial class App : Application
 
     private IEnumerable<IPlatformSpecificRegistration> PlatformSpecificRegistrations { get; }
 
-    public App()
-    {
-    }
 
     public App(IEnumerable<IPlatformSpecificRegistration> platformSpecificRegistrations)
     {
         PlatformSpecificRegistrations = platformSpecificRegistrations;
     }
 
+#pragma warning disable CS8618 // empty constructor needed for XAML
+    public App()
+#pragma warning restore CS8618
+    {
+
+    }
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
     }
 
-    private void RegisterServices(ContainerBuilder builder)
+    private static void RegisterServices(ContainerBuilder builder)
     {
         /* Explicit interface definitions so .AsImplemented() isn't called, which isn't AOT compatible */
         builder.Register(c => new MainWindowViewModel(
@@ -119,7 +117,7 @@ public partial class App : Application
         builder.RegisterType<TrayService>().As<ITrayService>().SingleInstance();
     }
 
-    private void RegisterViewModels(ContainerBuilder  builder)
+    private static void RegisterViewModels(ContainerBuilder builder)
     {
         builder.RegisterType<SettingsViewModel>().SingleInstance();
         builder.RegisterType<GeneralSettingsViewModel>().As<IHaveSettings>().SingleInstance();
@@ -150,7 +148,7 @@ public partial class App : Application
         builder.RegisterType<SimilarTracksViewModel>();
     }
 
-    private void RegisterSetupLogger(ContainerBuilder builder)
+    private static void RegisterSetupLogger(ContainerBuilder builder)
     {
 
         //Settings - Load first before creating logger
@@ -184,10 +182,10 @@ public partial class App : Application
                         // o.BasePath = "WateryTart.Logs";
                         o.MaxFileSize = 10_000_000;
                         o.FileAccessMode = Karambolo.Extensions.Logging.File.LogFileAccessMode.KeepOpenAndAutoFlush;
-                        o.Files = new[]
-                        {
+                        o.Files =
+                        [
                             new Karambolo.Extensions.Logging.File.LogFileOptions { Path = "default.log" }
-                        };
+                        ];
                     });
                 }
             }
@@ -198,7 +196,7 @@ public partial class App : Application
         builder.RegisterInstance(_loggerFactory).As<ILoggerFactory>().SingleInstance();
     }
 
-    private void ObtainLock()
+    private static void ObtainLock()
     {
         // Try to acquire a filesystem lock to ensure single instance
         try
@@ -222,7 +220,7 @@ public partial class App : Application
         ObtainLock();
 
         //Check for updates
-        UpdateMyApp();
+        _ = UpdateMyApp();
 
         //Build the DI Container
         var builder = new ContainerBuilder();
@@ -254,7 +252,7 @@ public partial class App : Application
 
         //Immediately setup items that need to be ready before the main window shows
         var vm = Container.Resolve<IScreen>();
-        var volumeProviders = Container.Resolve<IEnumerable<IVolumeService>>();
+        _ = Container.Resolve<IEnumerable<IVolumeService>>();
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -273,7 +271,7 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void HandleShutdown(IClassicDesktopStyleApplicationLifetime desktop, ShutdownRequestedEventArgs e)
+    private static void HandleShutdown(IClassicDesktopStyleApplicationLifetime desktop, ShutdownRequestedEventArgs e)
     {
         // Prevent re-entry - if we're already shutting down, let it proceed
         if (_isShuttingDown)

@@ -9,6 +9,9 @@ public class MassImageImageConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
+        if (value == null) 
+            return string.Empty;
+
         Image? image = (Image)value;
 
         if (image == null)

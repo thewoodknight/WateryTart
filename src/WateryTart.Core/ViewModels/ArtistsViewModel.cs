@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
 using System;
@@ -11,37 +12,24 @@ using WateryTart.MusicAssistant.WsExtensions;
 
 namespace WateryTart.Core.ViewModels;
 
-public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
+public partial class ArtistsViewModel : ViewModelBase<ArtistsViewModel>
 {
-    public string? UrlPathSegment { get; } = "ArtistsList";
-    public IScreen HostScreen { get; }
-    private readonly MusicAssistantClient _massClient;
-    private readonly PlayersService _playersService;
-
-    [Reactive] public partial string Title { get; set; }
-    [Reactive] public partial ObservableCollection<ArtistViewModel> Artists { get; set; } = [];
-    [Reactive] public partial bool IsLoading { get; set; }
-    [Reactive] public partial bool HasMoreItems { get; set; } = true;
-    [Reactive] public partial int CurrentOffset { get; set; } = 0;
-
     private const int PageSize = 50;
-
+    [Reactive] public partial ObservableCollection<ArtistViewModel> Artists { get; set; } = [];
     public RelayCommand<ArtistViewModel> ClickedCommand { get; }
+    [Reactive] public partial int CurrentOffset { get; set; } = 0;
+    [Reactive] public partial bool HasMoreItems { get; set; } = true;
     public AsyncRelayCommand LoadMoreCommand { get; }
-    public bool ShowMiniPlayer => true;
-    public bool ShowNavigation => true;
 
-    public ArtistsViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService)
+    public ArtistsViewModel(MusicAssistantClient massClient, IScreen screen, PlayersService playersService, ILoggerFactory loggerFactory)
+        : base(loggerFactory, massClient, playersService, screen)
     {
-        _massClient = massClient;
-        _playersService = playersService;
-        HostScreen = screen;
         Title = "Artists";
 
         ClickedCommand = new RelayCommand<ArtistViewModel>(item =>
         {
             if (item != null)
-                screen.Router.Navigate.Execute(item);
+                HostScreen.Router.Navigate.Execute(item);
         });
 
         LoadMoreCommand = new AsyncRelayCommand(
@@ -49,21 +37,7 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
             () => !IsLoading && HasMoreItems
         );
 
-#pragma warning disable CS4014
         _ = LoadInitialAsync();
-#pragma warning restore CS4014
-    }
-
-    private async Task LoadInitialAsync()
-    {
-        CurrentOffset = 0;
-        Artists.Clear();
-        await LoadArtistsAsync();
-    }
-
-    private async Task LoadMoreAsync()
-    {
-        await LoadArtistsAsync();
     }
 
     private async Task LoadArtistsAsync()
@@ -75,13 +49,13 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
         {
             IsLoading = true;
 
-            var response = await _massClient.WithWs().GetArtistsAsync(limit: PageSize, offset: CurrentOffset);
+            var response = await _client.WithWs().GetArtistsAsync(limit: PageSize, offset: CurrentOffset);
 
             if (response?.Result != null)
             {
                 foreach (var artist in response.Result)
                 {
-                    Artists.Add(new ArtistViewModel(_massClient, HostScreen, _playersService, artist));
+                    Artists.Add(new ArtistViewModel(_client, HostScreen, _playersService!, artist));
                 }
 
                 HasMoreItems = response.Result.Count == PageSize;
@@ -98,12 +72,24 @@ public partial class ArtistsViewModel : ReactiveObject, IViewModelBase
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error loading artists: {ex.Message}");
+            _logger.LogError($"Error loading artists: {ex.Message}");
             HasMoreItems = false;
         }
         finally
         {
             IsLoading = false;
         }
+    }
+
+    private async Task LoadInitialAsync()
+    {
+        CurrentOffset = 0;
+        Artists.Clear();
+        await LoadArtistsAsync();
+    }
+
+    private async Task LoadMoreAsync()
+    {
+        await LoadArtistsAsync();
     }
 }

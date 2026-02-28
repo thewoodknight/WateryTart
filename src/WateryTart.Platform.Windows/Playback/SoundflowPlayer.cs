@@ -8,9 +8,9 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Collections;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 
 namespace WateryTart.Platform.Windows.Playback;
 
@@ -69,6 +69,9 @@ public sealed partial class SoundflowPlayer : IAudioPlayer
         return ValueTask.CompletedTask;
     }
 
+    private readonly ILogger _logger;
+    public SoundflowPlayer(ILoggerFactory loggerFactory) => _logger = loggerFactory.CreateLogger<SoundflowPlayer>();
+
     public Task InitializeAsync(Sendspin.SDK.Models.AudioFormat format, CancellationToken ct = default)
     {
         _format = format ?? throw new ArgumentNullException(nameof(format));
@@ -80,10 +83,11 @@ public sealed partial class SoundflowPlayer : IAudioPlayer
             // Diagnostic: enumerate devices in a reflection-safe way
             try
             {
-                Debug.WriteLine($"SoundflowPlayer.InitializeAsync this={GetHashCode()}");
+                _logger.LogDebug("SoundflowPlayer.InitializeAsync this={Hash}", GetHashCode());
 
                 object? devicesObj = null;
-                var engineType = _engine.GetType();
+                // Use compile-time type to satisfy the trimmer/analysis requirement
+                var engineType = typeof(MiniAudioEngine);
 
                 // Try property first
                 var prop = engineType.GetProperty("PlaybackDevices", BindingFlags.Public | BindingFlags.Instance);
@@ -107,21 +111,21 @@ public sealed partial class SoundflowPlayer : IAudioPlayer
                     foreach (var d in devices)
                     {
                         // Try to read common properties via reflection, fall back to ToString
-                        var name = TryGetMemberString(d, new[] { "Name", "DeviceName", "FriendlyName" });
-                        var id = TryGetMemberString(d, new[] { "Id", "DeviceId" });
-                        Debug.WriteLine($"Soundflow device[{index}]: Type={d?.GetType().FullName} Name=\"{name}\" Id=\"{id}\"");
+                        var name = TryGetMemberString(d, ["Name", "DeviceName", "FriendlyName"]);
+                        var id = TryGetMemberString(d, [ "Id", "DeviceId" ]);
+                        _logger.LogDebug("Soundflow device[{Index}]: Type={Type} Name=\"{Name}\" Id=\"{Id}\"", index, d?.GetType().FullName, name, id);
                         index++;
                     }
-                    Debug.WriteLine($"Soundflow: PlaybackDevices enumerated count={index}");
+                    _logger.LogDebug("Soundflow: PlaybackDevices enumerated count={Count}", index);
                 }
                 else
                 {
-                    Debug.WriteLine($"Soundflow: PlaybackDevices object type: {(devicesObj == null ? "<null>" : devicesObj.GetType().FullName)}");
+                    _logger.LogDebug("Soundflow: PlaybackDevices object type: {Type}", devicesObj == null ? "<null>" : devicesObj.GetType().FullName);
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Soundflow device enumeration failed: {ex}");
+                _logger.LogDebug(ex, "Soundflow device enumeration failed");
             }
 
             var sfFormat = new SoundFlow.Structs.AudioFormat
@@ -138,18 +142,18 @@ public sealed partial class SoundflowPlayer : IAudioPlayer
             // Diagnostic: report device assignment without assuming Name/Id members
             try
             {
-                var devName = TryGetMemberString(_playbackDevice, new[] { "Name", "DeviceName", "FriendlyName" });
-                var devId = TryGetMemberString(_playbackDevice, new[] { "Id", "DeviceId" });
-                Debug.WriteLine($"Soundflow: InitializePlaybackDevice returned: Type={_playbackDevice?.GetType().FullName} Name=\"{devName}\" Id=\"{devId}\"");
+                var devName = TryGetMemberString(_playbackDevice, [ "Name", "DeviceName", "FriendlyName" ]);
+                var devId = TryGetMemberString(_playbackDevice, ["Id", "DeviceId"]);
+                _logger.LogDebug("Soundflow: InitializePlaybackDevice returned: Type={Type} Name=\"{Name}\" Id=\"{Id}\"", _playbackDevice?.GetType().FullName, devName, devId);
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Soundflow: playback device probe failed: {ex}");
+                _logger.LogDebug(ex, "Soundflow: playback device probe failed");
             }
 
             _sfFormat = sfFormat;
             _playbackDevice.Start();
-            Debug.WriteLine("Soundflow: playback device Start() called");
+            _logger.LogDebug("Soundflow: playback device Start() called");
         }
         catch (Exception ex)
         {
@@ -199,17 +203,17 @@ public sealed partial class SoundflowPlayer : IAudioPlayer
                 var provider = new SoundFlowSampleSourceProvider(_sampleSource, _sfFormat.Value, () => _volume, () => _isMuted);
 
                 // Diagnostic: probe provider if it implements a probe interface or log creation
-                Debug.WriteLine($"Soundflow: created SoundFlowSampleSourceProvider thisPlayer={GetHashCode()} providerHash={provider.GetHashCode()}");
+                _logger.LogDebug("Soundflow: created SoundFlowSampleSourceProvider thisPlayer={PlayerHash} providerHash={ProviderHash}", GetHashCode(), provider.GetHashCode());
 
                 _soundPlayer = new SoundPlayer(_engine, _sfFormat.Value, provider);
                 _playbackDevice.MasterMixer.AddComponent(_soundPlayer);
 
-                Debug.WriteLine("Soundflow: SoundPlayer added to MasterMixer");
+                _logger.LogDebug("Soundflow: SoundPlayer added to MasterMixer");
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Soundflow SetSampleSource failed: {ex}");
+            _logger.LogDebug(ex, "Soundflow SetSampleSource failed");
         }
     }
 
@@ -232,10 +236,8 @@ public sealed partial class SoundflowPlayer : IAudioPlayer
             if (_engine != null)
             {
                 var dev = _engine.PlaybackDevices.FirstOrDefault(d => string.Equals(d.Name, deviceId, StringComparison.OrdinalIgnoreCase));
-                if (dev != null)
-                {
-                    _engine.SwitchDevice(_playbackDevice!, dev, null);
-                }
+
+                _engine.SwitchDevice(_playbackDevice!, dev, null);
             }
         }
         catch
@@ -264,7 +266,7 @@ public sealed partial class SoundflowPlayer : IAudioPlayer
         var t = obj.GetType();
         foreach (var name in candidateNames)
         {
-            var p = t.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo? p = t.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
             if (p != null)
             {
                 try
@@ -287,6 +289,13 @@ public sealed partial class SoundflowPlayer : IAudioPlayer
             }
         }
         // Fallback to ToString
-        try { return obj.ToString() ?? string.Empty; } catch { return string.Empty; }
+        try
+        {
+            return obj.ToString() ?? string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
     }
 }

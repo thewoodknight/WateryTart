@@ -1,4 +1,3 @@
-using IconPacks.Avalonia.Material;
 using ReactiveUI;
 
 namespace WateryTart.Core.ViewModels.Popups;

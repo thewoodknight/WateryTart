@@ -10,7 +10,9 @@ namespace WateryTart.Core.Converters
     {
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (value == null) return null;
+            if (value == null) 
+                return null;
+
             var state = (RepeatMode)value;
 
             switch (state)
@@ -24,6 +26,9 @@ namespace WateryTart.Core.Converters
 
                 case RepeatMode.One:
                     return PackIconMaterialKind.RepeatOnce;
+
+                case RepeatMode.Unknown:
+                    break;
             }
 
             return RepeatMode.Off;

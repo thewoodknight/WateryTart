@@ -13,14 +13,13 @@ using WateryTart.Core.ViewModels.Players;
 using WateryTart.MusicAssistant;
 using Xaml.Behaviors.SourceGenerators;
 using WateryTart.Core.ViewModels.Popups;
-
+using Autofac;
 namespace WateryTart.Core.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase<MainWindowViewModel>, IScreen, IActivatableViewModel
 {
     private readonly SendSpinClient _sendSpinClient;
     private readonly ProviderService providerService;
-    private readonly ISettings _settings;
     
     private bool _canNavigateToHome = true;
     private bool _canNavigateToMusic = true;
@@ -40,9 +39,8 @@ public partial class MainWindowViewModel : ViewModelBase<MainWindowViewModel>, I
     public RelayCommand GoSettings { get; }
     [Reactive] public partial bool IsMiniPlayerVisible { get; set; }
     [Reactive] public partial MiniPlayerViewModel MiniPlayer { get; set; }
-    [Reactive] public partial PlayersService PlayersService { get; set; }
     public RoutingState Router { get; } = new();
-    public ISettings Settings => _settings;
+    public ISettings Settings => _settings!;
     [Reactive] public partial bool ShowSlideupMenu { get; set; }
     [Reactive] public partial IPopupViewModel? SlideupMenu { get; set; }
     
@@ -50,10 +48,8 @@ public partial class MainWindowViewModel : ViewModelBase<MainWindowViewModel>, I
     [Reactive] public partial string Title { get; set; }
 
     public MainWindowViewModel(MusicAssistantClient massClient, PlayersService playersService, ISettings settings, ColourService colourService, SendSpinClient sendSpinClient, ILoggerFactory loggerFactory, ProviderService providerService)
-        :base(loggerFactory, massClient)
+        :base(loggerFactory, massClient, playersService)
     {
-        _client = massClient;
-        PlayersService = playersService;
         _settings = settings;
         _sendSpinClient = sendSpinClient;
         this.providerService = providerService;
@@ -63,11 +59,11 @@ public partial class MainWindowViewModel : ViewModelBase<MainWindowViewModel>, I
 
         // Create the commands first
         GoBack = new RelayCommand(() => Router.NavigateBack.Execute(Unit.Default), () => _canNavigateBack);
-        GoHome = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<Home2ViewModel>()), () => _canNavigateToHome);
-        GoMusic = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<LibraryViewModel>()), () => _canNavigateToMusic);
-        GoSearch = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<SearchViewModel>()), () => _canNavigateToSearch);
-        GoSettings = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<SettingsViewModel>()), () => _canNavigateToSettings);
-        GoPlayers = new RelayCommand(() => Router.Navigate.Execute(App.Container.GetRequiredService<PlayersViewModel>()), () => _canNavigateToPlayers);
+        GoHome = new RelayCommand(() => Router.Navigate.Execute(App.Container.Resolve<Home2ViewModel>()), () => _canNavigateToHome);
+        GoMusic = new RelayCommand(() => Router.Navigate.Execute(App.Container.Resolve<LibraryViewModel>()), () => _canNavigateToMusic);
+        GoSearch = new RelayCommand(() => Router.Navigate.Execute(App.Container.Resolve<SearchViewModel>()), () => _canNavigateToSearch);
+        GoSettings = new RelayCommand(() => Router.Navigate.Execute(App.Container.Resolve<SettingsViewModel>()), () => _canNavigateToSettings);
+        GoPlayers = new RelayCommand(() => Router.Navigate.Execute(App.Container.Resolve<PlayersViewModel>()), () => _canNavigateToPlayers);
         CloseSlideupCommand = new RelayCommand(CloseMenu);
 
         // Subscribe to CurrentViewModel changes and update canExecute predicates
@@ -98,7 +94,7 @@ public partial class MainWindowViewModel : ViewModelBase<MainWindowViewModel>, I
                     .BindTo(this, v => v.Title);
 
                 CurrentViewModel = ivmb;
-                MiniPlayer = App.Container.GetRequiredService<MiniPlayerViewModel>();
+                MiniPlayer = App.Container.Resolve<MiniPlayerViewModel>();
             }
         });
 
@@ -151,7 +147,7 @@ public partial class MainWindowViewModel : ViewModelBase<MainWindowViewModel>, I
         if (string.IsNullOrEmpty(_settings.Credentials?.Token))
         {
             _logger.LogInformation("No credentials found, navigating to login");
-            var loginViewModel = App.Container?.GetRequiredService<LoginViewModel>();
+            var loginViewModel = App.Container?.Resolve<LoginViewModel>();
             if (loginViewModel != null)
             {
                 Router.Navigate.Execute(loginViewModel);
@@ -174,7 +170,7 @@ public partial class MainWindowViewModel : ViewModelBase<MainWindowViewModel>, I
         _logger.LogInformation("Successfully connected to MassClient");
         await PlayersService.GetPlayers();
 
-        Router.NavigateAndReset.Execute(App.Container.GetRequiredService<Home2ViewModel>());
+        Router.NavigateAndReset.Execute(App.Container.Resolve<Home2ViewModel>());
 
         if (!OperatingSystem.IsAndroid())
             _ = _sendSpinClient.ConnectAsync(_settings.Credentials.BaseUrl);

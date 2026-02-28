@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using Autofac;
+using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using ReactiveUI;
 using ReactiveUI.SourceGenerators;
@@ -35,9 +36,9 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
         _playersService = playersService;
         HostScreen = screen;
 
-        DiscoverArtists = new ObservableCollection<ArtistViewModel>();
-        DiscoverAlbums = new ObservableCollection<AlbumViewModel>();
-        RecentTracks = new ObservableCollection<TrackViewModel>();
+        DiscoverArtists = [];
+        DiscoverAlbums = [];
+        RecentTracks = [];
 
         //Set all commands
         DiscoverArtistsCommand = new RelayCommand(() => { });
@@ -62,7 +63,7 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
                     var recent = await _client.WithWs().GetRecentlyPlayedItemsAsync(limit: 5);
                     foreach (var r in recent.Result!)
                     {
-                        var track = App.Container.GetRequiredService<TrackViewModel>();
+                        var track = App.Container.Resolve<TrackViewModel>();
                         track.Track = r;
                         //The returned values are fairly basic, so we need to fetch the full track details
                         _ = track.LoadFromId(r.ItemId!, r.Provider!);
@@ -78,7 +79,7 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
 
                     foreach (var a in albums.Result!)
                     {
-                        var album = App.Container.GetRequiredService<AlbumViewModel>();
+                        var album = App.Container.Resolve<AlbumViewModel>();
                         album.Album = a;
 
                         DiscoverAlbums.Add(album);
@@ -96,7 +97,7 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
 
                     foreach (var a in artists.Result!)
                     {
-                        var artist = App.Container.GetRequiredService<ArtistViewModel>();
+                        var artist = App.Container.Resolve<ArtistViewModel>();
                         artist.Artist = a;
 
                         DiscoverArtists.Add(artist);

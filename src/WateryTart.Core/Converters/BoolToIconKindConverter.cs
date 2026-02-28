@@ -2,7 +2,6 @@
 using IconPacks.Avalonia.Material;
 using System;
 using System.Globalization;
-using WateryTart.MusicAssistant.Models.Enums;
 
 namespace WateryTart.Core.Converters;
 public class BoolToIconKindConverter : IValueConverter
@@ -10,7 +9,7 @@ public class BoolToIconKindConverter : IValueConverter
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         // Parameter format: "FalseKind,TrueKind"
-        var kinds = (parameter as string)?.Split(',') ?? Array.Empty<string>();
+        var kinds = (parameter as string)?.Split(',') ?? [];
         var falseKind = kinds.Length > 0 ? kinds[0] : nameof(PackIconMaterialKind.HeartOutline);
         var trueKind = kinds.Length > 1 ? kinds[1] : nameof(PackIconMaterialKind.Heart);
 

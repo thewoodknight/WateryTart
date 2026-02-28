@@ -1,8 +1,6 @@
-﻿using Avalonia;
-using Avalonia.Data.Converters;
+﻿using Avalonia.Data.Converters;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
 using System.Globalization;
 using System.Text;
 using WateryTart.MusicAssistant.Models;
@@ -15,7 +13,7 @@ public class ArtistsToStringConverter : IValueConverter
     {
         IList<Artist> artists = (IList<Artist>)value!;
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
         foreach (var a in artists)
             sb.Append(a.Name);
 
