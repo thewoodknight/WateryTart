@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using ReactiveUI;
+using System.ComponentModel;
 using WateryTart.Core.Services;
 using WateryTart.Core.Settings;
 using WateryTart.MusicAssistant;

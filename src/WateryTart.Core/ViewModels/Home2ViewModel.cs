@@ -6,6 +6,7 @@ using ReactiveUI.SourceGenerators;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WateryTart.Core.Services;
@@ -58,11 +59,15 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
             {
                 Task.Run(async () =>
                 {
+                    if (RecentTracks.Count > 0) //Solves weird condition where this randomly gets hit twice.
+                        return;
                     //Recent Tracks - api call
                     _logger.LogInformation("Fetching recent tracks...");
                     var recent = await _client.WithWs().GetRecentlyPlayedItemsAsync(limit: 5);
                     foreach (var r in recent.Result!)
                     {
+                        if (RecentTracks.Any(t => t.Track.ItemId == r.ItemId)) // make sure no duplicates
+                            continue;
                         var track = App.Container.Resolve<TrackViewModel>();
                         track.Track = r;
                         //The returned values are fairly basic, so we need to fetch the full track details
@@ -74,7 +79,8 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
 
                 Task.Run(async () =>
                 {
-                    //Discover Albums - 
+                    //Discover Albums 
+                    //TODO: These should be cached for 12 hours?
                     var albums = await _client.WithWs().GetMusicAlbumsLibraryItemsAsync(limit: 10, order_by: "random");
 
                     foreach (var a in albums.Result!)
@@ -92,7 +98,7 @@ public partial class Home2ViewModel : ViewModelBase<Home2ViewModel>
                 Task.Run(async () =>
                 {
                     //Discover Artists
-                    
+                    //TODO: These should be cached for 12 hours?
                     var artists = await _client.WithWs().GetArtistsAsync(limit: 10, order_by: "random", album_artists_only: true);
 
                     foreach (var a in artists.Result!)

@@ -18,7 +18,8 @@ public partial class TracksViewModel : ViewModelBase<TracksViewModel>
     [Reactive] public partial ObservableCollection<TrackViewModel> Tracks { get; set; } = new();
     [Reactive] public partial bool HasMoreItems { get; set; } = true;
     [Reactive] public partial int CurrentOffset { get; set; } = 0;
-    
+    [Reactive] public override partial bool IsLoading { get; set; }
+
     private const int PageSize = 50;
 
     public RelayCommand<TrackViewModel> ClickedCommand { get; }
