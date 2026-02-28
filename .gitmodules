@@ -4,3 +4,6 @@
 [submodule "src/Fleck"]
 	path = src/Fleck
 	url = https://github.com/TemuWolverine/Fleck.git
+[submodule "src/WateryTart.MusicAssistant"]
+	path = src/WateryTart.MusicAssistant
+	url = https://github.com/TemuWolverine/WateryTart.MusicAssistant.git
