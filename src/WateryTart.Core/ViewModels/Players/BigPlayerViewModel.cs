@@ -192,12 +192,18 @@ public partial class BigPlayerViewModel : ViewModelBase<BigPlayerViewModel>
                 albumVm.Album = item.Album;
 
                 string id = string.Empty;
+                string provider = string.Empty;
                 if (item.Album.ProviderMappings != null)
+                {
                     id = item.Album.ProviderMappings[0].ItemId!;
+                    provider = item.Album.ProviderMappings[0].ProviderDomain!;
+                }
                 else
+                {
                     id = item.ItemId;
-
-                albumVm.LoadFromId(id, item.Provider);
+                    provider = item.Provider;
+                }
+                albumVm.LoadFromId(id, provider);
                 HostScreen.Router.Navigate.Execute(albumVm);
             });
 
